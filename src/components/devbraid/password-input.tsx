@@ -15,11 +15,11 @@ export const PasswordInput = forwardRef<HTMLInputElement, Props>(
           ref={ref}
           type={show ? "text" : "password"}
           className={cn(
-            "h-10 w-full rounded-md border bg-surface/50 px-3 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors",
-            "focus:border-primary/60 focus:bg-surface focus:ring-2 focus:ring-primary/20",
+            "h-11 w-full rounded-xl border bg-surface/60 px-4 pr-11 text-base text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200",
+            "focus:border-primary/80 focus:bg-surface focus:ring-2 focus:ring-primary/30",
             invalid
-              ? "border-rose-500/60"
-              : "border-hairline hover:border-hairline/80",
+              ? "border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/20"
+              : "border-hairline hover:border-hairline/90",
             className,
           )}
           {...props}

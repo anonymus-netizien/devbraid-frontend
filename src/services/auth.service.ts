@@ -57,6 +57,7 @@ export const authService = {
 
   async refresh(): Promise<LoginResponseData> {
     const refreshToken = getRefreshToken();
+    if (!refreshToken) throw new Error('No refresh token available');
     const response = await apiClient.post<ApiResponse<LoginResponseData>>(
       '/auth/refresh',
       { refreshToken }
@@ -70,6 +71,10 @@ export const authService = {
 
   async logout(): Promise<void> {
     const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      clearTokens();
+      return;
+    }
     try {
       await apiClient.post('/auth/logout', { refreshToken });
     } catch {
