@@ -17,7 +17,7 @@ export function DashboardPage() {
       <header className="flex items-center justify-between border-b border-hairline pb-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back, {user?.name || "Developer"}
+            Welcome back, {user?.fullName || "Developer"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Signed in as <span className="font-mono text-foreground">{user?.email}</span>

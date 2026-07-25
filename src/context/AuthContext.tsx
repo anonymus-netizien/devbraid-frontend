@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
 import authService from '../services/auth.service';
 
@@ -8,27 +8,31 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
+  sendOtp: (email: string) => Promise<void>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function mapProfileToUser(profile: { id: string; fullName: string; email: string; role: string; createdAt: string }): User {
+  return { id: profile.id, fullName: profile.fullName, email: profile.email, role: profile.role, createdAt: profile.createdAt };
+}
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Session Bootstrap: Attempt session restore on initial app boot via HttpOnly cookie or access token
   useEffect(() => {
     const bootstrapSession = async () => {
       try {
-        const meData = await authService.me();
-        setUser(meData.user || (meData as any));
+        const profile = await authService.me();
+        setUser(mapProfileToUser(profile));
       } catch {
         try {
-          // Attempt silent refresh via HttpOnly Cookie
           await authService.refresh();
-          const meData = await authService.me();
-          setUser(meData.user || (meData as any));
+          const profile = await authService.me();
+          setUser(mapProfileToUser(profile));
         } catch {
           await authService.logout();
           setUser(null);
@@ -37,63 +41,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLoading(false);
       }
     };
-
     bootstrapSession();
   }, []);
 
-  const login = async (credentials: LoginRequest) => {
+  const login = useCallback(async (credentials: LoginRequest) => {
     setIsLoading(true);
     try {
-      const response = await authService.login(credentials);
-      if (response.user) {
-        setUser(response.user);
-      } else {
-        try {
-          const meData = await authService.me();
-          setUser(meData.user || (meData as any));
-        } catch {
-          setUser({ id: '1', name: credentials.email.split('@')[0], email: credentials.email });
-        }
-      }
+      await authService.login(credentials);
+      const profile = await authService.me();
+      setUser(mapProfileToUser(profile));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const register = async (data: RegisterRequest) => {
-    setIsLoading(true);
-    try {
-      const response = await authService.register(data);
-      if (response.user) {
-        setUser(response.user);
-      } else {
-        try {
-          const meData = await authService.me();
-          setUser(meData.user || (meData as any));
-        } catch {
-          setUser({ id: '1', name: data.fullName, email: data.email });
-        }
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const sendOtp = useCallback(async (email: string) => {
+    await authService.sendOtp(email);
+  }, []);
 
-  const logout = async () => {
+  const verifyOtp = useCallback(async (email: string, otp: string) => {
+    await authService.verifyOtp(email, otp);
+  }, []);
+
+  const register = useCallback(async (data: RegisterRequest) => {
+    await authService.register(data);
+  }, []);
+
+  const logout = useCallback(async () => {
     await authService.logout();
     setUser(null);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout,
-      }}
+      value={{ user, isAuthenticated: !!user, isLoading, login, register, sendOtp, verifyOtp, logout }}
     >
       {children}
     </AuthContext.Provider>

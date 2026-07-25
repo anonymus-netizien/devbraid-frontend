@@ -1,74 +1,79 @@
 import apiClient from '../api/axios';
-import { setAccessToken, clearTokens } from '../api/token';
+import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token';
 import type {
   LoginRequest,
-  LoginResponse,
+  ApiResponse,
+  LoginResponseData,
   RegisterRequest,
-  RegisterResponse,
-  MeResponse,
-  RefreshResponse,
+  UserProfileResponseData,
+  OtpSendRequest,
+  OtpSendResponseData,
+  OtpVerifyRequest,
+  OtpVerifyResponseData,
 } from '../types/auth';
 
 export const authService = {
-  async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
-    const data = response.data;
-    const accessToken =
-      data?.accessToken ||
-      (data as any)?.token ||
-      (data as any)?.jwt ||
-      (data as any)?.access_token ||
-      (data as any)?.data?.token ||
-      (data as any)?.data?.accessToken;
+  async sendOtp(email: string): Promise<OtpSendResponseData> {
+    const response = await apiClient.post<ApiResponse<OtpSendResponseData>>(
+      '/auth/otp/send',
+      { email } as OtpSendRequest
+    );
+    return response.data.data;
+  },
 
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
+  async verifyOtp(email: string, otp: string): Promise<OtpVerifyResponseData> {
+    const response = await apiClient.post<ApiResponse<OtpVerifyResponseData>>(
+      '/auth/otp/verify',
+      { email, otp } as OtpVerifyRequest
+    );
+    return response.data.data;
+  },
+
+  async login(credentials: LoginRequest): Promise<LoginResponseData> {
+    const response = await apiClient.post<ApiResponse<LoginResponseData>>(
+      '/auth/login',
+      credentials
+    );
+    const apiData = response.data;
+    const data = apiData.data;
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
     return data;
   },
 
-  async register(data: RegisterRequest): Promise<RegisterResponse> {
-    const response = await apiClient.post<RegisterResponse>('/auth/register', data);
-    const resData = response.data;
-    const accessToken =
-      resData?.accessToken ||
-      (resData as any)?.token ||
-      (resData as any)?.jwt ||
-      (resData as any)?.access_token ||
-      (resData as any)?.data?.token ||
-      (resData as any)?.data?.accessToken;
-
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
-    return resData;
+  async register(data: RegisterRequest): Promise<void> {
+    await apiClient.post<ApiResponse<null>>(
+      '/auth/register',
+      data
+    );
   },
 
-  async me(): Promise<MeResponse> {
-    const response = await apiClient.get<MeResponse>('/auth/me');
-    return response.data;
+  async me(): Promise<UserProfileResponseData> {
+    const response = await apiClient.get<ApiResponse<UserProfileResponseData>>(
+      '/auth/me'
+    );
+    return response.data.data;
   },
 
-  async refresh(): Promise<RefreshResponse> {
-    const response = await apiClient.post<RefreshResponse>('/auth/refresh', {});
-    const data = response.data;
-    const accessToken =
-      data?.accessToken ||
-      (data as any)?.token ||
-      (data as any)?.jwt ||
-      (data as any)?.access_token;
-
-    if (accessToken) {
-      setAccessToken(accessToken);
-    }
+  async refresh(): Promise<LoginResponseData> {
+    const refreshToken = getRefreshToken();
+    const response = await apiClient.post<ApiResponse<LoginResponseData>>(
+      '/auth/refresh',
+      { refreshToken }
+    );
+    const apiData = response.data;
+    const data = apiData.data;
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
     return data;
   },
 
   async logout(): Promise<void> {
+    const refreshToken = getRefreshToken();
     try {
-      await apiClient.post('/auth/logout', {});
+      await apiClient.post('/auth/logout', { refreshToken });
     } catch {
-      // Ignore logout backend errors if session already expired
+      // Ignore logout backend errors
     } finally {
       clearTokens();
     }
