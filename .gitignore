@@ -55,6 +55,7 @@ pnpm-debug.log*
 # Added by code-review-graph
 .code-review-graph/
 
-# Documentation
+# Documentation (keep local, don't version)
+API.md
 docs/ARCHITECTURE.md
 docs/CHANGELOG.md
