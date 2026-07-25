@@ -17,21 +17,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Session Bootstrap: Check existing token & fetch user profile on load
+  // Session Bootstrap: Attempt session restore on initial app boot via HttpOnly cookie or access token
   useEffect(() => {
     const bootstrapSession = async () => {
-      const token = localStorage.getItem('devbraid_access_token');
-      if (token) {
+      try {
+        const meData = await authService.me();
+        setUser(meData.user || (meData as any));
+      } catch {
         try {
-          const data = await authService.me();
-          setUser(data.user);
+          // Attempt silent refresh via HttpOnly Cookie
+          await authService.refresh();
+          const meData = await authService.me();
+          setUser(meData.user || (meData as any));
         } catch {
-          // Token invalid or expired, clear local tokens
-          authService.logout();
+          await authService.logout();
           setUser(null);
         }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     bootstrapSession();
@@ -75,8 +79,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-    authService.logout();
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
   };
 
