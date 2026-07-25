@@ -64,17 +64,20 @@ export function RegisterPage() {
     setErrors({});
     setLoading(true);
     try {
+      // Stage 1: store registration data in Redis (pending_user) — no DB write yet
+      await register({ fullName: values.name.trim(), email: values.email.trim(), password: values.password });
+      // Stage 2: send OTP for email verification
       await sendOtp(values.email.trim());
       setStep(2);
       toast.success("OTP sent", { description: `Check your email at ${values.email.trim()}` });
     } catch (err: any) {
-      setFormError(getErrorMessage(err, "Failed to send OTP. Please try again."));
+      setFormError(getErrorMessage(err, "Failed to start registration. Please try again."));
     } finally {
       setLoading(false);
     }
   }
 
-  async function onVerifyAndRegister(e: React.FormEvent) {
+  async function onVerifyAccount(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
     if (otp.length !== 6) {
@@ -83,12 +86,12 @@ export function RegisterPage() {
     }
     setLoading(true);
     try {
+      // Verify OTP — backend finalizes registration (moves from Redis → PostgreSQL)
       await verifyOtp(values.email.trim(), otp);
-      await register({ fullName: values.name.trim(), email: values.email.trim(), password: values.password });
       toast.success("Workspace created", { description: "Welcome to your new DevBraid workspace." });
       window.location.href = "/dashboard";
     } catch (err: any) {
-      setFormError(getErrorMessage(err, "Verification or registration failed. Please try again."));
+      setFormError(getErrorMessage(err, "Verification failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -143,7 +146,7 @@ export function RegisterPage() {
           <SubmitButton type="submit" loading={loading}>Send OTP</SubmitButton>
         </form>
       ) : (
-        <form onSubmit={onVerifyAndRegister} className="space-y-4" noValidate>
+        <form onSubmit={onVerifyAccount} className="space-y-4" noValidate>
           {formError && <FormAlert tone="error">{formError}</FormAlert>}
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
