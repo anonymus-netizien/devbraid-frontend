@@ -7,9 +7,9 @@ export function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate({ to: "/auth/login" });
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = "/auth/login";
   };
 
   return (
