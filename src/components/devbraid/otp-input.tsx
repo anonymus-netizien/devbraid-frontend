@@ -26,7 +26,7 @@ export function OtpInput({ value, onChange, maxLength = 6, disabled = false }: O
   );
 }
 
-function Slot(props: React.HTMLAttributes<HTMLDivElement> & { char?: string; hasFakeCaret?: boolean; isActive?: boolean }) {
+function Slot(props: React.HTMLAttributes<HTMLDivElement> & { char?: string | null; hasFakeCaret?: boolean; isActive?: boolean }) {
   const { char, hasFakeCaret, isActive } = props;
 
   return (

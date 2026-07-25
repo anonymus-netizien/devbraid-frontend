@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useAuth } from "../hooks/useAuth";
@@ -29,7 +29,6 @@ const schema = z.object({
 });
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -74,7 +73,7 @@ export function LoginPage() {
           New to DevBraid?{" "}
           <Link
             to="/auth/register"
-            className="font-medium text-foreground hover:text-primary"
+            className="font-medium text-primary hover:text-primary/80 transition-colors"
           >
             Create an account
           </Link>
@@ -104,12 +103,16 @@ export function LoginPage() {
           <FieldLabel
             htmlFor="password"
             hint={
-              <Link
-                to="/auth/forgot"
-                className="text-muted-foreground hover:text-foreground"
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toast("Reset password", { description: "Password reset service will be available soon." });
+                }}
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Forgot?
-              </Link>
+              </a>
             }
           >
             Password
@@ -131,9 +134,9 @@ export function LoginPage() {
           Sign in
         </SubmitButton>
 
-        <div className="relative py-1 text-center">
-          <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-hairline" />
-          <span className="relative bg-background px-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="relative py-2 text-center">
+          <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-hairline/80" />
+          <span className="relative bg-surface px-3 font-mono text-xs uppercase tracking-widest text-muted-foreground rounded-full border border-hairline/50">
             or
           </span>
         </div>
@@ -145,9 +148,9 @@ export function LoginPage() {
               description: "GitHub OAuth flow will be connected.",
             })
           }
-          className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-hairline bg-surface/50 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+          className="inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-hairline/80 bg-surface/60 text-base font-medium text-foreground transition-all hover:bg-surface hover:border-hairline active:scale-[0.99]"
         >
-          <Github className="size-4" />
+          <Github className="size-5" />
           Continue with GitHub
         </button>
       </form>
