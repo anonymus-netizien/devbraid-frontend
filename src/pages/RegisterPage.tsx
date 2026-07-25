@@ -49,7 +49,6 @@ export function RegisterPage() {
   const [errors, setErrors] = useState<Step1Errors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
 
   const strength = passwordStrength(values.password);
 
@@ -66,7 +65,6 @@ export function RegisterPage() {
     setLoading(true);
     try {
       await sendOtp(values.email.trim());
-      setOtpSent(true);
       setStep(2);
       toast.success("OTP sent", { description: `Check your email at ${values.email.trim()}` });
     } catch (err: any) {
