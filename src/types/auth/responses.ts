@@ -1,22 +1,40 @@
-import type { User } from './models';
-
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
+// Backend ApiResponse<T> wrapper
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
 }
 
-export interface RegisterResponse {
+// Matches backend LoginResponse exactly
+export interface LoginResponseData {
   accessToken: string;
   refreshToken: string;
-  user: User;
+  issuedAt: string;
+  expiresAt: string;
+  fullName: string;
+  email: string;
+  userId: string;
+  role: string;
 }
 
-export interface RefreshResponse {
-  accessToken: string;
-  refreshToken: string;
+// Register returns ApiResponse<Void> — no data
+export type RegisterResponseData = null;
+
+// Matches backend UserProfileResponse exactly
+export interface UserProfileResponseData {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  createdAt: string;
 }
 
-export interface MeResponse {
-  user: User;
+// OTP responses
+export interface OtpSendResponseData {
+  email: string;
+}
+
+export interface OtpVerifyResponseData {
+  email: string;
+  verified: boolean;
 }

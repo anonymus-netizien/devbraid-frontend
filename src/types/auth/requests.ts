@@ -10,5 +10,14 @@ export interface RegisterRequest {
 }
 
 export interface RefreshRequest {
-  refreshToken: string; // Used if we don't rely entirely on HttpOnly cookies
+  refreshToken: string;
+}
+
+export interface OtpSendRequest {
+  email: string;
+}
+
+export interface OtpVerifyRequest {
+  email: string;
+  otp: string;
 }
