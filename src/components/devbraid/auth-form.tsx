@@ -13,14 +13,14 @@ export function FieldLabel({
   hint?: ReactNode;
 }) {
   return (
-    <div className="mb-1.5 flex items-center justify-between">
+    <div className="mb-2 flex items-center justify-between">
       <label
         htmlFor={htmlFor}
-        className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+        className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/90"
       >
         {children}
       </label>
-      {hint && <div className="text-[11px] text-muted-foreground">{hint}</div>}
+      {hint && <div className="text-xs text-muted-foreground">{hint}</div>}
     </div>
   );
 }
@@ -34,11 +34,11 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     <input
       ref={ref}
       className={cn(
-        "h-10 w-full rounded-md border bg-surface/50 px-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors",
-        "focus:border-primary/60 focus:bg-surface focus:ring-2 focus:ring-primary/20",
+        "h-11 w-full rounded-xl border bg-surface/60 px-4 text-base text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200",
+        "focus:border-primary/80 focus:bg-surface focus:ring-2 focus:ring-primary/30",
         invalid
-          ? "border-rose-500/60"
-          : "border-hairline hover:border-hairline/80",
+          ? "border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/20"
+          : "border-hairline hover:border-hairline/90",
         className,
       )}
       {...props}
@@ -50,8 +50,8 @@ TextInput.displayName = "TextInput";
 export function FieldError({ children }: { children?: ReactNode }) {
   if (!children) return null;
   return (
-    <p className="mt-1.5 flex items-center gap-1.5 text-[11px] text-rose-300">
-      <AlertCircle className="size-3" />
+    <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-rose-300">
+      <AlertCircle className="size-3.5 shrink-0" />
       {children}
     </p>
   );
@@ -69,18 +69,18 @@ export function FormAlert({
     <div
       role={isError ? "alert" : "status"}
       className={cn(
-        "flex items-start gap-2 rounded-md border px-3 py-2 text-xs",
+        "flex items-start gap-2.5 rounded-xl border px-4 py-3 text-xs sm:text-sm font-medium backdrop-blur-sm",
         isError
-          ? "border-rose-500/25 bg-rose-500/5 text-rose-200"
-          : "border-emerald-500/25 bg-emerald-500/5 text-emerald-200",
+          ? "border-rose-500/30 bg-rose-500/10 text-rose-200"
+          : "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
       )}
     >
       {isError ? (
-        <AlertCircle className="mt-0.5 size-3.5 shrink-0" />
+        <AlertCircle className="mt-0.5 size-4 shrink-0" />
       ) : (
-        <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" />
+        <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
       )}
-      <div className="min-w-0">{children}</div>
+      <div className="min-w-0 leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -95,11 +95,11 @@ export function SubmitButton({
       {...rest}
       disabled={loading || rest.disabled}
       className={cn(
-        "inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-primary text-sm font-semibold text-primary-foreground transition-colors",
-        "hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-200",
+        "hover:bg-primary/90 hover:shadow-primary/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none",
       )}
     >
-      {loading && <Loader2 className="size-4 animate-spin" />}
+      {loading && <Loader2 className="size-4.5 animate-spin" />}
       {children}
     </button>
   );
