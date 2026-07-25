@@ -1,9 +1,11 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { getAccessToken, setAccessToken, clearTokens } from './token';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true, // Browser automatically attaches HttpOnly refresh cookies
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,7 +14,7 @@ export const apiClient = axios.create({
 // Request interceptor to attach access token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('devbraid_access_token');
+    const token = getAccessToken();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,7 +23,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle 401 and token refresh
+// Response interceptor to handle 401 and silent HttpOnly token refresh
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -39,45 +41,37 @@ apiClient.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('devbraid_refresh_token');
 
-      if (refreshToken) {
-        try {
-          // Attempt to refresh token
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-            refreshToken,
-          });
+      try {
+        // Attempt silent refresh via HttpOnly Cookie (sent automatically by browser)
+        const response = await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
 
-          const newAccessToken = response.data.accessToken;
-          const newRefreshToken = response.data.refreshToken;
+        const data = response.data;
+        const newAccessToken =
+          data?.accessToken ||
+          (data as any)?.token ||
+          (data as any)?.jwt ||
+          (data as any)?.access_token;
 
-          if (newAccessToken) {
-            localStorage.setItem('devbraid_access_token', newAccessToken);
-            
-            // If backend rotates refresh token, update it
-            if (newRefreshToken) {
-              localStorage.setItem('devbraid_refresh_token', newRefreshToken);
-            }
+        if (newAccessToken) {
+          setAccessToken(newAccessToken);
 
-            // Retry the original request with new token
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            }
-            return apiClient(originalRequest);
+          // Retry original request with new token
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           }
-        } catch (refreshError) {
-          // Refresh failed, session expired
-          localStorage.removeItem('devbraid_access_token');
-          localStorage.removeItem('devbraid_refresh_token');
-          window.location.href = '/auth/login?expired=true';
-          return Promise.reject(refreshError);
+          return apiClient(originalRequest);
         }
+      } catch (refreshError) {
+        // Refresh failed, HttpOnly cookie expired or invalid -> logout session
+        clearTokens();
+        window.location.href = '/auth/login?expired=true';
+        return Promise.reject(refreshError);
       }
-
-      // No refresh token available, redirect to login
-      localStorage.removeItem('devbraid_access_token');
-      localStorage.removeItem('devbraid_refresh_token');
-      window.location.href = '/auth/login';
     }
 
     return Promise.reject(error);
