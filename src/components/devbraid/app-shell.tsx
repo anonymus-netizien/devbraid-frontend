@@ -1,8 +1,10 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { LayoutDashboard, GitPullRequest, FileText, BookOpen, Github, Settings, Search, Menu, X, LogOut } from 'lucide-react'
+import { Toaster } from 'sonner'
 import { cn } from '../../lib/utils'
 import { mockUser } from '../../lib/mock/data'
+
 
 const navGroups = [
   {
@@ -148,6 +150,8 @@ export function AppShell({ children }: AppShellProps) {
           </div>
         </main>
       </div>
+      <Toaster position="bottom-right" />
     </div>
   )
 }
+
