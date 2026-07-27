@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
-import { setAccessToken, setRefreshToken } from '../lib/tokens'
-import apiClient from '../lib/api-client'
-import type { ApiResponse, LoginResponse } from '../types'
+import authService from '../services/auth.service'
+import githubService from '../services/github.service'
 
 export const Route = createFileRoute('/auth/login')({
   component: LoginPage,
@@ -20,19 +19,28 @@ function LoginPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { data } = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', { email, password })
-      if (data.success) {
-        setAccessToken(data.data.accessToken)
-        setRefreshToken(data.data.refreshToken)
-        toast.success('Welcome back!')
-        navigate({ to: '/dashboard' })
+      await authService.login({ email, password })
+      toast.success('Welcome back!')
+
+      try {
+        const ghStatus = await githubService.getStatus()
+        if (ghStatus.connected && ghStatus.valid) {
+          navigate({ to: '/dashboard' })
+        } else {
+          toast.info('Please connect your GitHub Personal Access Token to continue.')
+          navigate({ to: '/connections', search: { onboarding: 'true' } })
+        }
+      } catch {
+        // Default to connections onboarding if status check fails
+        navigate({ to: '/connections', search: { onboarding: 'true' } })
       }
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Login failed')
+      toast.error(err.response?.data?.message || err.message || 'Login failed')
     } finally {
       setLoading(false)
     }
   }
+
 
   return (
     <AuthShell>

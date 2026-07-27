@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
-import apiClient from '../lib/api-client'
-import type { ApiResponse } from '../types'
+import authService from '../services/auth.service'
 
 export const Route = createFileRoute('/auth/otp')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -43,13 +42,11 @@ function OtpPage() {
     }
     setLoading(true)
     try {
-      const { data } = await apiClient.post<ApiResponse<unknown>>('/auth/otp/verify', { email, otp: code })
-      if (data.success) {
-        toast.success('Email verified! You can now sign in.')
-        navigate({ to: '/auth/login' })
-      }
+      await authService.verifyOtp(email, code)
+      toast.success('Email verified! You can now sign in.')
+      navigate({ to: '/auth/login' })
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Invalid OTP')
+      toast.error(err.response?.data?.message || err.message || 'Invalid OTP')
     } finally {
       setLoading(false)
     }
@@ -58,7 +55,7 @@ function OtpPage() {
   const handleResend = async () => {
     if (cooldown > 0) return
     try {
-      await apiClient.post<ApiResponse<unknown>>('/auth/otp/send', { email })
+      await authService.sendOtp(email)
       toast.success('OTP resent!')
       setCooldown(60)
       const timer = setInterval(() => {
@@ -70,10 +67,11 @@ function OtpPage() {
           return c - 1
         })
       }, 1000)
-    } catch {
-      toast.error('Failed to resend OTP')
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to resend OTP')
     }
   }
+
 
   return (
     <AuthShell>
