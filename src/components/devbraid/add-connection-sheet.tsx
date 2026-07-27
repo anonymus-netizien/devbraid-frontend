@@ -63,26 +63,31 @@ export function AddConnectionSheet({
 
         <div className="mt-6 space-y-5 px-4">
           <div className="space-y-1.5">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <label
+              htmlFor="github-token-input"
+              className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+            >
               Personal access token
             </label>
             <input
+              id="github-token-input"
               type="password"
               value={token}
               onChange={(e) => setToken(e.target.value)}
               placeholder="ghp_••••••••••••••••••••••••••••••"
+              aria-describedby="github-token-hint"
               className="h-9 w-full rounded-md border border-hairline bg-background px-3 font-mono text-sm outline-none placeholder:text-muted-foreground focus:border-primary/40 focus:ring-1 focus:ring-primary/40"
               disabled={submitting}
             />
-            <p className="text-[11px] text-muted-foreground">
+            <p id="github-token-hint" className="text-[11px] text-muted-foreground">
               Generate at github.com/settings/tokens. Never shared with third parties.
             </p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Required scopes
-            </label>
+            </span>
             <div className="space-y-1.5">
               {scopes.map((s) => (
                 <label
@@ -106,6 +111,7 @@ export function AddConnectionSheet({
 
           <div className="flex justify-end gap-2 pt-2">
             <button
+              type="button"
               onClick={() => onOpenChange(false)}
               disabled={submitting}
               className="rounded-md border border-hairline bg-surface px-3 py-1.5 text-xs font-medium hover:bg-surface-2 disabled:opacity-50"
@@ -113,6 +119,7 @@ export function AddConnectionSheet({
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={token.length < 4 || submitting}
               className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-40"
