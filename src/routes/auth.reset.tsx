@@ -1,7 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
 
 export const Route = createFileRoute('/auth/reset')({
+  validateSearch: (search: Record<string, unknown>) => ({
+    token: (search.token as string) || '',
+  }),
   component: ResetPasswordPage,
 })
 
@@ -11,7 +15,7 @@ function ResetPasswordPage() {
       <div>
         <h2 className="text-2xl font-semibold text-foreground mb-1">Reset password</h2>
         <p className="text-sm text-muted-foreground mb-6">Enter your new password below.</p>
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); toast.info('Coming soon') }} className="space-y-4">
           <div>
             <label htmlFor="reset-password" className="block text-sm font-medium text-foreground mb-1.5">New password</label>
             <input id="reset-password" type="password" placeholder="••••••••" required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
