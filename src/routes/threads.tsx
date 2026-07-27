@@ -29,7 +29,7 @@ function ThreadsPage() {
         title="Change Threads"
         description="A change thread pairs a GitHub branch with your reasoning. Start one when you begin work, close it when the brief is posted."
         action={
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
             <Plus className="h-4 w-4" aria-hidden="true" />
             New thread
           </button>

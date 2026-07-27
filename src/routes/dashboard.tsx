@@ -34,8 +34,8 @@ function DashboardPage() {
   }, [])
 
   const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
-  const firstName = user?.fullName ? user.fullName.split(' ')[0] : 'Developer'
+  const greeting = hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 17 ? 'Good afternoon' : hour >= 17 && hour < 22 ? 'Good evening' : 'Working late'
+  const firstName = user?.fullName ? user.fullName.split(' ')[0] : user?.email ? user.email.split('@')[0] : 'Developer'
   const activeThreads = mockThreads.filter(t => t.status !== 'published')
   const publishedBriefs = mockBriefs.filter(b => b.status === 'published')
 
@@ -60,54 +60,71 @@ function DashboardPage() {
       )}
 
       <PageHeader
-        eyebrow="Workspace"
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
       />
 
       {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">Active threads</p>
-          <p className="text-3xl font-bold text-foreground">{activeThreads.length}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+        <div className="sm:col-span-2 rounded-lg border border-hairline bg-surface p-5">
+          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">Active threads</p>
+          <p className="text-3xl font-mono font-bold text-foreground">{activeThreads.length}</p>
           <p className="text-xs text-muted-foreground mt-1">{mockThreads.length} total · {mockThreads.filter(t => t.status === 'ready').length} ready to publish</p>
         </div>
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">Published briefs</p>
-          <p className="text-3xl font-bold text-foreground">{publishedBriefs.length}</p>
+        <div className="rounded-lg border border-hairline bg-surface p-5">
+          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">Published briefs</p>
+          <p className="text-3xl font-mono font-bold text-foreground">{publishedBriefs.length}</p>
           <p className="text-xs text-muted-foreground mt-1">Posted to GitHub as PR comments</p>
         </div>
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">GitHub Repositories</p>
-          <p className="text-3xl font-bold text-foreground">{repoCount}</p>
+        <div className="rounded-lg border border-hairline bg-surface p-5">
+          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">GitHub Repositories</p>
+          <p className="text-3xl font-mono font-bold text-foreground">{repoCount}</p>
           <p className="text-xs text-muted-foreground mt-1">{ghConnected ? 'Connected via PAT' : 'Not connected'}</p>
         </div>
       </div>
 
 
-      {/* Recent threads */}
+      {/* Recent threads (Timeline view) */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Recent change threads</h2>
-          <Link to="/threads" className="text-sm text-primary hover:underline">View all →</Link>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-mono uppercase tracking-wider font-semibold text-foreground">Recent change threads</h2>
+            <span className="px-1.5 py-0.5 rounded bg-surface-2 border border-hairline text-[10px] font-mono text-muted-foreground">{mockThreads.length}</span>
+          </div>
+          <Link to="/threads" className="text-xs font-mono text-primary hover:underline">View all →</Link>
         </div>
-        <div className="rounded-xl border border-hairline overflow-hidden">
-          {mockThreads.map((thread) => (
-            <Link
-              key={thread.id}
-              to="/threads/$id"
-              params={{ id: thread.id }}
-              className="flex items-center gap-4 px-5 py-4 border-b border-hairline last:border-0 hover:bg-surface/50 transition-colors"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{thread.title}</p>
-                <p className="text-xs text-muted-foreground">{thread.repo}</p>
+
+        <div className="rounded-lg border border-hairline bg-surface p-4">
+          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[1px] before:bg-hairline">
+            {mockThreads.map((thread) => (
+              <div key={thread.id} className="relative group">
+                {/* Timeline node */}
+                <div className="absolute -left-6 top-1 w-2 h-2 rounded-full border border-hairline bg-surface group-hover:border-primary group-hover:bg-primary transition-colors" />
+
+                <Link
+                  to="/threads/$id"
+                  params={{ id: thread.id }}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded border border-transparent hover:border-hairline hover:bg-surface-2/60 transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-mono text-muted-foreground">{thread.repo}</span>
+                      <span className="text-muted-foreground/40">•</span>
+                      <p className="text-sm font-medium text-foreground truncate">{thread.title}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <BranchPair head={thread.headBranch} base={thread.baseBranch} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1">{thread.riskFlags.map(f => <RiskChip key={f} flag={f} />)}</div>
+                    <StatusDot status={thread.status} label />
+                  </div>
+                </Link>
               </div>
-              <BranchPair head={thread.headBranch} base={thread.baseBranch} />
-              <div className="flex gap-1">{thread.riskFlags.map(f => <RiskChip key={f} flag={f} />)}</div>
-              <StatusDot status={thread.status} label />
-            </Link>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

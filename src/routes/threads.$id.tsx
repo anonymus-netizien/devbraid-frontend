@@ -27,8 +27,8 @@ function ThreadDetailPage() {
         title={thread.title}
         action={
           <div className="flex gap-2">
-            <button className="px-4 py-2 rounded-lg border border-hairline text-sm text-foreground hover:bg-surface transition-colors">Regenerate brief</button>
-            <button className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors" disabled={thread.status === 'published'}>Publish to GitHub</button>
+            <button type="button" className="px-4 py-2 rounded-lg border border-hairline text-sm text-foreground hover:bg-surface transition-colors">Regenerate brief</button>
+            <button type="button" className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors" disabled={thread.status === 'published'}>Publish to GitHub</button>
           </div>
         }
       />
@@ -59,7 +59,7 @@ function ThreadDetailPage() {
                 <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Decision notes</p>
                 <p className="text-xs text-muted-foreground italic">always developer-attributed, never generated</p>
               </div>
-              <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-hairline text-sm text-muted-foreground hover:text-foreground hover:bg-surface transition-colors">
+              <button type="button" className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-hairline text-sm text-muted-foreground hover:text-foreground hover:bg-surface transition-colors">
                 <Plus className="h-3.5 w-3.5" aria-hidden="true" />
                 Add note
               </button>
@@ -89,15 +89,15 @@ function ThreadDetailPage() {
                 <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Generated Change Brief</p>
                 <StatusDot status={threadBrief.status} />
               </div>
-              {threadBrief.sections.map((section, i) => (
-                <div key={i} className="mb-4">
+              {threadBrief.sections.map((section) => (
+                <div key={section.title} className="mb-4">
                   <p className="text-sm font-medium text-foreground mb-2">{section.title}</p>
                   <div className="space-y-2">
-                    {section.claims.map((claim, j) => (
-                      <div key={j} className="rounded-lg border border-hairline bg-surface p-3">
+                    {section.claims.map((claim) => (
+                      <div key={claim.text} className="rounded-lg border border-hairline bg-surface p-3">
                         <p className="text-sm text-foreground mb-2">{claim.text}</p>
                         <div className="flex items-center gap-2 flex-wrap">
-                          {claim.citations.map((c, k) => <CitationChip key={k} citation={c} />)}
+                          {claim.citations.map((c) => <CitationChip key={`${c.file}:${c.line}`} citation={c} />)}
                           <span className={`text-xs px-2 py-0.5 rounded-full ${claim.provenance === 'cited' ? 'bg-success-bg text-success-fg' : 'bg-info-bg text-info-fg'}`}>{claim.provenance}</span>
                         </div>
                       </div>
@@ -108,8 +108,8 @@ function ThreadDetailPage() {
               {threadBrief.unresolvedQuestions.length > 0 && (
                 <div className="mt-4">
                   <p className="text-sm font-medium text-danger-fg mb-2">Unresolved questions</p>
-                  {threadBrief.unresolvedQuestions.map((q, i) => (
-                    <div key={i} className="rounded-lg border border-danger-border bg-danger-bg p-3 mb-2 text-sm text-danger-fg">{q}</div>
+                  {threadBrief.unresolvedQuestions.map((q) => (
+                    <div key={q} className="rounded-lg border border-danger-border bg-danger-bg p-3 mb-2 text-sm text-danger-fg">{q}</div>
                   ))}
                 </div>
               )}
@@ -125,8 +125,8 @@ function ThreadDetailPage() {
               <p className="text-sm text-muted-foreground">No files yet.</p>
             ) : (
               <div className="space-y-1">
-                {mockChangedFiles.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs font-mono py-1">
+                {mockChangedFiles.map((f) => (
+                  <div key={f.path} className="flex items-center gap-2 text-xs font-mono py-1">
                     <FileCode className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
                     <span className="text-foreground truncate">{f.path}</span>
                     <span className="ml-auto text-success-fg">+{f.additions}</span>
@@ -142,8 +142,8 @@ function ThreadDetailPage() {
               <p className="text-sm text-muted-foreground">No commits pulled yet.</p>
             ) : (
               <div className="space-y-3">
-                {mockCommits.map((c, i) => (
-                  <div key={i}>
+                {mockCommits.map((c) => (
+                  <div key={c.sha}>
                     <div className="flex items-center gap-2">
                       <GitCommit className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                       <span className="text-xs font-mono text-primary">{c.sha}</span>
