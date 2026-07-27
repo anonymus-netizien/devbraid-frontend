@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { LayoutDashboard, GitPullRequest, FileText, BookOpen, Github, Settings, Search, Menu, X, LogOut } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { mockUser } from '../../lib/mock/data'
@@ -28,7 +28,7 @@ interface AppShellProps {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const location = useLocation()
+  const { location } = useRouterState()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
