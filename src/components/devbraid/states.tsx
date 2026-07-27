@@ -2,11 +2,13 @@ import type { ReactNode } from 'react'
 import { cn } from '../../lib/utils'
 
 export function EmptyState({
+  icon,
   title,
   description,
   action,
   className,
 }: {
+  icon?: ReactNode
   title: string
   description?: string
   action?: ReactNode
@@ -22,6 +24,7 @@ export function EmptyState({
       <div className="grid size-8 place-items-center rounded-md border border-hairline bg-surface text-muted-foreground">
         <span className="text-xs">+</span>
       </div>
+      {icon && <div className="mb-4 text-muted-foreground">{icon}</div>}
       <div className="space-y-1">
         <p className="text-sm font-medium">{title}</p>
         {description && (
@@ -78,11 +81,13 @@ export function PageHeader({
   eyebrow,
   title,
   description,
+  action,
   actions,
 }: {
   eyebrow?: ReactNode
   title: string
   description?: string
+  action?: ReactNode
   actions?: ReactNode
 }) {
   return (
@@ -102,7 +107,7 @@ export function PageHeader({
           </p>
         )}
       </div>
-      {actions && <div className="shrink-0">{actions}</div>}
+      {(actions || action) && <div className="shrink-0">{actions || action}</div>}
     </div>
   )
 }
