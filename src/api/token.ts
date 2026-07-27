@@ -1,31 +1,24 @@
-const ACCESS_TOKEN_KEY = 'devbraid_access_token';
-const REFRESH_TOKEN_KEY = 'devbraid_refresh_token';
+// In-memory token storage to prevent XSS exfiltration from localStorage
+let memoryAccessToken: string | null = null
+let memoryRefreshToken: string | null = null
 
 export const getAccessToken = (): string | null => {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
-};
+  return memoryAccessToken
+}
 
 export const setAccessToken = (token: string | null): void => {
-  if (token) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-  }
-};
+  memoryAccessToken = token
+}
 
 export const getRefreshToken = (): string | null => {
-  return localStorage.getItem(REFRESH_TOKEN_KEY);
-};
+  return memoryRefreshToken
+}
 
 export const setRefreshToken = (token: string | null): void => {
-  if (token) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-  }
-};
+  memoryRefreshToken = token
+}
 
 export const clearTokens = (): void => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-};
+  memoryAccessToken = null
+  memoryRefreshToken = null
+}
