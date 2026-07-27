@@ -8,6 +8,8 @@ interface OtpInputProps {
   disabled?: boolean;
 }
 
+const SLOT_KEYS = ['slot-0', 'slot-1', 'slot-2', 'slot-3', 'slot-4', 'slot-5'];
+
 export function OtpInput({ value, onChange, maxLength = 6, disabled = false }: OtpInputProps) {
   return (
     <OTPInput
@@ -17,8 +19,8 @@ export function OtpInput({ value, onChange, maxLength = 6, disabled = false }: O
       disabled={disabled}
       render={({ slots }) => (
         <div className="flex gap-2 justify-center">
-          {slots.map((slot, i) => (
-            <Slot key={i} {...slot} />
+          {SLOT_KEYS.slice(0, slots.length).map((slotKey, i) => (
+            <Slot key={slotKey} {...slots[i]} />
           ))}
         </div>
       )}

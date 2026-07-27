@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { User, LoginRequest, RegisterRequest } from '../types/auth';
 import authService from '../services/auth.service';
 
@@ -72,10 +72,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   }, []);
 
+  const contextValue = useMemo(
+    () => ({ user, isAuthenticated: !!user, isLoading, login, register, sendOtp, verifyOtp, logout }),
+    [user, isLoading, login, register, sendOtp, verifyOtp, logout]
+  );
+
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, isLoading, login, register, sendOtp, verifyOtp, logout }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
@@ -89,4 +92,3 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-export default AuthContext;

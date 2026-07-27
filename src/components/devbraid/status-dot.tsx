@@ -1,25 +1,37 @@
 import { cn } from '../../lib/utils'
-import type { ThreadStatus, BriefStatus } from '../../types'
 
-const statusColors: Record<string, string> = {
-  drafting: 'bg-muted-foreground',
-  analyzing: 'bg-primary animate-pulse',
-  ready: 'bg-success-fg',
-  published: 'bg-info-fg',
-  draft: 'bg-muted-foreground',
-  error: 'bg-danger-fg',
-}
+export type StatusType =
+  | 'drafting'
+  | 'draft'
+  | 'analyzing'
+  | 'ready'
+  | 'published'
+  | 'expired'
+  | 'active'
+  | 'revoked'
 
 interface StatusDotProps {
-  status: ThreadStatus | BriefStatus
+  status: StatusType | string
   label?: boolean
 }
 
 export function StatusDot({ status, label }: StatusDotProps) {
+  const color =
+    status === 'ready' || status === 'active'
+      ? 'bg-success'
+      : status === 'analyzing'
+      ? 'bg-warning animate-pulse'
+      : status === 'published'
+      ? 'bg-info'
+      : status === 'expired' || status === 'revoked'
+      ? 'bg-danger'
+      : 'bg-muted-foreground/60'
+
   return (
     <span className="inline-flex items-center gap-1.5" role="status">
-      <span className={cn('h-2 w-2 rounded-full', statusColors[status] || 'bg-muted-foreground')} />
-      {label && <span className="text-sm text-muted-foreground capitalize">{status}</span>}
+      <span className={cn('inline-block size-1.5 rounded-full', color)} />
+      {label && <span className="text-xs text-muted-foreground capitalize">{status}</span>}
     </span>
   )
 }
+

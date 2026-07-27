@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
-import apiClient from '../lib/api-client'
-import type { ApiResponse } from '../types'
+import authService from '../services/auth.service'
+
+const OTP_SLOT_KEYS = ['otp-slot-0', 'otp-slot-1', 'otp-slot-2', 'otp-slot-3', 'otp-slot-4', 'otp-slot-5'];
 
 export const Route = createFileRoute('/auth/otp')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -43,37 +44,35 @@ function OtpPage() {
     }
     setLoading(true)
     try {
-      const { data } = await apiClient.post<ApiResponse<unknown>>('/auth/otp/verify', { email, otp: code })
-      if (data.success) {
-        toast.success('Email verified! You can now sign in.')
-        navigate({ to: '/auth/login' })
-      }
+      await authService.verifyOtp(email, code)
+      toast.success('Email verified! You can now sign in.')
+      navigate({ to: '/auth/login' })
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Invalid OTP')
+      toast.error(err.response?.data?.message || err.message || 'Invalid OTP')
     } finally {
       setLoading(false)
     }
   }
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((c) => Math.max(0, c - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
   const handleResend = async () => {
     if (cooldown > 0) return
     try {
-      await apiClient.post<ApiResponse<unknown>>('/auth/otp/send', { email })
+      await authService.sendOtp(email)
       toast.success('OTP resent!')
       setCooldown(60)
-      const timer = setInterval(() => {
-        setCooldown((c) => {
-          if (c <= 1) {
-            clearInterval(timer)
-            return 0
-          }
-          return c - 1
-        })
-      }, 1000)
-    } catch {
-      toast.error('Failed to resend OTP')
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to resend OTP')
     }
   }
+
 
   return (
     <AuthShell>
@@ -83,7 +82,7 @@ function OtpPage() {
         <div className="flex justify-center gap-2 mb-6">
           {otp.map((digit, i) => (
             <input
-              key={i}
+              key={OTP_SLOT_KEYS[i]}
               id={`otp-${i}`}
               type="text"
               inputMode="numeric"
@@ -97,6 +96,7 @@ function OtpPage() {
           ))}
         </div>
         <button
+          type="button"
           onClick={handleVerify}
           disabled={loading}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors mb-4"
@@ -104,6 +104,7 @@ function OtpPage() {
           {loading ? 'Verifying…' : 'Verify'}
         </button>
         <button
+          type="button"
           onClick={handleResend}
           disabled={cooldown > 0}
           className="text-sm text-primary hover:underline disabled:opacity-50"

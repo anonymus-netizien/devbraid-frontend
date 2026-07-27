@@ -7,9 +7,11 @@ export const Route = createFileRoute('/notes')({
 })
 
 function NotesPage() {
-  const grouped = mockThreads
-    .map(t => ({ thread: t, notes: mockNotes.filter(n => n.threadId === t.id) }))
-    .filter(g => g.notes.length > 0)
+  const grouped = mockThreads.reduce<{ thread: typeof mockThreads[0]; notes: typeof mockNotes }[]>((acc, t) => {
+    const notes = mockNotes.filter(n => n.threadId === t.id)
+    if (notes.length > 0) acc.push({ thread: t, notes })
+    return acc
+  }, [])
 
   return (
     <div>

@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
-import apiClient from '../lib/api-client'
-import type { ApiResponse } from '../types'
+import authService from '../services/auth.service'
 
 export const Route = createFileRoute('/auth/register')({
   component: RegisterPage,
@@ -37,17 +36,21 @@ function RegisterPage() {
     }
     setLoading(true)
     try {
-      const { data } = await apiClient.post<ApiResponse<unknown>>('/auth/register', { fullName, email, password })
-      if (data.success) {
-        toast.success('Account created! Check your email for the OTP.')
-        navigate({ to: '/auth/otp', search: { email } })
+      await authService.register({ fullName, email, password })
+      try {
+        await authService.sendOtp(email)
+      } catch {
+        // Send OTP may fail if rate limited or already sent
       }
+      toast.success('Account created! Check your email for the OTP.')
+      navigate({ to: '/auth/otp', search: { email } })
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Registration failed')
+      toast.error(err.response?.data?.message || err.message || 'Registration failed')
     } finally {
       setLoading(false)
     }
   }
+
 
   return (
     <AuthShell>
