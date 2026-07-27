@@ -7,14 +7,19 @@ import type { GitHubConnection } from '../types/github'
 import { mockConnections } from '../lib/mock/data'
 
 export const Route = createFileRoute('/connections')({
+  validateSearch: (search: Record<string, unknown>) => ({
+    onboarding: (search.onboarding as string) || undefined,
+  }),
   component: ConnectionsPage,
 })
 
 function ConnectionsPage() {
+  const { onboarding } = Route.useSearch()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [connection, setConnection] = useState<GitHubConnection | null>(null)
   const [reposCount, setReposCount] = useState<number>(0)
+
 
   const fetchConnection = useCallback(async () => {
     try {
@@ -98,19 +103,49 @@ function ConnectionsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-8 sm:py-10">
+      {onboarding === 'true' && (
+        <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground flex items-center justify-between gap-4">
+          <div>
+            <p className="font-semibold text-primary">Welcome to DevBraid!</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              To get started, please connect your GitHub Personal Access Token (PAT) so DevBraid can fetch repositories and commits.
+            </p>
+          </div>
+          {connection && (
+            <Link
+              to="/dashboard"
+              className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Continue to Dashboard →
+            </Link>
+          )}
+        </div>
+      )}
+
       <PageHeader
         eyebrow="Platform"
         title="GitHub Connections"
         description="Connections stay encrypted at rest and are only used for the calls DevBraid needs — reading commits, changed files, and posting a single PR comment."
         actions={
-          <button
-            onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            + Add connection
-          </button>
+          <div className="flex items-center gap-2">
+            {connection && (
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface px-3 py-2 text-xs font-medium hover:bg-surface-2 transition-colors"
+              >
+                Go to Dashboard →
+              </Link>
+            )}
+            <button
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              + Add connection
+            </button>
+          </div>
         }
       />
+
 
       <div className="space-y-3">
         {loading ? (

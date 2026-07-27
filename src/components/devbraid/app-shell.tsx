@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useRouterState, useNavigate } from '@tanstack/react-router'
 import { LayoutDashboard, GitPullRequest, FileText, BookOpen, Github, Settings, Search, Menu, X, LogOut } from 'lucide-react'
 import { Toaster } from 'sonner'
 import { cn } from '../../lib/utils'
-import { mockUser } from '../../lib/mock/data'
-
+import { useAuth } from '../../context/AuthContext'
+import authService from '../../services/auth.service'
 
 const navGroups = [
   {
@@ -31,7 +31,31 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const { location } = useRouterState()
+  const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  if (location.pathname.startsWith('/auth')) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        {children}
+        <Toaster position="bottom-right" />
+      </div>
+    )
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await authService.logout()
+    } finally {
+      logout()
+      navigate({ to: '/auth/login' })
+    }
+  }
+
+  const userInitials = user?.fullName
+    ? user.fullName.split(' ').map((n) => n[0]).join('').toUpperCase()
+    : 'AV'
 
   return (
     <div className="flex h-screen bg-background text-foreground">
@@ -39,7 +63,7 @@ export function AppShell({ children }: AppShellProps) {
       <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:border-r lg:border-hairline lg:bg-surface">
         <div className="flex items-center gap-2 px-6 py-4 border-b border-hairline">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-sm font-bold text-primary-foreground">B</span>
+            <span className="text-sm font-bold text-primary-foreground">DB</span>
           </div>
           <div>
             <p className="text-sm font-semibold">DevBraid</p>
@@ -74,14 +98,18 @@ export function AppShell({ children }: AppShellProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-surface-2 flex items-center justify-center text-sm font-medium">
-                {mockUser.name.split(' ').map(n => n[0]).join('')}
+                {userInitials}
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{mockUser.name}</p>
-                <p className="text-xs text-muted-foreground">{mockUser.role}</p>
+                <p className="text-sm font-medium truncate">{user?.fullName || 'Developer'}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email || 'dev@devbraid.com'}</p>
               </div>
             </div>
-            <button className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors" aria-label="Sign out">
+            <button
+              onClick={handleSignOut}
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+              aria-label="Sign out"
+            >
               <LogOut className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
@@ -154,4 +182,5 @@ export function AppShell({ children }: AppShellProps) {
     </div>
   )
 }
+
 
