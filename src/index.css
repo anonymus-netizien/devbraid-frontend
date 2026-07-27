@@ -101,3 +101,34 @@
 @utility hairline {
   border: 1px solid var(--color-hairline);
 }
+
+/* Semantic state tokens */
+:root {
+  --success-bg: oklch(0.30 0.08 155);
+  --success-border: oklch(0.50 0.12 155);
+  --success-fg: oklch(0.80 0.10 155);
+  --warning-bg: oklch(0.30 0.08 75);
+  --warning-border: oklch(0.60 0.12 75);
+  --warning-fg: oklch(0.85 0.10 75);
+  --info-bg: oklch(0.25 0.06 264);
+  --info-border: oklch(0.45 0.08 264);
+  --info-fg: oklch(0.80 0.06 264);
+  --danger-bg: oklch(0.25 0.08 25);
+  --danger-border: oklch(0.50 0.12 25);
+  --danger-fg: oklch(0.85 0.10 25);
+}
+
+@theme inline {
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-success-fg: var(--success-fg);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-fg: var(--warning-fg);
+  --color-info-bg: var(--info-bg);
+  --color-info-border: var(--info-border);
+  --color-info-fg: var(--info-fg);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-border: var(--danger-border);
+  --color-danger-fg: var(--danger-fg);
+}
