@@ -73,19 +73,31 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.78 0.15 75);
-  /* Semantic state tokens */
-  --success-bg: oklch(0.30 0.08 155);
-  --success-border: oklch(0.50 0.12 155);
-  --success-fg: oklch(0.80 0.10 155);
-  --warning-bg: oklch(0.30 0.08 75);
-  --warning-border: oklch(0.60 0.12 75);
-  --warning-fg: oklch(0.85 0.10 75);
-  --info-bg: oklch(0.25 0.06 264);
-  --info-border: oklch(0.45 0.08 264);
-  --info-fg: oklch(0.80 0.06 264);
-  --danger-bg: oklch(0.25 0.08 25);
-  --danger-border: oklch(0.50 0.12 25);
-  --danger-fg: oklch(0.85 0.10 25);
+  /* Semantic severity triplets — fg / bg / border */
+  --danger: oklch(0.74 0.14 18);
+  --danger-bg: oklch(0.65 0.2 22 / 10%);
+  --danger-border: oklch(0.65 0.2 22 / 25%);
+  --danger-fg: oklch(0.74 0.14 18);
+  --warning: oklch(0.83 0.13 78);
+  --warning-bg: oklch(0.78 0.15 75 / 10%);
+  --warning-border: oklch(0.78 0.15 75 / 25%);
+  --warning-fg: oklch(0.83 0.13 78);
+  --success: oklch(0.82 0.13 165);
+  --success-bg: oklch(0.72 0.16 162 / 10%);
+  --success-border: oklch(0.72 0.16 162 / 25%);
+  --success-fg: oklch(0.82 0.13 165);
+  --info: oklch(0.79 0.11 235);
+  --info-bg: oklch(0.68 0.15 240 / 10%);
+  --info-border: oklch(0.68 0.15 240 / 25%);
+  --info-fg: oklch(0.79 0.11 235);
+  --neutral-accent: oklch(0.78 0.12 300);
+  --neutral-accent-bg: oklch(0.68 0.17 300 / 10%);
+  --neutral-accent-border: oklch(0.68 0.17 300 / 25%);
+
+  --elevation-1: 0 1px 2px oklch(0 0 0 / 40%);
+  --elevation-2: 0 6px 20px -8px oklch(0 0 0 / 55%);
+  --elevation-3: 0 24px 60px -20px oklch(0 0 0 / 70%);
+  --glow-primary: 0 0 60px -10px color-mix(in oklab, var(--primary) 45%, transparent);
 }
 
 @layer base {
@@ -116,16 +128,24 @@
 }
 
 @theme inline {
-  --color-success-bg: var(--success-bg);
-  --color-success-border: var(--success-border);
-  --color-success-fg: var(--success-fg);
-  --color-warning-bg: var(--warning-bg);
-  --color-warning-border: var(--warning-border);
-  --color-warning-fg: var(--warning-fg);
-  --color-info-bg: var(--info-bg);
-  --color-info-border: var(--info-border);
-  --color-info-fg: var(--info-fg);
+  --color-danger: var(--danger);
   --color-danger-bg: var(--danger-bg);
   --color-danger-border: var(--danger-border);
   --color-danger-fg: var(--danger-fg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-fg: var(--warning-fg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-success-fg: var(--success-fg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-info-border: var(--info-border);
+  --color-info-fg: var(--info-fg);
+  --color-neutral-accent: var(--neutral-accent);
+  --color-neutral-accent-bg: var(--neutral-accent-bg);
+  --color-neutral-accent-border: var(--neutral-accent-border);
 }
+
