@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
-import { PageHeader, SectionLabel, StatusDot, AddConnectionSheet } from '../components/devbraid'
+import { PageHeader } from '../components/devbraid/page-header'
+import { SectionLabel } from '../components/devbraid/section-label'
+import { StatusDot } from '../components/devbraid/status-dot'
+import { AddConnectionSheet } from '../components/devbraid/add-connection-sheet'
 import githubService from '../services/github.service'
 import type { GitHubConnection } from '../types/github'
-import { mockConnections } from '../lib/mock/data'
 
 export const Route = createFileRoute('/connections')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -49,21 +51,7 @@ function ConnectionsPage() {
         setConnection(null)
       }
     } catch {
-      // Fallback to mock data in development mode when backend isn't reachable
-      if (mockConnections.length > 0) {
-        const m = mockConnections[0]
-        setConnection({
-          id: m.id,
-          githubUsername: m.githubUsername,
-          connectedAt: m.connectedAt,
-          lastValidatedAt: m.lastValidatedAt,
-          scopes: m.scopes,
-          status: 'active',
-          reposCount: 12,
-        })
-      } else {
-        setConnection(null)
-      }
+      setConnection(null)
     } finally {
       setLoading(false)
     }
@@ -123,7 +111,6 @@ function ConnectionsPage() {
       )}
 
       <PageHeader
-        eyebrow="Platform"
         title="GitHub Connections"
         description="Connections stay encrypted at rest and are only used for the calls DevBraid needs — reading commits, changed files, and posting a single PR comment."
         actions={
@@ -137,6 +124,7 @@ function ConnectionsPage() {
               </Link>
             )}
             <button
+              type="button"
               onClick={() => setOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
@@ -202,14 +190,16 @@ function ConnectionsPage() {
 
               <div className="flex shrink-0 flex-col items-end gap-2">
                 <button
+                  type="button"
                   onClick={handleValidate}
-                  className="rounded-md border border-hairline bg-surface px-3 py-1.5 text-[11px] font-medium hover:bg-surface-2 transition-colors"
+                  className="rounded border border-hairline bg-surface px-3 py-1 text-xs font-medium hover:bg-surface-2 transition-colors"
                 >
                   Validate
                 </button>
                 <button
+                  type="button"
                   onClick={handleDisconnect}
-                  className="rounded-md border border-danger-border bg-danger-bg px-3 py-1.5 text-[11px] font-medium text-danger hover:bg-danger/15 transition-colors"
+                  className="rounded border border-danger-border bg-danger-bg px-3 py-1 text-xs font-medium text-danger-fg hover:opacity-90 transition-opacity"
                 >
                   Disconnect
                 </button>
@@ -223,8 +213,9 @@ function ConnectionsPage() {
               Add a Personal Access Token to start creating Change Threads.
             </p>
             <button
+              type="button"
               onClick={() => setOpen(true)}
-              className="mt-4 inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Add connection
             </button>
