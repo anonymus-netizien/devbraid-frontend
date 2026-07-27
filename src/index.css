@@ -1,3 +1,4 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · active-theme: default */
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -57,8 +58,8 @@
   --secondary: oklch(0.24 0.007 264);
   --secondary-foreground: oklch(0.98 0 0);
   --muted: oklch(0.22 0.007 264);
-  --muted-foreground: oklch(0.66 0.01 264);
-  --accent: oklch(0.24 0.007 264);
+  --muted-foreground: oklch(0.72 0.007 264);
+  --accent: oklch(0.22 0.007 264);
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.68 0.19 25);
   --destructive-foreground: oklch(0.98 0 0);

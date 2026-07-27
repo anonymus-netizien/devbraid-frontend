@@ -22,15 +22,6 @@ export const mockBranches: Branch[] = [
   { name: 'fix/rate-limiting' },
 ]
 
-export const mockConnections: GitHubConnection[] = [
-  {
-    id: '1',
-    githubUsername: 'alexchen',
-    connectedAt: '2026-07-20T10:00:00Z',
-    lastValidatedAt: '2026-07-27T08:30:00Z',
-    scopes: ['repo', 'read:user'],
-  },
-]
 
 export const mockThreads: ChangeThread[] = [
   {
