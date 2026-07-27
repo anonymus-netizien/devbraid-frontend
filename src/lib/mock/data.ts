@@ -1,4 +1,13 @@
-import type { ChangeThread, DecisionNote, ChangeBrief, GitRepository, Branch, GitHubConnection } from '../../types'
+import type { ChangeThread, DecisionNote, ChangeBrief, GitRepository, Branch, GitHubConnection, User } from '../../types'
+
+export const mockUser: User = {
+  id: 1,
+  name: 'Alex Chen',
+  email: 'alex@devbraid.com',
+  phone: '9876543210',
+  role: 'ROLE_USER',
+  emailVerified: true,
+}
 
 export const mockRepos: GitRepository[] = [
   { fullName: 'acme/web-platform', defaultBranch: 'main', isPrivate: true },
