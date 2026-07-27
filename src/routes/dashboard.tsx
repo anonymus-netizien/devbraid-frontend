@@ -1,72 +1,162 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { PageHeader } from '../components/devbraid/page-header'
-import { StatusDot } from '../components/devbraid/status-dot'
-import { RiskChip } from '../components/devbraid/risk-chip'
-import { BranchPair } from '../components/devbraid/branch-pair'
-import { mockThreads, mockBriefs, mockConnections, mockUser } from '../lib/mock/data'
+import { PageHeader } from '../components/devbraid/states'
+import { BranchPair, RiskChip, SectionLabel, StatusDot } from '../components/devbraid/chips'
+import { threads, briefs, connections } from '../lib/mock/data'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardPage,
 })
 
+function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string
+  value: string
+  hint: string
+}) {
+  return (
+    <div className="rounded-lg border border-hairline bg-surface/40 p-5">
+      <SectionLabel>{label}</SectionLabel>
+      <div className="mt-3 font-mono text-3xl font-medium tracking-tight tabular-nums">
+        {value}
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">{hint}</p>
+    </div>
+  )
+}
+
 function DashboardPage() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
-  const activeThreads = mockThreads.filter(t => t.status !== 'published')
-  const publishedBriefs = mockBriefs.filter(b => b.status === 'published')
+  const active = threads.filter((t) => t.status !== 'published')
+  const publishedCount = briefs.filter((b) => b.status === 'published').length
+  const activeConn = connections.filter((c) => c.status === 'active').length
 
   return (
-    <div>
+    <div className="mx-auto max-w-6xl px-8 py-10">
       <PageHeader
         eyebrow="Workspace"
-        title={`${greeting}, ${mockUser.name.split(' ')[0]}.`}
-        description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
+        title={`${greeting}, Alex.`}
+        description={`${active.length} change thread${active.length !== 1 ? 's' : ''} in flight.`}
       />
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">Active threads</p>
-          <p className="text-3xl font-bold text-foreground">{activeThreads.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">{mockThreads.length} total · {mockThreads.filter(t => t.status === 'ready').length} ready to publish</p>
-        </div>
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">Published briefs</p>
-          <p className="text-3xl font-bold text-foreground">{publishedBriefs.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">Posted to GitHub as PR comments</p>
-        </div>
-        <div className="rounded-xl border border-hairline bg-surface p-5">
-          <p className="text-sm text-muted-foreground mb-1">Connections</p>
-          <p className="text-3xl font-bold text-foreground">{mockConnections.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">Active GitHub PATs</p>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Stat
+          label="Active threads"
+          value={String(active.length)}
+          hint={`${threads.length} total · ${threads.filter((t) => t.status === 'ready').length} ready to publish`}
+        />
+        <Stat
+          label="Published briefs"
+          value={String(publishedCount)}
+          hint="Posted to GitHub as PR comments"
+        />
+        <Stat
+          label="Connections"
+          value={`${activeConn}/${connections.length}`}
+          hint={
+            connections.some((c) => c.status !== 'active')
+              ? 'One PAT is expired — reconnect from Connections'
+              : 'All GitHub PATs healthy'
+          }
+        />
       </div>
 
-      {/* Recent threads */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Recent change threads</h2>
-          <Link to="/threads" className="text-sm text-primary hover:underline">View all →</Link>
+      <section className="mt-10">
+        <div className="mb-4 flex items-end justify-between">
+          <SectionLabel>Recent change threads</SectionLabel>
+          <Link
+            to="/threads"
+            className="text-xs text-primary hover:underline"
+          >
+            View all
+          </Link>
         </div>
-        <div className="rounded-xl border border-hairline overflow-hidden">
-          {mockThreads.map((thread) => (
-            <Link
-              key={thread.id}
-              to="/threads/$id"
-              params={{ id: thread.id }}
-              className="flex items-center gap-4 px-5 py-4 border-b border-hairline last:border-0 hover:bg-surface/50 transition-colors"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{thread.title}</p>
-                <p className="text-xs text-muted-foreground">{thread.repo}</p>
+
+        <div className="overflow-hidden rounded-lg border border-hairline">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-surface/40 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2.5 font-medium">Thread</th>
+                <th className="px-4 py-2.5 font-medium">Branch</th>
+                <th className="px-4 py-2.5 font-medium">Risk</th>
+                <th className="px-4 py-2.5 font-medium">Status</th>
+                <th className="px-4 py-2.5 font-medium text-right">Updated</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-hairline">
+              {threads.map((t) => (
+                <tr key={t.id} className="hover:bg-surface/40">
+                  <td className="px-4 py-3">
+                    <Link
+                      to="/threads/$id"
+                      params={{ id: t.id }}
+                      className="flex flex-col gap-0.5"
+                    >
+                      <span className="truncate text-[13px] font-medium hover:underline">
+                        {t.title}
+                      </span>
+                      <span className="font-mono text-[11px] text-muted-foreground">
+                        {t.repo}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <BranchPair base={t.baseBranch} head={t.headBranch} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {t.risks.slice(0, 3).map((r) => (
+                        <RiskChip key={r} flag={r} dense />
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+                      <StatusDot status={t.status} />
+                      {t.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right font-mono text-[11px] text-muted-foreground">
+                    {new Date(t.updatedAt).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <SectionLabel>Unresolved questions</SectionLabel>
+        <div className="mt-3 space-y-2">
+          {briefs
+            .flatMap((b) =>
+              b.unresolved.map((q) => ({ q, brief: b.title, id: b.id })),
+            )
+            .map((u, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 rounded-lg border border-hairline bg-surface/40 px-4 py-3"
+              >
+                <div className="grid size-5 shrink-0 place-items-center rounded border border-hairline bg-background text-[10px] text-muted-foreground">
+                  ?
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm">{u.q}</p>
+                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+                    from · {u.brief}
+                  </p>
+                </div>
               </div>
-              <BranchPair head={thread.headBranch} base={thread.baseBranch} />
-              <div className="flex gap-1">{thread.riskFlags.map(f => <RiskChip key={f} flag={f} />)}</div>
-              <StatusDot status={thread.status} label />
-            </Link>
-          ))}
+            ))}
         </div>
-      </div>
+      </section>
     </div>
   )
 }
