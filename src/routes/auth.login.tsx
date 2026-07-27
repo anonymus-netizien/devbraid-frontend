@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
-import authService from '../services/auth.service'
+import { useAuth } from '../context/AuthContext'
 import githubService from '../services/github.service'
 
 export const Route = createFileRoute('/auth/login')({
@@ -11,6 +11,7 @@ export const Route = createFileRoute('/auth/login')({
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,7 +20,7 @@ function LoginPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      await authService.login({ email, password })
+      await login({ email, password })
       toast.success('Welcome back!')
 
       try {
