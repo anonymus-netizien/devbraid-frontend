@@ -1,23 +1,34 @@
 import type { ReactNode } from 'react'
 
 interface PageHeaderProps {
-  eyebrow: string
+  eyebrow?: ReactNode
   title: string
   description?: string
+  actions?: ReactNode
   action?: ReactNode
 }
 
-export function PageHeader({ eyebrow, title, description, action }: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, description, actions, action }: PageHeaderProps) {
+  const actionContent = actions ?? action
   return (
-    <div className="mb-8">
-      <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">{eyebrow}</p>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-          {description && <p className="mt-1 text-muted-foreground">{description}</p>}
-        </div>
-        {action && <div className="shrink-0">{action}</div>}
+    <div className="mb-8 flex items-start justify-between gap-6">
+      <div className="min-w-0 flex-1">
+        {eyebrow && (
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            {eyebrow}
+          </div>
+        )}
+        <h1 className="text-balance text-2xl font-semibold tracking-tight text-foreground">
+          {title}
+        </h1>
+        {description && (
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+            {description}
+          </p>
+        )}
       </div>
+      {actionContent && <div className="shrink-0">{actionContent}</div>}
     </div>
   )
 }
+
