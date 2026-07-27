@@ -4,12 +4,21 @@ export interface GitHubConnection {
   connectedAt: string
   lastValidatedAt: string | null
   scopes: string[]
+  // Additional fields for Lovable design compatibility
+  username?: string
+  addedAt?: string
+  lastUsedAt?: string
+  status?: 'active' | 'expired' | 'revoked'
+  repos?: number
 }
 
 export interface GitRepository {
   fullName: string
   defaultBranch: string
   isPrivate: boolean
+  // Additional fields for Lovable design compatibility
+  id?: string
+  name?: string
 }
 
 export interface Branch {
