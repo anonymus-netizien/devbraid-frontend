@@ -12,7 +12,6 @@ import {
   LogOut,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Toaster } from 'sonner'
 import { CommandPalette, useCommandPalette } from './command-palette'
 
 const items = [
@@ -259,7 +258,6 @@ export function AppShell() {
         </main>
       </div>
       <CommandPalette open={open} onOpenChange={setOpen} />
-      <Toaster theme="dark" position="bottom-right" />
     </div>
   )
 }
