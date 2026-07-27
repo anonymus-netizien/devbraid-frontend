@@ -16,9 +16,11 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ThreadsRouteImport } from './routes/threads'
+import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as AuthOtpRouteImport } from './routes/auth.otp'
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
+import { Route as AuthResetRouteImport } from './routes/auth.reset'
 import { Route as BriefsIdRouteImport } from './routes/briefs.$id'
 import { Route as ThreadsIdRouteImport } from './routes/threads.$id'
 
@@ -57,6 +59,11 @@ const ThreadsRoute = ThreadsRouteImport.update({
   path: '/threads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthForgotRoute = AuthForgotRouteImport.update({
+  id: '/auth/forgot',
+  path: '/auth/forgot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
@@ -70,6 +77,11 @@ const AuthOtpRoute = AuthOtpRouteImport.update({
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/auth/reset',
+  path: '/auth/reset',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BriefsIdRoute = BriefsIdRouteImport.update({
@@ -91,9 +103,11 @@ export interface FileRoutesByFullPath {
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
+  '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset': typeof AuthResetRoute
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
 }
@@ -105,9 +119,11 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
+  '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset': typeof AuthResetRoute
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
 }
@@ -120,9 +136,11 @@ export interface FileRoutesById {
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
+  '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset': typeof AuthResetRoute
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
 }
@@ -136,9 +154,11 @@ export interface FileRouteTypes {
     | '/notes'
     | '/settings'
     | '/threads'
+    | '/auth/forgot'
     | '/auth/login'
     | '/auth/otp'
     | '/auth/register'
+    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -150,9 +170,11 @@ export interface FileRouteTypes {
     | '/notes'
     | '/settings'
     | '/threads'
+    | '/auth/forgot'
     | '/auth/login'
     | '/auth/otp'
     | '/auth/register'
+    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
   id:
@@ -164,9 +186,11 @@ export interface FileRouteTypes {
     | '/notes'
     | '/settings'
     | '/threads'
+    | '/auth/forgot'
     | '/auth/login'
     | '/auth/otp'
     | '/auth/register'
+    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
   fileRoutesById: FileRoutesById
@@ -179,9 +203,11 @@ export interface RootRouteChildren {
   NotesRoute: typeof NotesRoute
   SettingsRoute: typeof SettingsRoute
   ThreadsRoute: typeof ThreadsRouteWithChildren
+  AuthForgotRoute: typeof AuthForgotRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthOtpRoute: typeof AuthOtpRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetRoute: typeof AuthResetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -235,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThreadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/forgot': {
+      id: '/auth/forgot'
+      path: '/auth/forgot'
+      fullPath: '/auth/forgot'
+      preLoaderRoute: typeof AuthForgotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
@@ -254,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/register'
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset': {
+      id: '/auth/reset'
+      path: '/auth/reset'
+      fullPath: '/auth/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/briefs/$id': {
@@ -303,9 +343,11 @@ const rootRouteChildren: RootRouteChildren = {
   NotesRoute: NotesRoute,
   SettingsRoute: SettingsRoute,
   ThreadsRoute: ThreadsRouteWithChildren,
+  AuthForgotRoute: AuthForgotRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthOtpRoute: AuthOtpRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetRoute: AuthResetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
