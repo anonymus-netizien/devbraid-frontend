@@ -10,33 +10,178 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BriefsRouteImport } from './routes/briefs'
+import { Route as ConnectionsRouteImport } from './routes/connections'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ThreadsRouteImport } from './routes/threads'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
+import { Route as AuthOtpRouteImport } from './routes/auth.otp'
+import { Route as AuthRegisterRouteImport } from './routes/auth.register'
+import { Route as BriefsIdRouteImport } from './routes/briefs.$id'
+import { Route as ThreadsIdRouteImport } from './routes/threads.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BriefsRoute = BriefsRouteImport.update({
+  id: '/briefs',
+  path: '/briefs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectionsRoute = ConnectionsRouteImport.update({
+  id: '/connections',
+  path: '/connections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThreadsRoute = ThreadsRouteImport.update({
+  id: '/threads',
+  path: '/threads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthOtpRoute = AuthOtpRouteImport.update({
+  id: '/auth/otp',
+  path: '/auth/otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BriefsIdRoute = BriefsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BriefsRoute,
+} as any)
+const ThreadsIdRoute = ThreadsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ThreadsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/briefs': typeof BriefsRouteWithChildren
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
+  '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
+  '/threads': typeof ThreadsRouteWithChildren
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/briefs/$id': typeof BriefsIdRoute
+  '/threads/$id': typeof ThreadsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/briefs': typeof BriefsRouteWithChildren
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
+  '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
+  '/threads': typeof ThreadsRouteWithChildren
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/briefs/$id': typeof BriefsIdRoute
+  '/threads/$id': typeof ThreadsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/briefs': typeof BriefsRouteWithChildren
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
+  '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
+  '/threads': typeof ThreadsRouteWithChildren
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/briefs/$id': typeof BriefsIdRoute
+  '/threads/$id': typeof ThreadsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/briefs'
+    | '/connections'
+    | '/dashboard'
+    | '/notes'
+    | '/settings'
+    | '/threads'
+    | '/auth/login'
+    | '/auth/otp'
+    | '/auth/register'
+    | '/briefs/$id'
+    | '/threads/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/briefs'
+    | '/connections'
+    | '/dashboard'
+    | '/notes'
+    | '/settings'
+    | '/threads'
+    | '/auth/login'
+    | '/auth/otp'
+    | '/auth/register'
+    | '/briefs/$id'
+    | '/threads/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/briefs'
+    | '/connections'
+    | '/dashboard'
+    | '/notes'
+    | '/settings'
+    | '/threads'
+    | '/auth/login'
+    | '/auth/otp'
+    | '/auth/register'
+    | '/briefs/$id'
+    | '/threads/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BriefsRoute: typeof BriefsRouteWithChildren
+  ConnectionsRoute: typeof ConnectionsRoute
+  DashboardRoute: typeof DashboardRoute
+  NotesRoute: typeof NotesRoute
+  SettingsRoute: typeof SettingsRoute
+  ThreadsRoute: typeof ThreadsRouteWithChildren
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthOtpRoute: typeof AuthOtpRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +193,119 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/briefs': {
+      id: '/briefs'
+      path: '/briefs'
+      fullPath: '/briefs'
+      preLoaderRoute: typeof BriefsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connections': {
+      id: '/connections'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof ConnectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/threads': {
+      id: '/threads'
+      path: '/threads'
+      fullPath: '/threads'
+      preLoaderRoute: typeof ThreadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/otp': {
+      id: '/auth/otp'
+      path: '/auth/otp'
+      fullPath: '/auth/otp'
+      preLoaderRoute: typeof AuthOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/briefs/$id': {
+      id: '/briefs/$id'
+      path: '/$id'
+      fullPath: '/briefs/$id'
+      preLoaderRoute: typeof BriefsIdRouteImport
+      parentRoute: typeof BriefsRoute
+    }
+    '/threads/$id': {
+      id: '/threads/$id'
+      path: '/$id'
+      fullPath: '/threads/$id'
+      preLoaderRoute: typeof ThreadsIdRouteImport
+      parentRoute: typeof ThreadsRoute
+    }
   }
 }
 
+interface BriefsRouteChildren {
+  BriefsIdRoute: typeof BriefsIdRoute
+}
+
+const BriefsRouteChildren: BriefsRouteChildren = {
+  BriefsIdRoute: BriefsIdRoute,
+}
+
+const BriefsRouteWithChildren =
+  BriefsRoute._addFileChildren(BriefsRouteChildren)
+
+interface ThreadsRouteChildren {
+  ThreadsIdRoute: typeof ThreadsIdRoute
+}
+
+const ThreadsRouteChildren: ThreadsRouteChildren = {
+  ThreadsIdRoute: ThreadsIdRoute,
+}
+
+const ThreadsRouteWithChildren =
+  ThreadsRoute._addFileChildren(ThreadsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BriefsRoute: BriefsRouteWithChildren,
+  ConnectionsRoute: ConnectionsRoute,
+  DashboardRoute: DashboardRoute,
+  NotesRoute: NotesRoute,
+  SettingsRoute: SettingsRoute,
+  ThreadsRoute: ThreadsRouteWithChildren,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthOtpRoute: AuthOtpRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
