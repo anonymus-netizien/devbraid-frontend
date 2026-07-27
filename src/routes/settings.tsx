@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PageHeader } from '../components/devbraid/states'
 import { SectionLabel } from '../components/devbraid/chips'
@@ -13,7 +14,7 @@ function Row({
 }: {
   label: string
   hint?: string
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="grid grid-cols-1 gap-4 border-t border-hairline py-5 first:border-t-0 md:grid-cols-[240px_1fr]">
