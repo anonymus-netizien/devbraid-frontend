@@ -1,5 +1,5 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Workbench · active-theme: default */
 @import "tailwindcss";
+@plugin "daisyui";
 
 @custom-variant dark (&:is(.dark *));
 
