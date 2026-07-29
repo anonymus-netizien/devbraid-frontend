@@ -99,7 +99,7 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
           }}
         >
           <rect x="280" y="65" width="52" height="38" rx="2" fill="var(--color-info-bg)" stroke="var(--color-info-border)" strokeWidth="0.8" opacity="0.5" />
-          <text x="288" y="82" fill="var(--color-info-fg)" fontSize="6" fontFamily="var(--color-info-fg)" opacity="0.5">API v2</text>
+          <text x="288" y="82" fill="var(--color-info-fg)" fontSize="6" fontFamily="var(--font-mono)" opacity="0.5">API v2</text>
           <text x="288" y="90" fill="var(--color-info-fg)" fontSize="5" fontFamily="var(--font-mono)" opacity="0.4">breaking</text>
         </g>
 
