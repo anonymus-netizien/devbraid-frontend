@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
-import { PageHeader } from '../components/devbraid/page-header'
-import { SectionLabel } from '../components/devbraid/section-label'
-import { StatusDot } from '../components/devbraid/status-dot'
+import { PageHeader } from '@/components/devbraid/states'
+import { SectionLabel, StatusDot } from '@/components/devbraid/chips'
 import { AddConnectionSheet } from '../components/devbraid/add-connection-sheet'
 import githubService from '../services/github.service'
 import type { GitHubConnection } from '../types/github'
@@ -92,7 +91,7 @@ function ConnectionsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-8 sm:py-10">
       {onboarding === 'true' && (
-        <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm text-foreground flex items-center justify-between gap-4">
+        <div className="mb-6 rounded-lg border border-primary/30 bg-primary/10 p-4 flex items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-primary">Welcome to DevBraid!</p>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -102,7 +101,7 @@ function ConnectionsPage() {
           {connection && (
             <Link
               to="/dashboard"
-              className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="btn btn-primary btn-sm shrink-0"
             >
               Continue to Dashboard →
             </Link>
@@ -118,7 +117,7 @@ function ConnectionsPage() {
             {connection && (
               <Link
                 to="/dashboard"
-                className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-surface px-3 py-2 text-xs font-medium hover:bg-surface-2 transition-colors"
+                className="btn btn-ghost btn-sm"
               >
                 Go to Dashboard →
               </Link>
@@ -126,7 +125,7 @@ function ConnectionsPage() {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="btn btn-primary btn-sm"
             >
               + Add connection
             </button>
@@ -215,7 +214,7 @@ function ConnectionsPage() {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="btn btn-primary btn-sm"
             >
               Add connection
             </button>

@@ -53,7 +53,7 @@ function RegisterPage() {
 
 
   return (
-    <AuthShell>
+    <AuthShell variant="register">
       <div>
         <h2 className="text-2xl font-semibold text-foreground mb-1">Create workspace</h2>
         <p className="text-sm text-muted-foreground mb-6">Start capturing your engineering narrative</p>

@@ -7,11 +7,26 @@ import type { GitRepository, Branch } from '../../types/github'
 import type { ChangeThread } from '../../types/thread'
 
 interface CreateThreadDialogProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   onThreadCreated?: (thread: ChangeThread) => void
 }
 
-export function CreateThreadDialog({ onThreadCreated }: CreateThreadDialogProps) {
-  const [open, setOpen] = useState(false)
+export function CreateThreadDialog({
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+  onThreadCreated,
+}: CreateThreadDialogProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+  const isControlled = controlledOpen !== undefined
+  const open = isControlled ? controlledOpen : uncontrolledOpen
+  const setOpen = (val: boolean) => {
+    if (isControlled && setControlledOpen) {
+      setControlledOpen(val)
+    } else {
+      setUncontrolledOpen(val)
+    }
+  }
   const [loadingRepos, setLoadingRepos] = useState(false)
   const [repos, setRepos] = useState<GitRepository[]>([])
   const [selectedRepo, setSelectedRepo] = useState<string>('')
@@ -118,7 +133,7 @@ export function CreateThreadDialog({ onThreadCreated }: CreateThreadDialogProps)
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 animate-in fade-in duration-200" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-surface border border-hairline rounded-xl shadow-elevation-3 p-6 z-50 focus:outline-none animate-in zoom-in-95 duration-200">
+        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-lg bg-surface border border-hairline rounded-xl shadow-elevation-3 p-4 sm:p-6 z-50 focus:outline-none animate-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between pb-4 border-b border-hairline mb-5">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -184,7 +199,7 @@ export function CreateThreadDialog({ onThreadCreated }: CreateThreadDialogProps)
 
             {/* Branch Pair Select */}
             <div className="space-y-2">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5">
                     <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />

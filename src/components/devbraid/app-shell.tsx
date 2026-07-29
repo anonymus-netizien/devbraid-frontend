@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { Link, useRouterState, useNavigate } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import { LayoutDashboard, GitPullRequest, FileText, BookOpen, Github, Settings, Search, Menu, X, LogOut } from 'lucide-react'
 import { Toaster } from 'sonner'
-import { cn } from '../../lib/utils'
-import { useAuth } from '../../context/AuthContext'
-import authService from '../../services/auth.service'
+import { cn } from '@/lib/utils'
+import { useAuth } from '@/context/AuthContext'
+import authService from '@/services/auth.service'
+import { CommandPalette, useCommandPalette } from './command-palette'
 
 const navGroups = [
   {
@@ -29,161 +31,257 @@ interface AppShellProps {
   children: ReactNode
 }
 
+function crumbsFor(pathname: string): { label: string; to?: string }[] {
+  if (pathname === '/' || pathname === '/dashboard')
+    return [{ label: 'Dashboard' }]
+  const parts = pathname.split('/').filter(Boolean)
+  const first = parts[0]
+  const map: Record<string, string> = {
+    threads: 'Change Threads',
+    notes: 'Decision Notes',
+    briefs: 'Change Briefs',
+    connections: 'GitHub Connections',
+    settings: 'Settings',
+    dashboard: 'Dashboard',
+  }
+  const out: { label: string; to?: string }[] = [
+    { label: map[first] ?? first, to: `/${first}` },
+  ]
+  if (parts.length > 1) out.push({ label: parts.slice(1).join('/') })
+  return out
+}
+
 export function AppShell({ children }: AppShellProps) {
   const { location } = useRouterState()
+  const pathname = location.pathname
   const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
   const { user, logout } = useAuth()
+  const queryClient = useQueryClient()
+  const { open: paletteOpen, setOpen: setPaletteOpen } = useCommandPalette()
 
-  if (location.pathname.startsWith('/auth')) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        {children}
-        <Toaster position="bottom-right" />
-      </div>
-    )
-  }
+  // Close mobile nav on route change
+  useEffect(() => setNavOpen(false), [pathname])
 
   const handleSignOut = async () => {
+    await queryClient.cancelQueries()
+    queryClient.clear()
     try {
       await authService.logout()
     } finally {
       logout()
-      navigate({ to: '/auth/login' })
+      navigate({ to: '/auth/login', replace: true })
     }
   }
 
   const userInitials = user?.fullName
-    ? user.fullName.split(' ').map((n) => n[0]).join('').toUpperCase()
+    ? user.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase()
     : user?.email
       ? user.email.substring(0, 2).toUpperCase()
       : 'DB'
 
+  const crumbs = crumbsFor(pathname)
+
   return (
-    <div className="flex h-screen bg-background text-foreground">
+    <div className="flex h-dvh bg-background text-foreground">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:border-r lg:border-hairline lg:bg-surface">
-        <div className="flex items-center gap-2 px-6 py-4 border-b border-hairline">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-sm font-bold text-primary-foreground">DB</span>
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-hairline bg-background lg:flex">
+        <div className="flex h-14 items-center gap-2.5 border-b border-hairline px-5">
+          <div className="grid size-6 place-items-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
+            DB
           </div>
-          <div>
-            <p className="text-sm font-semibold">DevBraid</p>
-            <p className="text-xs text-muted-foreground">Change threads</p>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[13px] font-semibold tracking-tight">DevBraid</span>
+            <span className="text-[9px] uppercase tracking-widest text-muted-foreground">Change threads</span>
           </div>
         </div>
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+
+        <nav className="flex-1 space-y-6 overflow-y-auto p-3">
           {navGroups.map((group) => (
-            <div key={group.label}>
-              <p className="px-3 mb-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground/80">{group.label}</p>
-              <div className="space-y-1">
-                {group.items.map((item) => (
+            <div key={group.label} className="space-y-1">
+              <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                {group.label}
+              </div>
+              {group.items.map((item) => {
+                const active =
+                  pathname === item.to ||
+                  (item.to !== '/dashboard' && pathname.startsWith(item.to))
+                const Icon = item.icon
+                return (
                   <Link
                     key={item.to}
                     to={item.to}
                     className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                      location.pathname === item.to
-                        ? 'bg-surface-2 text-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-surface-2/50'
+                      'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] transition-colors',
+                      active
+                        ? 'bg-surface text-foreground'
+                        : 'text-muted-foreground hover:bg-surface/60 hover:text-foreground',
                     )}
                   >
-                    <item.icon className="h-4 w-4" aria-hidden="true" />
-                    {item.label}
+                    <Icon className="size-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
                   </Link>
-                ))}
-              </div>
+                )
+              })}
             </div>
           ))}
         </nav>
-        <div className="border-t border-hairline px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-surface-2 flex items-center justify-center text-sm font-medium">
-                {userInitials}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{user?.fullName || user?.email || 'Developer'}</p>
-                <p className="text-xs text-muted-foreground truncate">{user?.email || 'Logged in'}</p>
-              </div>
+
+        {/* User section */}
+        <div className="border-t border-hairline p-3">
+          <div className="flex items-center gap-3 rounded-md px-2 py-1.5">
+            <div className="grid size-7 place-items-center rounded-full border border-hairline bg-surface text-[10px] font-semibold uppercase">
+              {userInitials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-medium">{user?.fullName || user?.email || 'Developer'}</p>
+              <p className="truncate text-[10px] text-muted-foreground">{user?.email || 'Not signed in'}</p>
             </div>
             <button
               type="button"
               onClick={handleSignOut}
-              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
               aria-label="Sign out"
+              className="grid size-7 place-items-center rounded text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
             >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
+              <LogOut className="size-3.5" />
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} aria-hidden="true" />
-          <aside className="absolute inset-y-0 left-0 w-64 bg-surface border-r border-hairline">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-hairline">
-              <span className="text-sm font-semibold">DevBraid</span>
-              <button type="button" onClick={() => setMobileOpen(false)} className="p-1 rounded-md text-muted-foreground hover:text-foreground" aria-label="Close menu">
-                <X className="h-4 w-4" aria-hidden="true" />
-              </button>
+      {/* Mobile sidebar */}
+      <div
+        className={cn(
+          'fixed inset-0 z-40 lg:hidden',
+          navOpen ? 'pointer-events-auto' : 'pointer-events-none',
+        )}
+        aria-hidden={!navOpen}
+      >
+        <div
+          onClick={() => setNavOpen(false)}
+          className={cn(
+            'absolute inset-0 bg-background/70 backdrop-blur-sm transition-opacity',
+            navOpen ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+        <aside
+          className={cn(
+            'absolute left-0 top-0 flex h-dvh w-72 max-w-[85vw] flex-col border-r border-hairline bg-background shadow-2xl transition-transform',
+            navOpen ? 'translate-x-0' : '-translate-x-full',
+          )}
+        >
+          <div className="flex h-14 items-center gap-2.5 border-b border-hairline px-5">
+            <div className="grid size-6 place-items-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
+              DB
             </div>
-            <nav className="px-3 py-4 space-y-6">
-              {navGroups.map((group) => (
-                <div key={group.label}>
-                  <p className="px-3 mb-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">{group.label}</p>
-                  <div className="space-y-1">
-                    {group.items.map((item) => (
-                      <Link
-                        key={item.to}
-                        to={item.to}
-                        onClick={() => setMobileOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                          location.pathname === item.to
-                            ? 'bg-surface-2 text-foreground'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-surface-2/50'
-                        )}
-                      >
-                        <item.icon className="h-4 w-4" aria-hidden="true" />
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
+            <span className="text-[13px] font-semibold tracking-tight">DevBraid</span>
+            <button
+              type="button"
+              onClick={() => setNavOpen(false)}
+              className="ml-auto grid size-7 place-items-center rounded text-muted-foreground hover:bg-surface hover:text-foreground"
+              aria-label="Close menu"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+          <nav className="flex-1 space-y-6 overflow-y-auto p-3">
+            {navGroups.map((group) => (
+              <div key={group.label} className="space-y-1">
+                <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  {group.label}
                 </div>
-              ))}
-            </nav>
-          </aside>
-        </div>
-      )}
+                {group.items.map((item) => {
+                  const active = pathname === item.to || pathname.startsWith(item.to)
+                  const Icon = item.icon
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setNavOpen(false)}
+                      className={cn(
+                        'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] transition-colors',
+                        active
+                          ? 'bg-surface text-foreground'
+                          : 'text-muted-foreground hover:bg-surface/60 hover:text-foreground',
+                      )}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  )
+                })}
+              </div>
+            ))}
+          </nav>
+        </aside>
+      </div>
 
       {/* Main content */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-40 flex items-center h-14 px-4 border-b border-hairline bg-background">
-          <button type="button" onClick={() => setMobileOpen(true)} className="lg:hidden p-1.5 rounded-md text-muted-foreground hover:text-foreground mr-3" aria-label="Open menu">
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          </button>
-          <div className="flex-1" />
-          <button type="button" className="flex items-center gap-2 px-3 py-1.5 rounded border border-hairline bg-surface/80 text-xs font-mono text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors" aria-label="Search">
-            <Search className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>find or command…</span>
-            <kbd className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-surface-2 font-mono border border-hairline">⌘K</kbd>
-          </button>
+        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hairline bg-background/85 px-4 backdrop-blur sm:px-6">
+          <div className="flex min-w-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setNavOpen(true)}
+              aria-label="Open navigation"
+              className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface hover:text-foreground lg:hidden"
+            >
+              <Menu className="size-4" />
+            </button>
+            <div className="flex min-w-0 items-center gap-2 text-xs">
+              {crumbs.map((c, i) => (
+                <span key={i} className="flex min-w-0 items-center gap-2">
+                  {i > 0 && <span className="text-muted-foreground/60">/</span>}
+                  {c.to && i < crumbs.length - 1 ? (
+                    <Link
+                      to={c.to}
+                      className="truncate text-muted-foreground hover:text-foreground"
+                    >
+                      {c.label}
+                    </Link>
+                  ) : (
+                    <span className="truncate font-medium">{c.label}</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              aria-label="Search"
+              className="hidden h-8 items-center gap-2 rounded-md border border-hairline bg-surface/60 px-2.5 text-xs text-muted-foreground transition-colors hover:border-hairline/80 hover:bg-surface sm:inline-flex"
+            >
+              <Search className="size-3.5" />
+              <span>Search or jump to</span>
+              <kbd className="ml-4 rounded border border-hairline bg-background px-1.5 py-0.5 font-mono text-[10px]">
+                \u2318K
+              </kbd>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              aria-label="Search"
+              className="grid size-8 place-items-center rounded-md border border-hairline bg-surface/60 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground sm:hidden"
+            >
+              <Search className="size-3.5" />
+            </button>
+          </div>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-5xl px-6 py-8">
+        <main className="min-w-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
             {children}
           </div>
         </main>
       </div>
+
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <Toaster position="bottom-right" />
     </div>
   )
 }
-
-

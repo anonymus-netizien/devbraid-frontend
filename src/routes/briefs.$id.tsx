@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
-import { PageHeader } from '../components/devbraid/page-header'
-import { StatusDot } from '../components/devbraid/status-dot'
+import { PageHeader } from '@/components/devbraid/states'
+import { StatusDot } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
 import type { BriefResponse } from '../types/thread'
 
@@ -39,7 +39,7 @@ function BriefDetailPage() {
       <PageHeader
         eyebrow="Change Brief"
         title="Generated Change Brief"
-        action={
+        actions={
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-success-bg text-success-fg border border-success-border">
             {brief.publishedToGithub ? 'Published' : 'Ready'}
           </span>

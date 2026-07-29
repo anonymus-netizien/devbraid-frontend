@@ -1,151 +1,224 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { PageHeader } from '../components/devbraid/page-header'
-import { StatusDot } from '../components/devbraid/status-dot'
-import { RiskChip } from '../components/devbraid/risk-chip'
-import { BranchPair } from '../components/devbraid/branch-pair'
-import { useAuth } from '../context/AuthContext'
-import githubService from '../services/github.service'
-import { threadService } from '../services/thread.service'
-import type { ChangeThread } from '../types/thread'
+import { useQuery } from '@tanstack/react-query'
+import {
+  ArrowUpRight,
+  FileText,
+  GitPullRequest,
+  Github,
+  Plus,
+  StickyNote,
+} from 'lucide-react'
+import { PageHeader, LoadingRows, EmptyState } from '@/components/devbraid/states'
+import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
+import { AnimatedCounter } from '@/components/ui/animated-counter'
+import { useAuth } from '@/context/AuthContext'
+import githubService from '@/services/github.service'
+import { threadService } from '@/services/thread.service'
+import type { ChangeThread } from '@/types/thread'
 
 export const Route = createFileRoute('/dashboard')({
+  head: () => ({
+    meta: [
+      { title: 'Dashboard · DevBraid' },
+      { name: 'description', content: 'Your change threads, decision notes, and brief activity at a glance.' },
+      { property: 'og:title', content: 'DevBraid · Dashboard' },
+      { property: 'og:description', content: 'Change threads, decision notes, and briefs at a glance.' },
+    ],
+  }),
   component: DashboardPage,
 })
+
+function StatCard({ label, value, hint, icon: Icon, to }: {
+  label: string; value: number; hint: string; icon: typeof FileText; to: string
+}) {
+  return (
+    <Link to={to} className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface">
+      <div className="flex items-start justify-between">
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+        <Icon className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
+      </div>
+      <div className="mt-3 font-mono text-3xl font-semibold tracking-tight">
+        <AnimatedCounter to={value} />
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+    </Link>
+  )
+}
 
 function DashboardPage() {
   const { user } = useAuth()
   const [ghConnected, setGhConnected] = useState<boolean | null>(null)
-  const [repoCount, setRepoCount] = useState<number>(0)
-  const [threads, setThreads] = useState<ChangeThread[]>([])
-  const [briefsCount, setBriefsCount] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [repoCount, setRepoCount] = useState(0)
+  const [statusFilter, setStatusFilter] = useState('all')
+
+  const { data: threadsData, isLoading: threadsLoading } = useQuery({
+    queryKey: ['dashboard', 'threads'],
+    queryFn: () => threadService.listThreads(0, 50),
+  })
+
+  const { data: notesData } = useQuery({
+    queryKey: ['dashboard', 'notes'],
+    queryFn: () => threadService.listNotes(0, 10),
+  })
+
+  const { data: briefsData } = useQuery({
+    queryKey: ['dashboard', 'briefs'],
+    queryFn: () => threadService.listBriefs(0, 20),
+  })
 
   useEffect(() => {
-    async function load() {
-      setLoading(true)
-      try {
-        const status = await githubService.getStatus()
-        const connected = status.connected && status.valid
-        setGhConnected(connected)
-        if (connected) {
-          const [repos, threadsData, briefsData] = await Promise.all([
-            githubService.listRepositories(),
-            threadService.listThreads(0, 20),
-            threadService.listBriefs(0, 1)
-          ])
-          setRepoCount(repos.length)
-          setThreads(threadsData.content || [])
-          setBriefsCount(briefsData.totalElements || 0)
-        }
-      } catch {
-        setGhConnected(false)
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
+    githubService.getStatus().then(s => {
+      const c = s.connected && s.valid
+      setGhConnected(c)
+      if (c) githubService.listRepositories().then(r => setRepoCount(r.length)).catch(() => {})
+    }).catch(() => setGhConnected(false))
   }, [])
+
+  const threads = threadsData?.content ?? []
+  const notes = notesData?.content ?? []
+  const briefs = briefsData?.content ?? []
+  const activeThreads = threads.filter((t: ChangeThread) => t.status !== 'PUBLISHED')
+
+  const filtered = threads.filter((t: ChangeThread) => {
+    if (statusFilter === 'all') return true
+    return t.status.toLowerCase() === statusFilter.toLowerCase()
+  })
 
   const hour = new Date().getHours()
   const greeting = hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 17 ? 'Good afternoon' : hour >= 17 && hour < 22 ? 'Good evening' : 'Working late'
-  const firstName = user?.fullName ? user.fullName.split(' ')[0] : user?.email ? user.email.split('@')[0] : 'Developer'
-  const activeThreads = threads.filter(t => t.status !== 'PUBLISHED')
-  const readyToPublish = threads.filter(t => t.status === 'READY').length
+  const firstName = user?.fullName?.split(' ')[0] ?? user?.email?.split('@')[0] ?? 'Developer'
 
   return (
-    <div>
+    <div className="mx-auto w-full max-w-6xl">
       {ghConnected === false && (
-        <div className="mb-6 rounded-lg border border-warning-border bg-warning-bg p-4 text-sm text-foreground flex items-center justify-between gap-4">
+        <div className="mb-6 rounded-lg border border-warning-border bg-warning-bg p-4 flex items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-warning-fg">GitHub connection required</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Connect your Personal Access Token to inspect repositories and post PR briefs.
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">Connect your Personal Access Token to inspect repositories and post PR briefs.</p>
           </div>
-          <Link
-            to="/connections"
-            search={{ onboarding: 'true' }}
-            className="shrink-0 rounded-md bg-warning-fg px-3 py-1.5 text-xs font-semibold text-background hover:opacity-90 transition-opacity"
-          >
-            Connect PAT →
-          </Link>
+          <Link to="/connections" className="btn btn-soft btn-sm text-background">Connect PAT →</Link>
         </div>
       )}
 
       <PageHeader
+        eyebrow="Workspace"
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
+        actions={              <Link to="/threads" className="btn btn-primary btn-sm">
+                <Plus className="size-3.5" /> New thread
+              </Link>
+        }
       />
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-        <div className="sm:col-span-2 rounded-lg border border-hairline bg-surface p-5">
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">Active threads</p>
-          <p className="text-3xl font-mono font-bold text-foreground">{loading ? '...' : activeThreads.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">{threads.length} total · {readyToPublish} ready to publish</p>
-        </div>
-        <div className="rounded-lg border border-hairline bg-surface p-5">
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">Published briefs</p>
-          <p className="text-3xl font-mono font-bold text-foreground">{briefsCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">Posted to GitHub as PR comments</p>
-        </div>
-        <div className="rounded-lg border border-hairline bg-surface p-5">
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">GitHub Repositories</p>
-          <p className="text-3xl font-mono font-bold text-foreground">{repoCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">{ghConnected ? 'Connected via PAT' : 'Not connected'}</p>
-        </div>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard label="Open threads" value={activeThreads.length} hint="Drafting, analyzing, or ready" icon={GitPullRequest} to="/threads" />
+        <StatCard label="Decision notes" value={notes.length} hint="Human-written reasoning" icon={StickyNote} to="/notes" />
+        <StatCard label="Change briefs" value={briefs.length} hint="Drafted and published" icon={FileText} to="/briefs" />
+        <StatCard label="Connections" value={ghConnected ? repoCount : 0} hint={ghConnected ? 'GitHub repos' : 'Not connected'} icon={Github} to="/connections" />
       </div>
 
-      {/* Recent threads (Timeline view) */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-mono uppercase tracking-wider font-semibold text-foreground">Recent change threads</h2>
-            <span className="px-1.5 py-0.5 rounded bg-surface-2 border border-hairline text-[10px] font-mono text-muted-foreground">{threads.length}</span>
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
+        {/* Threads table */}
+        <div className="rounded-lg border border-hairline bg-surface/30">
+          <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+            <h2 className="text-sm font-semibold">Recent change threads</h2>
+            <div className="flex items-center gap-2">
+              {['all', 'draft', 'analyzing', 'ready', 'published'].map(s => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`btn btn-xs rounded text-[10px] font-medium uppercase tracking-wider ${
+                    statusFilter === s
+                      ? 'btn-soft'
+                      : 'btn-ghost text-muted-foreground'
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
-          <Link to="/threads" className="text-xs font-mono text-primary hover:underline">View all →</Link>
-        </div>
 
-        <div className="rounded-lg border border-hairline bg-surface p-4">
-          {loading ? (
-            <p className="text-sm text-muted-foreground py-4 text-center">Loading threads...</p>
-          ) : threads.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-4 text-center">No threads yet. Create one to get started.</p>
+          {threadsLoading ? (
+            <div className="p-4"><LoadingRows rows={4} /></div>
+          ) : filtered.length === 0 ? (
+            <div className="p-4"><EmptyState title="No threads yet" description="Create one to get started." /></div>
           ) : (
-            <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[1px] before:bg-hairline">
-              {threads.slice(0, 5).map((thread) => (
-                <div key={thread.id} className="relative group">
-                  <div className="absolute -left-6 top-1 w-2 h-2 rounded-full border border-hairline bg-surface group-hover:border-primary group-hover:bg-primary transition-colors" />
-                  <Link
-                    to="/threads/$id"
-                    params={{ id: thread.id }}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded border border-transparent hover:border-hairline hover:bg-surface-2/60 transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-mono text-muted-foreground">{thread.repositoryFullName}</span>
-                        <span className="text-muted-foreground/40">•</span>
-                        <p className="text-sm font-medium text-foreground truncate">{thread.title}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <BranchPair head={thread.headBranch} base={thread.baseBranch} />
-                      </div>
+            <div className="divide-y divide-hairline">
+              {filtered.slice(0, 8).map((t: ChangeThread) => (
+                <Link
+                  key={t.id}
+                  to="/threads/$id"
+                  params={{ id: t.id }}
+                  className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface/50"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <StatusDot status={t.status.toLowerCase()} />
+                      <span className="truncate text-[13px] font-medium">{t.title}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex gap-1">
-                        {thread.riskFlags?.map(f => <RiskChip key={f} flag={f} />)}
-                        {thread.riskLevel && !thread.riskFlags?.length && (
-                          <span className="text-[10px] font-mono text-muted-foreground capitalize">{thread.riskLevel.toLowerCase()}</span>
-                        )}
-                      </div>
-                      <StatusDot status={(thread.status || 'drafting').toLowerCase() as any} label />
+                    <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-mono">{t.repositoryFullName}</span>
+                      <BranchPair head={t.headBranch} base={t.baseBranch} />
                     </div>
-                  </Link>
-                </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {t.riskFlags?.slice(0, 2).map((f: string) => <RiskChip key={f} flag={f} dense />)}
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      {t.notesCount || 0} notes
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-4">
+          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+            <h3 className="text-sm font-semibold">Latest notes</h3>
+            <p className="text-xs text-muted-foreground mb-3">Always human-written.</p>
+            {notes.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No notes yet.</p>
+            ) : (
+              <div className="space-y-2">
+                {notes.slice(0, 3).map((n: any) => (
+                  <Link
+                    key={n.id}
+                    to="/threads/$id"
+                    params={{ id: n.threadId }}
+                    className="block rounded border border-hairline bg-background/60 p-2.5 text-xs transition-colors hover:border-primary/30"
+                  >
+                    <p className="line-clamp-2 font-medium">{n.decision || n.content}</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">{n.authorName} · {new Date(n.createdAt).toLocaleDateString()}</p>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+            <h3 className="text-sm font-semibold mb-3">Briefs to review</h3>
+            {briefs.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No briefs yet.</p>
+            ) : (
+              <div className="space-y-1">
+                {briefs.slice(0, 4).map((b: any) => (
+                  <Link
+                    key={b.id}
+                    to="/briefs/$id"
+                    params={{ id: b.id }}
+                    className="flex items-center justify-between gap-2 rounded px-2 py-1.5 text-xs transition-colors hover:bg-surface"
+                  >
+                    <span className="truncate">{b.title || b.threadTitle}</span>
+                    <ArrowUpRight className="size-3 shrink-0 text-muted-foreground" />
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

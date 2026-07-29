@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { GitCommit, FileCode, Plus, RefreshCw, Sparkles, Send, ShieldAlert, CheckCircle2, AlertTriangle, Loader2, Pencil, Trash2 } from 'lucide-react'
-import { PageHeader } from '../components/devbraid/page-header'
-import { StatusDot } from '../components/devbraid/status-dot'
-import { BranchPair } from '../components/devbraid/branch-pair'
-import { EmptyState } from '../components/devbraid/empty-state'
+import { PageHeader, EmptyState } from '@/components/devbraid/states'
+import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
 import type { ChangeThread, BriefResponse, NoteResponse } from '../types/thread'
 
@@ -245,13 +243,13 @@ function ThreadDetailPage() {
       <PageHeader
         eyebrow={repoName}
         title={thread.title}
-        action={
+        actions={
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-hairline text-xs font-medium text-foreground hover:bg-surface transition-colors disabled:opacity-50"
+              className="btn btn-ghost btn-sm"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>Refresh Diff</span>
@@ -260,7 +258,7 @@ function ThreadDetailPage() {
               type="button"
               onClick={handleAnalyze}
               disabled={analyzing}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-hairline text-xs font-medium text-foreground hover:bg-surface transition-colors disabled:opacity-50"
+              className="btn btn-ghost btn-sm"
             >
               <Sparkles className={`h-3.5 w-3.5 text-warning-fg ${analyzing ? 'animate-spin' : ''}`} />
               <span>AI Risk Analysis</span>
@@ -269,7 +267,7 @@ function ThreadDetailPage() {
               type="button"
               onClick={handleGenerateBrief}
               disabled={generatingBrief}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-2 text-foreground text-xs font-medium hover:bg-surface-2/80 transition-colors disabled:opacity-50"
+              className="btn btn-soft btn-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span>{generatingBrief ? 'Generating...' : 'Generate Brief'}</span>
@@ -291,7 +289,7 @@ function ThreadDetailPage() {
                 type="button"
                 onClick={handlePublish}
                 disabled={publishing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="btn btn-primary btn-sm"
               >
                 <Send className="h-3.5 w-3.5" />
                 <span>{publishing ? 'Publishing...' : 'Publish PR Comment'}</span>
@@ -326,7 +324,7 @@ function ThreadDetailPage() {
         <div className="stat py-3">
           <div className="stat-title text-xs text-muted-foreground">Thread Status</div>
           <div className="stat-value text-sm mt-1 flex items-center gap-2">
-            <StatusDot status={statusLower as any} label />
+            <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status={statusLower} />{thread.status?.toLowerCase() || 'draft'}</span>
           </div>
         </div>
 
@@ -596,9 +594,9 @@ function ThreadDetailPage() {
                   </p>
                 </div>
                 {brief.publishedToGithub ? (
-                  <StatusDot status="published" label />
+                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status="published" />published</span>
                 ) : (
-                  <StatusDot status="ready" label />
+                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status="ready" />ready</span>
                 )}
               </div>
               <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg border border-hairline">

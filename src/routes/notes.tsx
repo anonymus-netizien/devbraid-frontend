@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { PageHeader } from '../components/devbraid/page-header'
+import { PageHeader } from '@/components/devbraid/states'
 import { threadService } from '../services/thread.service'
 import type { NoteListItem } from '../types/thread'
 import { RefreshCw } from 'lucide-react'
