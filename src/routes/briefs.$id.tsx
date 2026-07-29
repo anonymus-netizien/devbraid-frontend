@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { RefreshCw } from 'lucide-react'
 import { PageHeader } from '../components/devbraid/page-header'
 import { StatusDot } from '../components/devbraid/status-dot'
-import { CitationChip } from '../components/devbraid/citation-chip'
-import { mockBriefs, mockThreads } from '../lib/mock/data'
+import { threadService } from '../services/thread.service'
+import type { BriefResponse } from '../types/thread'
 
 export const Route = createFileRoute('/briefs/$id')({
   component: BriefDetailPage,
@@ -10,43 +12,43 @@ export const Route = createFileRoute('/briefs/$id')({
 
 function BriefDetailPage() {
   const { id } = Route.useParams()
-  const brief = mockBriefs.find(b => b.id === id)
-  const thread = brief ? mockThreads.find(t => t.id === brief.threadId) : null
+  const [brief, setBrief] = useState<BriefResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true)
+    threadService.getBriefById(id)
+      .then(setBrief)
+      .catch(() => setBrief(null))
+      .finally(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center space-y-4">
+        <RefreshCw className="h-8 w-8 animate-spin mx-auto text-primary" />
+        <p className="text-sm text-muted-foreground">Loading Brief...</p>
+      </div>
+    )
+  }
 
   if (!brief) return <p className="text-muted-foreground py-8">Brief not found.</p>
 
   return (
     <div>
       <PageHeader
-        eyebrow={thread?.repo || ''}
-        title={brief.title}
-        action={<StatusDot status={brief.status} label />}
+        eyebrow="Change Brief"
+        title="Generated Change Brief"
+        action={
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-success-bg text-success-fg border border-success-border">
+            {brief.publishedToGithub ? 'Published' : 'Ready'}
+          </span>
+        }
       />
-      <div className="space-y-6">
-        {brief.sections.map((section) => (
-          <div key={section.title}>
-            <p className="text-sm font-medium text-foreground mb-3">{section.title}</p>
-            <div className="space-y-2">
-              {section.claims.map((claim) => (
-                <div key={claim.text} className="rounded-lg border border-hairline bg-surface p-3">
-                  <p className="text-sm text-foreground mb-2">{claim.text}</p>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {claim.citations.map((c) => <CitationChip key={`${c.file}:${c.line}`} citation={c} />)}
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${claim.provenance === 'cited' ? 'bg-success-bg text-success-fg' : 'bg-info-bg text-info-fg'}`}>{claim.provenance}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-        {brief.unresolvedQuestions.length > 0 && (
-          <div>
-            <p className="text-sm font-medium text-danger-fg mb-2">Unresolved questions</p>
-            {brief.unresolvedQuestions.map((q) => (
-              <div key={q} className="rounded-lg border border-danger-border bg-danger-bg p-3 mb-2 text-sm text-danger-fg">{q}</div>
-            ))}
-          </div>
-        )}
+      <div className="rounded-xl border border-hairline bg-surface p-6">
+        <div className="prose prose-invert max-w-none text-sm text-foreground whitespace-pre-wrap font-mono bg-surface-2 p-6 rounded-lg border border-hairline">
+          {brief.content}
+        </div>
       </div>
     </div>
   )
