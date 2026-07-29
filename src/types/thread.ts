@@ -32,13 +32,21 @@ export interface ChangeThread {
   repositoryFullName: string;
   headBranch: string;
   baseBranch: string;
+  source?: string;
   status: ThreadStatus;
+  riskLevel?: string;
   riskScore?: number;
   riskSummary?: string;
   riskFlags: RiskFlag[];
-  commits?: Commit[];
-  filesChanged?: ChangedFile[];
+  /** Backend returns JSONB as strings — use parseJson() to parse */
+  commits?: any;
+  /** Backend returns JSONB as strings — use parseJson() to parse */
+  changedFiles?: any;
+  /** Backend may send riskReport as JSONB string */
+  riskReport?: any;
+  commitSha?: string;
   decisionNotes?: DecisionNote[];
+  notes?: DecisionNote[];
   notesCount?: number;
   createdAt: string;
   updatedAt: string;
@@ -61,10 +69,9 @@ export interface UpdateThreadRequest {
 export interface BriefResponse {
   id: string;
   threadId: string;
-  title: string;
-  markdownContent: string;
-  summary: string;
-  status: string;
+  content: string;
+  publishedToGithub: boolean;
+  publishUrl?: string;
   createdAt: string;
 }
 
@@ -74,8 +81,63 @@ export interface PublishResponse {
   publishedAt: string;
 }
 
+export interface NoteResponse {
+  id: string;
+  threadId: string;
+  authorId?: string;
+  context?: string;
+  contextRef?: string;
+  decision: string;
+  rationale: string;
+  alternatives?: string;
+  impact?: string;
+  status?: string;
+  createdAt: string;
+}
+
 export interface PaginatedThreads {
   content: ChangeThread[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+}
+
+export interface BriefListItem {
+  id: string;
+  threadId: string;
+  threadTitle: string;
+  repositoryFullName: string;
+  headBranch: string;
+  baseBranch: string;
+  threadStatus: string;
+  publishedToGithub: boolean;
+  createdAt: string;
+}
+
+export interface PaginatedBriefs {
+  content: BriefListItem[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+}
+
+export interface NoteListItem {
+  id: string;
+  threadId: string;
+  threadTitle: string;
+  repositoryFullName: string;
+  decision: string;
+  rationale: string;
+  alternatives?: string;
+  impact?: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface PaginatedNotes {
+  content: NoteListItem[];
   totalPages: number;
   totalElements: number;
   size: number;

@@ -12,6 +12,15 @@ import type {
   OtpVerifyResponseData,
 } from '../types/auth';
 
+interface UpdateProfileRequest {
+  fullName: string;
+}
+
+interface UpdatePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const authService = {
   async sendOtp(email: string): Promise<OtpSendResponseData> {
     const response = await apiClient.post<ApiResponse<OtpSendResponseData>>(
@@ -53,6 +62,18 @@ export const authService = {
       '/auth/me'
     );
     return response.data.data;
+  },
+
+  async updateProfile(data: UpdateProfileRequest): Promise<UserProfileResponseData> {
+    const response = await apiClient.put<ApiResponse<UserProfileResponseData>>(
+      '/auth/profile',
+      data
+    );
+    return response.data.data;
+  },
+
+  async updatePassword(data: UpdatePasswordRequest): Promise<void> {
+    await apiClient.put('/auth/password', data);
   },
 
   async refresh(): Promise<LoginResponseData> {

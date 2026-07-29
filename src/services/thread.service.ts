@@ -7,7 +7,12 @@ import type {
   BriefResponse,
   PublishResponse,
   PaginatedThreads,
-  DecisionNote
+  BriefListItem,
+  PaginatedBriefs,
+  NoteListItem,
+  PaginatedNotes,
+  DecisionNote,
+  NoteResponse
 } from '../types/thread';
 
 export const threadService = {
@@ -97,8 +102,59 @@ export const threadService = {
   /**
    * Add a decision note to a thread.
    */
-  async addDecisionNote(threadId: string, note: Omit<DecisionNote, 'id' | 'createdAt'>): Promise<ChangeThread> {
-    const response = await apiClient.post<ApiResponse<ChangeThread>>(`/threads/${threadId}/notes`, note);
+  async addDecisionNote(threadId: string, note: Omit<DecisionNote, 'id' | 'createdAt'>): Promise<NoteResponse> {
+    const response = await apiClient.post<ApiResponse<NoteResponse>>(`/threads/${threadId}/notes`, note);
+    return response.data.data;
+  },
+
+  /**
+   * List notes for a thread.
+   */
+  async listThreadNotes(threadId: string): Promise<NoteResponse[]> {
+    const response = await apiClient.get<ApiResponse<NoteResponse[]>>(`/threads/${threadId}/notes`);
+    return response.data.data;
+  },
+
+  /**
+   * Update a decision note.
+   */
+  async updateNote(threadId: string, noteId: string, note: Partial<DecisionNote>): Promise<NoteResponse> {
+    const response = await apiClient.put<ApiResponse<NoteResponse>>(`/threads/${threadId}/notes/${noteId}`, note);
+    return response.data.data;
+  },
+
+  /**
+   * Delete a decision note.
+   */
+  async deleteNote(threadId: string, noteId: string): Promise<void> {
+    await apiClient.delete<ApiResponse<null>>(`/threads/${threadId}/notes/${noteId}`);
+  },
+
+  /**
+   * Get paginated list of all briefs.
+   */
+  async listBriefs(page = 0, size = 20): Promise<PaginatedBriefs> {
+    const response = await apiClient.get<ApiResponse<PaginatedBriefs>>('/api/v1/briefs', {
+      params: { page, size }
+    });
+    return response.data.data;
+  },
+
+  /**
+   * Get a single brief by ID.
+   */
+  async getBriefById(id: string): Promise<BriefResponse> {
+    const response = await apiClient.get<ApiResponse<BriefResponse>>(`/api/v1/briefs/${id}`);
+    return response.data.data;
+  },
+
+  /**
+   * Get paginated list of all decision notes.
+   */
+  async listNotes(page = 0, size = 20): Promise<PaginatedNotes> {
+    const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/api/v1/notes', {
+      params: { page, size }
+    });
     return response.data.data;
   }
 };
