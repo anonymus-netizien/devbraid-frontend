@@ -11,6 +11,7 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { useSmoothScroll } from '@/hooks/use-motion'
 import {
   Eyebrow,
@@ -21,6 +22,7 @@ import {
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
 import { LifecycleFlow } from '@/components/marketing/lifecycle-flow'
 import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
+import { IsometricHero } from '@/components/marketing/isometric-hero'
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -147,11 +149,7 @@ function HomePage() {
             </Reveal>
 
             <Reveal delay={120}>
-              <GlowPlate>
-                <div className="mx-auto flex aspect-square w-full max-w-[360px] items-center justify-center text-8xl">
-                  {'\uD83D\uDE80'}
-                </div>
-              </GlowPlate>
+              <IsometricHero className="w-full max-w-[420px] mx-auto" />
             </Reveal>
           </div>
 
@@ -194,8 +192,8 @@ function HomePage() {
           <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
             <Reveal>
               <GlowPlate tone="danger">
-                <div className="mx-auto flex w-full max-w-[360px] items-center justify-center text-8xl">
-                  {'\uD83D\uDE35\u200D\uD83D\uDCBB'}
+                <div className="mx-auto flex h-full min-h-[280px] w-full max-w-[360px] items-center justify-center">
+                  <span className="text-8xl opacity-50">{'\uD83E\uDDE0'}</span>
                 </div>
               </GlowPlate>
             </Reveal>
@@ -328,8 +326,8 @@ function HomePage() {
             </div>
             <Reveal delay={80}>
               <GlowPlate>
-                <div className="mx-auto flex aspect-square w-full max-w-[340px] items-center justify-center text-8xl">
-                  {'\uD83D\uDCD6'}
+                <div className="mx-auto flex aspect-square w-full max-w-[340px] items-center justify-center">
+                  <span className="text-8xl opacity-50">{'\uD83D\uDCD6'}</span>
                 </div>
               </GlowPlate>
             </Reveal>
