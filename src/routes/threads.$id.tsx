@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { GitCommit, FileCode, Plus, RefreshCw, Sparkles, Send, ShieldAlert, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react'
+import { GitCommit, FileCode, Plus, RefreshCw, Sparkles, Send, ShieldAlert, CheckCircle2, AlertTriangle, Loader2, Pencil, Trash2 } from 'lucide-react'
 import { PageHeader } from '../components/devbraid/page-header'
 import { StatusDot } from '../components/devbraid/status-dot'
-import { RiskChip } from '../components/devbraid/risk-chip'
 import { BranchPair } from '../components/devbraid/branch-pair'
 import { EmptyState } from '../components/devbraid/empty-state'
 import { threadService } from '../services/thread.service'
-import type { ChangeThread, BriefResponse, DecisionNote, NoteResponse } from '../types/thread'
+import type { ChangeThread, BriefResponse, NoteResponse } from '../types/thread'
 
 export const Route = createFileRoute('/threads/$id')({
   component: ThreadDetailPage,
@@ -32,6 +31,12 @@ function ThreadDetailPage() {
   const [alternatives, setAlternatives] = useState('')
   const [impact, setImpact] = useState('')
   const [addingNote, setAddingNote] = useState(false)
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
+  const [editDecision, setEditDecision] = useState('')
+  const [editRationale, setEditRationale] = useState('')
+  const [editAlternatives, setEditAlternatives] = useState('')
+  const [editImpact, setEditImpact] = useState('')
+  const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const loadThreadData = async () => {
@@ -161,6 +166,48 @@ function ThreadDetailPage() {
     }
   }
 
+  const handleEditNote = (note: NoteResponse) => {
+    setEditingNoteId(note.id)
+    setEditDecision(note.decision)
+    setEditRationale(note.rationale)
+    setEditAlternatives(note.alternatives || '')
+    setEditImpact(note.impact || '')
+  }
+
+  const handleSaveEdit = async (noteId: string) => {
+    if (!editDecision.trim() || !editRationale.trim()) return
+    setMessage(null)
+    try {
+      const updated = await threadService.updateNote(id, noteId, {
+        decision: editDecision.trim(),
+        rationale: editRationale.trim(),
+        alternatives: editAlternatives.trim() || undefined,
+        impact: editImpact.trim() || undefined,
+      })
+      setNotes(notes.map(n => n.id === noteId ? updated : n))
+      setEditingNoteId(null)
+      setMessage({ type: 'success', text: 'Note updated.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to update note'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const handleDeleteNote = async (noteId: string) => {
+    setDeletingNoteId(noteId)
+    setMessage(null)
+    try {
+      await threadService.deleteNote(id, noteId)
+      setNotes(notes.filter(n => n.id !== noteId))
+      setMessage({ type: 'success', text: 'Note deleted.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete note'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setDeletingNoteId(null)
+    }
+  }
+
   if (loading) {
     return (
       <div className="py-20 text-center space-y-4">
@@ -183,6 +230,12 @@ function ThreadDetailPage() {
 
   const commitsList = parseJson(thread.commits)
   const filesList = parseJson(thread.changedFiles)
+
+  // Parse riskReport JSON to extract risk flags display
+  const riskReportData = thread.riskReport ? (() => {
+    try { return JSON.parse(typeof thread.riskReport === 'string' ? thread.riskReport : '{}') } catch { return {} }
+  })() : {}
+  const riskFlagsFromReport = Array.isArray(riskReportData?.flags) ? riskReportData.flags : []
 
   const repoName = thread.repositoryFullName || ''
   const statusLower = (thread.status || 'drafting').toLowerCase()
@@ -306,20 +359,49 @@ function ThreadDetailPage() {
           <section className="rounded-xl border border-hairline bg-surface p-5 space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
-                Risk Profile · AI Analysis
+                Risk Profile · {thread.riskLevel ? 'Deterministic Analysis' : 'Not analyzed'}
               </p>
               {thread.riskLevel && (
-                <span className="text-xs text-muted-foreground">{thread.riskLevel}</span>
+                <span className={`text-xs font-mono px-2 py-0.5 rounded-full border ${
+                  thread.riskLevel === 'HIGH' || thread.riskLevel === 'CRITICAL'
+                    ? 'bg-danger-bg text-danger-fg border-danger-border'
+                    : thread.riskLevel === 'MEDIUM'
+                    ? 'bg-warning-bg text-warning-fg border-warning-border'
+                    : 'bg-success-bg text-success-fg border-success-border'
+                }`}>
+                  {thread.riskLevel}
+                </span>
               )}
             </div>
-            {thread.riskFlags && thread.riskFlags.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {thread.riskFlags.map((f) => (
-                  <RiskChip key={f} flag={f} />
+            {riskFlagsFromReport.length > 0 ? (
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2">
+                  {riskFlagsFromReport.map((f: any, i: number) => (
+                    <span
+                      key={f.rule || i}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono border ${
+                        f.severity === 'HIGH' || f.severity === 'CRITICAL'
+                          ? 'border-danger-border bg-danger-bg text-danger-fg'
+                          : f.severity === 'MEDIUM'
+                          ? 'border-warning-border bg-warning-bg text-warning-fg'
+                          : 'border-hairline bg-surface-2 text-muted-foreground'
+                      }`}
+                      title={f.message || ''}
+                    >
+                      {f.rule}
+                    </span>
+                  ))}
+                </div>
+                {riskFlagsFromReport.map((f: any, i: number) => f.message && (
+                  <p key={`msg-${i}`} className="text-xs text-muted-foreground pl-1">
+                    {f.message}
+                  </p>
                 ))}
               </div>
+            ) : thread.riskLevel ? (
+              <p className="text-sm text-muted-foreground">Risk assessed: <span className="font-mono text-foreground">{thread.riskLevel}</span>. No specific risk flags detected.</p>
             ) : (
-              <p className="text-sm text-muted-foreground">No critical risk flags detected.</p>
+              <p className="text-sm text-muted-foreground">Run AI Risk Analysis to evaluate this thread.</p>
             )}
           </section>
 
@@ -409,37 +491,94 @@ function ThreadDetailPage() {
             ) : (
               <div className="space-y-3">
                 {notes.map((note) => (
-                  <div key={note.id} className="rounded-xl border border-hairline bg-surface p-4 space-y-2">
+                  <div key={note.id} className="rounded-xl border border-hairline bg-surface p-4 space-y-2 group">
                     <div className="flex items-center justify-between pb-2 border-b border-hairline">
                       <span className="text-xs font-mono font-medium text-primary">Decision Note</span>
-                      {note.createdAt && (
-                        <span className="text-[10px] text-muted-foreground font-mono">
-                          {new Date(note.createdAt).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <p className="text-muted-foreground mb-0.5">Decision</p>
-                        <p className="text-foreground font-medium">{note.decision}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground mb-0.5">Rationale</p>
-                        <p className="text-foreground">{note.rationale}</p>
-                      </div>
-                      {note.alternatives && (
-                        <div>
-                          <p className="text-muted-foreground mb-0.5">Alternatives</p>
-                          <p className="text-foreground">{note.alternatives}</p>
+                      <div className="flex items-center gap-2">
+                        {note.createdAt && (
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            {new Date(note.createdAt).toLocaleDateString()}
+                          </span>
+                        )}
+                        <div className="hidden group-hover:flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleEditNote(note)}
+                            className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                            title="Edit note"
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+                                handleDeleteNote(note.id)
+                              }
+                            }}
+                            disabled={deletingNoteId === note.id}
+                            className="p-1 rounded text-muted-foreground hover:text-danger-fg hover:bg-danger-bg transition-colors"
+                            title="Delete note"
+                          >
+                            {deletingNoteId === note.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+                          </button>
                         </div>
-                      )}
-                      {note.impact && (
-                        <div>
-                          <p className="text-muted-foreground mb-0.5">Impact</p>
-                          <p className="text-foreground">{note.impact}</p>
-                        </div>
-                      )}
+                      </div>
                     </div>
+
+                    {editingNoteId === note.id ? (
+                      <div className="space-y-3 pt-2">
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Decision</label>
+                          <input type="text" value={editDecision} onChange={e => setEditDecision(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-foreground mb-1">Rationale</label>
+                          <textarea rows={2} value={editRationale} onChange={e => setEditRationale(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs text-muted-foreground mb-1">Alternatives</label>
+                            <input type="text" value={editAlternatives} onChange={e => setEditAlternatives(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-muted-foreground mb-1">Impact</label>
+                            <input type="text" value={editImpact} onChange={e => setEditImpact(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 pt-1">
+                          <button type="button" onClick={() => handleSaveEdit(note.id)} disabled={!editDecision.trim() || !editRationale.trim()} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 disabled:opacity-50">
+                            Save
+                          </button>
+                          <button type="button" onClick={() => setEditingNoteId(null)} className="px-3 py-1.5 rounded-lg border border-hairline text-xs text-muted-foreground hover:text-foreground">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4 text-xs">
+                        <div>
+                          <p className="text-muted-foreground mb-0.5">Decision</p>
+                          <p className="text-foreground font-medium">{note.decision}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-0.5">Rationale</p>
+                          <p className="text-foreground">{note.rationale}</p>
+                        </div>
+                        {note.alternatives && (
+                          <div>
+                            <p className="text-muted-foreground mb-0.5">Alternatives</p>
+                            <p className="text-foreground">{note.alternatives}</p>
+                          </div>
+                        )}
+                        {note.impact && (
+                          <div>
+                            <p className="text-muted-foreground mb-0.5">Impact</p>
+                            <p className="text-foreground">{note.impact}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
