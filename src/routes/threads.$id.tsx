@@ -249,7 +249,7 @@ function ThreadDetailPage() {
               type="button"
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-hairline text-xs font-medium text-foreground hover:bg-surface transition-colors disabled:opacity-50"
+              className="btn btn-ghost btn-sm"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>Refresh Diff</span>
@@ -258,7 +258,7 @@ function ThreadDetailPage() {
               type="button"
               onClick={handleAnalyze}
               disabled={analyzing}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-hairline text-xs font-medium text-foreground hover:bg-surface transition-colors disabled:opacity-50"
+              className="btn btn-ghost btn-sm"
             >
               <Sparkles className={`h-3.5 w-3.5 text-warning-fg ${analyzing ? 'animate-spin' : ''}`} />
               <span>AI Risk Analysis</span>
@@ -267,7 +267,7 @@ function ThreadDetailPage() {
               type="button"
               onClick={handleGenerateBrief}
               disabled={generatingBrief}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-2 text-foreground text-xs font-medium hover:bg-surface-2/80 transition-colors disabled:opacity-50"
+              className="btn btn-soft btn-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span>{generatingBrief ? 'Generating...' : 'Generate Brief'}</span>
@@ -289,7 +289,7 @@ function ThreadDetailPage() {
                 type="button"
                 onClick={handlePublish}
                 disabled={publishing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="btn btn-primary btn-sm"
               >
                 <Send className="h-3.5 w-3.5" />
                 <span>{publishing ? 'Publishing...' : 'Publish PR Comment'}</span>

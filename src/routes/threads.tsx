@@ -52,14 +52,14 @@ function ThreadsPage() {
               type="button"
               onClick={() => refetch()}
               disabled={isLoading}
-              className="rounded-md border border-hairline bg-surface/60 px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-surface transition-colors disabled:opacity-50"
+              className="btn btn-ghost btn-sm"
             >
               Refresh
             </button>
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="btn btn-primary btn-sm"
             >
               <Plus className="size-3.5" /> New thread
             </button>
@@ -74,10 +74,10 @@ function ThreadsPage() {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`px-2.5 py-1 rounded text-[10px] font-medium uppercase tracking-wider transition-colors ${
+              className={`btn btn-xs rounded text-[10px] font-medium uppercase tracking-wider ${
                 statusFilter === s
-                  ? 'bg-surface text-foreground border border-hairline'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'btn-soft'
+                  : 'btn-ghost text-muted-foreground'
               }`}
             >
               {s}
@@ -92,7 +92,7 @@ function ThreadsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search threads\u2026"
-            className="h-8 w-full rounded-md border border-hairline bg-surface/60 pl-8 pr-3 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+            className="input input-sm w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
           />
         </div>
       </div>
@@ -109,7 +109,7 @@ function ThreadsPage() {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+              className="btn btn-primary btn-sm"
             >
               New thread
             </button>
