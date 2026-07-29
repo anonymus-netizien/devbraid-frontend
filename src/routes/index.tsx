@@ -83,9 +83,9 @@ const features = [
 ]
 
 const metrics = [
-  { value: '68%', label: 'less review back-and-forth' },
-  { value: '9 min', label: 'median time to first approval' },
-  { value: '100%', label: 'claims cited to evidence' },
+  { value: 'Cited', label: 'every claim backed by git commit sha' },
+  { value: 'Scoped', label: 'single branch or pull request mode' },
+  { value: 'Audited', label: 'ai risk analysis flags before review' },
 ]
 
 function HomePage() {
