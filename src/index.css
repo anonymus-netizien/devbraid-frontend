@@ -99,6 +99,7 @@
   --elevation-2: 0 6px 20px -8px oklch(0 0 0 / 55%);
   --elevation-3: 0 24px 60px -20px oklch(0 0 0 / 70%);
   --glow-primary: 0 0 60px -10px color-mix(in oklab, var(--primary) 45%, transparent);
+  --measure: 68ch;
 }
 
 @layer base {
@@ -126,6 +127,133 @@
 
 @utility hairline {
   border: 1px solid var(--color-hairline);
+}
+
+@utility grain-mask {
+  mask-image: radial-gradient(ellipse at center, black 45%, transparent 78%);
+}
+
+@utility float-slow {
+  animation: float-y 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@utility measure {
+  max-width: var(--measure);
+}
+
+@utility reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 620ms cubic-bezier(0.05, 0.7, 0.1, 1),
+    transform 620ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+
+  &[data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility border-beam {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -160%;
+    z-index: 0;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      color-mix(in oklab, var(--primary) 85%, transparent) 60deg,
+      transparent 130deg,
+      transparent 240deg,
+      color-mix(in oklab, var(--neutral-accent) 70%, transparent) 300deg,
+      transparent 350deg
+    );
+    animation: border-spin 4s linear infinite;
+  }
+}
+
+@utility beam {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in oklab, var(--primary) 70%, transparent),
+    transparent
+  );
+  animation: beam-fall 7s linear infinite;
+}
+
+@utility marquee {
+  animation: marquee-x 34s linear infinite;
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 220% 0;
+  }
+  100% {
+    background-position: -220% 0;
+  }
+}
+
+@keyframes border-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes beam-fall {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .float-slow,
+  .marquee,
+  .beam {
+    animation: none;
+  }
+  .border-beam::before {
+    animation: none;
+  }
 }
 
 @theme inline {
