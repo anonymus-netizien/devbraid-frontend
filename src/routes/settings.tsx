@@ -94,7 +94,7 @@ function SettingsPage() {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                className="input w-full px-3 py-2 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm placeholder:text-muted-foreground"
                 placeholder="Your display name"
               />
             </div>
@@ -104,7 +104,7 @@ function SettingsPage() {
                 type="email"
                 defaultValue={user?.email || ''}
                 disabled
-                className="w-full px-3 py-2 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm opacity-60 cursor-not-allowed"
+                className="input w-full px-3 py-2 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm opacity-60 cursor-not-allowed"
               />
               <p className="text-[10px] text-muted-foreground mt-1">Email cannot be changed.</p>
             </div>
@@ -113,7 +113,7 @@ function SettingsPage() {
                 type="button"
                 onClick={handleSaveProfile}
                 disabled={saving || !displayName.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                className="btn btn-primary btn-sm"
               >
                 {saving && <RefreshCw className="h-3.5 w-3.5 animate-spin" />}
                 <Save className="h-3.5 w-3.5" />
@@ -135,7 +135,7 @@ function SettingsPage() {
             <button
               type="button"
               onClick={() => setShowPasswordForm(true)}
-              className="px-4 py-2 rounded-lg border border-hairline text-xs font-medium text-foreground hover:bg-surface-2 transition-colors"
+              className="btn btn-ghost btn-sm"
             >
               Change password
             </button>
@@ -262,7 +262,7 @@ function SettingsPage() {
             <select
               value={tz}
               onChange={(e) => setTz(e.target.value)}
-              className="w-full max-w-sm rounded-lg border border-hairline bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/50"
+              className="select w-full max-w-sm rounded-lg border border-hairline bg-surface-2 px-3 py-2 text-sm text-foreground"
             >
               <option value="UTC">UTC</option>
               <option value="Europe/Amsterdam">Europe/Amsterdam</option>

@@ -43,13 +43,13 @@ function BriefsPage() {
         />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-hairline">
-          <table className="w-full">
+          <table className="table">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Brief</th>
-                <th className="hidden px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:table-cell">Thread</th>
-                <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-                <th className="px-4 py-3 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Updated</th>
+                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Brief</th>
+                <th className="hidden sm:table-cell text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Thread</th>
+                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
+                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Updated</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">

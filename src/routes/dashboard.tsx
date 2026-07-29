@@ -92,12 +92,12 @@ function DashboardPage() {
   return (
     <div className="mx-auto w-full max-w-6xl">
       {ghConnected === false && (
-        <div className="mb-6 rounded-lg border border-warning-border bg-warning-bg p-4 text-sm flex items-center justify-between gap-4">
+        <div className="mb-6 rounded-lg border border-warning-border bg-warning-bg p-4 flex items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-warning-fg">GitHub connection required</p>
             <p className="text-xs text-muted-foreground mt-0.5">Connect your Personal Access Token to inspect repositories and post PR briefs.</p>
           </div>
-          <Link to="/connections" className="shrink-0 rounded-md bg-warning-fg px-3 py-1.5 text-xs font-semibold text-background hover:opacity-90 transition-opacity">Connect PAT →</Link>
+          <Link to="/connections" className="btn btn-soft btn-sm text-background">Connect PAT →</Link>
         </div>
       )}
 
@@ -105,12 +105,9 @@ function DashboardPage() {
         eyebrow="Workspace"
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
-        actions={
-          <Link to="/threads">
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
-              <Plus className="size-3.5" /> New thread
-            </span>
-          </Link>
+        actions={              <Link to="/threads" className="btn btn-primary btn-sm">
+                <Plus className="size-3.5" /> New thread
+              </Link>
         }
       />
 
@@ -131,10 +128,10 @@ function DashboardPage() {
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
-                  className={`px-2 py-1 rounded text-[10px] font-medium uppercase tracking-wider transition-colors ${
+                  className={`btn btn-xs rounded text-[10px] font-medium uppercase tracking-wider ${
                     statusFilter === s
-                      ? 'bg-surface text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'btn-soft'
+                      : 'btn-ghost text-muted-foreground'
                   }`}
                 >
                   {s}
