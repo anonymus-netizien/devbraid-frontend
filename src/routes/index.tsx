@@ -14,7 +14,6 @@ import {
 import { useSmoothScroll } from '@/hooks/use-motion'
 import {
   Eyebrow,
-  GlowPlate,
   Reveal,
   SectionHeading,
 } from '@/components/marketing/primitives'
@@ -22,6 +21,8 @@ import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
 import { LifecycleFlow } from '@/components/marketing/lifecycle-flow'
 import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
 import { IsometricHero } from '@/components/marketing/isometric-hero'
+import { IsometricProblem } from '@/components/marketing/isometric-problem'
+import { IsometricDocs } from '@/components/marketing/isometric-docs'
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -190,11 +191,7 @@ function HomePage() {
         <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
             <Reveal>
-              <GlowPlate tone="danger">
-                <div className="mx-auto flex h-full min-h-[280px] w-full max-w-[360px] items-center justify-center">
-                  <span className="text-8xl opacity-50">{'\uD83E\uDDE0'}</span>
-                </div>
-              </GlowPlate>
+              <IsometricProblem className="w-full max-w-[400px] mx-auto" />
             </Reveal>
             <div>
               <SectionHeading
@@ -324,11 +321,7 @@ function HomePage() {
               </Reveal>
             </div>
             <Reveal delay={80}>
-              <GlowPlate>
-                <div className="mx-auto flex aspect-square w-full max-w-[340px] items-center justify-center">
-                  <span className="text-8xl opacity-50">{'\uD83D\uDCD6'}</span>
-                </div>
-              </GlowPlate>
+              <IsometricDocs className="w-full max-w-[400px] mx-auto" />
             </Reveal>
           </div>
         </section>
