@@ -44,7 +44,7 @@ function LoginPage() {
 
 
   return (
-    <AuthShell>
+    <AuthShell variant="login">
       <div>
         <h2 className="text-2xl font-semibold text-foreground mb-1">Sign in</h2>
         <p className="text-sm text-muted-foreground mb-6">Welcome back to DevBraid</p>

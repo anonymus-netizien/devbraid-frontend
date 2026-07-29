@@ -1,20 +1,19 @@
 import type { ReactNode } from 'react'
+import { IsometricAuth } from '@/components/marketing/isometric-auth'
 
 interface AuthShellProps {
   children: ReactNode
+  /** Which variant of the isometric illustration to show */
+  variant?: 'login' | 'register'
 }
 
-export function AuthShell({ children }: AuthShellProps) {
+export function AuthShell({ children, variant = 'login' }: AuthShellProps) {
   return (
     <div className="flex min-h-screen">
-      {/* Left: Brand */}
+      {/* Left: Isometric illustration + Brand */}
       <div className="hidden lg:flex lg:w-1/2 bg-surface items-center justify-center p-12">
-        <div className="max-w-md text-center">
-          <div className="h-12 w-12 rounded-xl bg-primary mx-auto mb-6 flex items-center justify-center">
-            <span className="text-xl font-bold text-primary-foreground" aria-hidden="true">B</span>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-3">DevBraid</h1>
-          <p className="text-muted-foreground">Your engineering narrative. Capture decisions, track changes, publish cited briefs.</p>
+        <div className="w-full max-w-md">
+          <IsometricAuth variant={variant} className="w-full" />
         </div>
       </div>
       {/* Right: Form */}

@@ -1,6 +1,8 @@
+import { AnimatePresence } from 'framer-motion'
 import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router'
 import { Toaster } from 'sonner'
 import { AppShell } from '../components/devbraid/app-shell'
+import { PageTransition } from '../components/ui/page-transition'
 
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -9,7 +11,11 @@ function RootLayout() {
   if (isBare) {
     return (
       <div className="min-h-dvh bg-background text-foreground">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <PageTransition key={pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
         <Toaster position="bottom-right" />
       </div>
     )
@@ -17,7 +23,11 @@ function RootLayout() {
 
   return (
     <AppShell>
-      <Outlet />
+      <AnimatePresence mode="wait">
+        <PageTransition key={pathname}>
+          <Outlet />
+        </PageTransition>
+      </AnimatePresence>
     </AppShell>
   )
 }
