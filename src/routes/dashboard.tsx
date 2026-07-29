@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
   ArrowUpRight,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { PageHeader, LoadingRows, EmptyState } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
+import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { useAuth } from '@/context/AuthContext'
 import githubService from '@/services/github.service'
 import { threadService } from '@/services/thread.service'
@@ -28,33 +29,17 @@ export const Route = createFileRoute('/dashboard')({
   component: DashboardPage,
 })
 
-function CountUp({ to, duration = 1200 }: { to: number; duration?: number }) {
-  const [current, setCurrent] = useState(0)
-  useEffect(() => {
-    if (to === 0) { setCurrent(0); return }
-    const start = performance.now()
-    const raf = requestAnimationFrame(function tick(now) {
-      const elapsed = now - start
-      const pct = Math.min(elapsed / duration, 1)
-      setCurrent(Math.floor(pct * to))
-      if (pct < 1) requestAnimationFrame(tick)
-    })
-    return () => cancelAnimationFrame(raf)
-  }, [to, duration])
-  return <>{current}</>
-}
-
 function StatCard({ label, value, hint, icon: Icon, to }: {
   label: string; value: number; hint: string; icon: typeof FileText; to: string
 }) {
   return (
-    <Link to={to} className="block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface">
+    <Link to={to} className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface">
       <div className="flex items-start justify-between">
         <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
-        <Icon className="size-4 text-muted-foreground" />
+        <Icon className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
       </div>
       <div className="mt-3 font-mono text-3xl font-semibold tracking-tight">
-        <CountUp to={value} />
+        <AnimatedCounter to={value} />
       </div>
       <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
     </Link>
