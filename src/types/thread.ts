@@ -12,10 +12,17 @@ export interface DecisionNote {
 }
 
 export interface ChangedFile {
-  path: string;
+  filename?: string;
+  path?: string;
   additions: number;
   deletions: number;
   status?: string;
+}
+
+export interface CommitSummary {
+  sha: string;
+  message: string;
+  author?: { name?: string; email?: string } | null;
 }
 
 export interface Commit {
@@ -38,12 +45,9 @@ export interface ChangeThread {
   riskScore?: number;
   riskSummary?: string;
   riskFlags: RiskFlag[];
-  /** Backend returns JSONB as strings — use parseJson() to parse */
-  commits?: any;
-  /** Backend returns JSONB as strings — use parseJson() to parse */
-  changedFiles?: any;
-  /** Backend may send riskReport as JSONB string */
-  riskReport?: any;
+  commits?: CommitSummary[];
+  changedFiles?: ChangedFile[];
+  riskReport?: Record<string, unknown>;
   commitSha?: string;
   decisionNotes?: DecisionNote[];
   notes?: DecisionNote[];
