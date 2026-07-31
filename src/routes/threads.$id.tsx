@@ -217,7 +217,8 @@ function ThreadDetailPage() {
 
   if (!thread) return <EmptyState title="Thread not found" description="This thread may have been deleted." />
 
-  // JSONB columns from backend come as strings — parse safely
+  // Backward-compat: JSONB columns now arrive typed from the backend, but older
+  // responses may still carry them as JSON strings — parse defensively.
   const parseJson = (field: unknown): any[] => {
     if (Array.isArray(field)) return field
     if (typeof field === 'string') {
@@ -226,13 +227,13 @@ function ThreadDetailPage() {
     return []
   }
 
-  const commitsList = parseJson(thread.commits)
-  const filesList = parseJson(thread.changedFiles)
+  const commitsList = Array.isArray(thread.commits) ? thread.commits : parseJson(thread.commits)
+  const filesList = Array.isArray(thread.changedFiles) ? thread.changedFiles : parseJson(thread.changedFiles)
 
-  // Parse riskReport JSON to extract risk flags display
-  const riskReportData = thread.riskReport ? (() => {
-    try { return JSON.parse(typeof thread.riskReport === 'string' ? thread.riskReport : '{}') } catch { return {} }
-  })() : {}
+  // riskReport arrives as a typed object now — parse strings only for older responses
+  const riskReportData = (thread.riskReport && typeof thread.riskReport === 'object')
+    ? thread.riskReport
+    : (thread.riskReport && typeof thread.riskReport === 'string' ? parseJson(thread.riskReport) : {})
   const riskFlagsFromReport = Array.isArray(riskReportData?.flags) ? riskReportData.flags : []
 
   const repoName = thread.repositoryFullName || ''
