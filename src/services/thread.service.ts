@@ -134,7 +134,7 @@ export const threadService = {
    * Get paginated list of all briefs.
    */
   async listBriefs(page = 0, size = 20): Promise<PaginatedBriefs> {
-    const response = await apiClient.get<ApiResponse<PaginatedBriefs>>('/api/v1/briefs', {
+    const response = await apiClient.get<ApiResponse<PaginatedBriefs>>('/briefs', {
       params: { page, size }
     });
     return response.data.data;
@@ -144,7 +144,7 @@ export const threadService = {
    * Get a single brief by ID.
    */
   async getBriefById(id: string): Promise<BriefResponse> {
-    const response = await apiClient.get<ApiResponse<BriefResponse>>(`/api/v1/briefs/${id}`);
+    const response = await apiClient.get<ApiResponse<BriefResponse>>(`/briefs/${id}`);
     return response.data.data;
   },
 
@@ -152,7 +152,7 @@ export const threadService = {
    * Get paginated list of all decision notes.
    */
   async listNotes(page = 0, size = 20): Promise<PaginatedNotes> {
-    const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/api/v1/notes', {
+    const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/notes', {
       params: { page, size }
     });
     return response.data.data;

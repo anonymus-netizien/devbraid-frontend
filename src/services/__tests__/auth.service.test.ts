@@ -99,7 +99,7 @@ describe("authService", () => {
   });
 
   describe("me()", () => {
-    it("fetches user profile from /auth/me", async () => {
+    it("fetches user profile from /user/profile", async () => {
       const mockMeResponse = {
         data: {
           user: { id: "1", name: "Alex Vane", email: "alex@acme.com" },
@@ -109,7 +109,7 @@ describe("authService", () => {
 
       const result = await authService.me();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith("/auth/me");
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith("/user/profile");
       expect(result.user.email).toBe("alex@acme.com");
     });
   });
