@@ -59,21 +59,21 @@ export const authService = {
 
   async me(): Promise<UserProfileResponseData> {
     const response = await apiClient.get<ApiResponse<UserProfileResponseData>>(
-      '/auth/me'
+      '/user/profile'
     );
     return response.data.data;
   },
 
   async updateProfile(data: UpdateProfileRequest): Promise<UserProfileResponseData> {
     const response = await apiClient.put<ApiResponse<UserProfileResponseData>>(
-      '/auth/profile',
+      '/user/profile',
       data
     );
     return response.data.data;
   },
 
   async updatePassword(data: UpdatePasswordRequest): Promise<void> {
-    await apiClient.put('/auth/password', data);
+    await apiClient.put('/user/password', data);
   },
 
   async refresh(): Promise<LoginResponseData> {

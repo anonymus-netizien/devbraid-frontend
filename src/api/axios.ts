@@ -34,7 +34,7 @@ apiClient.interceptors.response.use(
       originalRequest?.url?.includes('/auth/register') ||
       originalRequest?.url?.includes('/auth/otp/') ||
       originalRequest?.url?.includes('/auth/refresh') ||
-      originalRequest?.url?.includes('/auth/me');
+      originalRequest?.url?.includes('/user/profile');
 
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
