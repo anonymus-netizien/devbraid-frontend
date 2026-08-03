@@ -1,5 +1,5 @@
-import apiClient from '../api/axios';
-import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token';
+import apiClient from '../api/axios'
+import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token'
 import type {
   LoginRequest,
   ApiResponse,
@@ -10,100 +10,93 @@ import type {
   OtpSendResponseData,
   OtpVerifyRequest,
   OtpVerifyResponseData,
-} from '../types/auth';
+} from '../types/auth'
 
 interface UpdateProfileRequest {
-  fullName: string;
+  fullName: string
 }
 
 interface UpdatePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
+  currentPassword: string
+  newPassword: string
 }
 
 export const authService = {
   async sendOtp(email: string): Promise<OtpSendResponseData> {
-    const response = await apiClient.post<ApiResponse<OtpSendResponseData>>(
-      '/auth/otp/send',
-      { email } as OtpSendRequest
-    );
-    return response.data.data;
+    const response = await apiClient.post<ApiResponse<OtpSendResponseData>>('/auth/otp/send', {
+      email,
+    } as OtpSendRequest)
+    return response.data.data
   },
 
   async verifyOtp(email: string, otp: string): Promise<OtpVerifyResponseData> {
-    const response = await apiClient.post<ApiResponse<OtpVerifyResponseData>>(
-      '/auth/otp/verify',
-      { email, otp } as OtpVerifyRequest
-    );
-    return response.data.data;
+    const response = await apiClient.post<ApiResponse<OtpVerifyResponseData>>('/auth/otp/verify', {
+      email,
+      otp,
+    } as OtpVerifyRequest)
+    return response.data.data
   },
 
   async login(credentials: LoginRequest): Promise<LoginResponseData> {
     const response = await apiClient.post<ApiResponse<LoginResponseData>>(
       '/auth/login',
-      credentials
-    );
-    const apiData = response.data;
-    const data = apiData.data;
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    return data;
+      credentials,
+    )
+    const apiData = response.data
+    const data = apiData.data
+    setAccessToken(data.accessToken)
+    setRefreshToken(data.refreshToken)
+    return data
   },
 
   async register(data: RegisterRequest): Promise<void> {
-    await apiClient.post<ApiResponse<null>>(
-      '/auth/register',
-      data
-    );
+    await apiClient.post<ApiResponse<null>>('/auth/register', data)
   },
 
   async me(): Promise<UserProfileResponseData> {
-    const response = await apiClient.get<ApiResponse<UserProfileResponseData>>(
-      '/user/profile'
-    );
-    return response.data.data;
+    const response = await apiClient.get<ApiResponse<UserProfileResponseData>>('/user/profile')
+    return response.data.data
   },
 
   async updateProfile(data: UpdateProfileRequest): Promise<UserProfileResponseData> {
     const response = await apiClient.put<ApiResponse<UserProfileResponseData>>(
       '/user/profile',
-      data
-    );
-    return response.data.data;
+      data,
+    )
+    return response.data.data
   },
 
   async updatePassword(data: UpdatePasswordRequest): Promise<void> {
-    await apiClient.put('/user/password', data);
+    await apiClient.put('/user/password', data)
   },
 
   async refresh(): Promise<LoginResponseData> {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) throw new Error('No refresh token available');
-    const response = await apiClient.post<ApiResponse<LoginResponseData>>(
-      '/auth/refresh',
-      { refreshToken }
-    );
-    const apiData = response.data;
-    const data = apiData.data;
-    setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
-    return data;
+    const refreshToken = getRefreshToken()
+    if (!refreshToken) throw new Error('No refresh token available')
+    const response = await apiClient.post<ApiResponse<LoginResponseData>>('/auth/refresh', {
+      refreshToken,
+    })
+    const apiData = response.data
+    const data = apiData.data
+    setAccessToken(data.accessToken)
+    setRefreshToken(data.refreshToken)
+    return data
   },
 
   async logout(): Promise<void> {
-    const refreshToken = getRefreshToken();
+    const refreshToken = getRefreshToken()
     if (!refreshToken) {
-      clearTokens();
-      return;
+      clearTokens()
+      return
     }
     try {
-      await apiClient.post('/auth/logout', { refreshToken });
+      await apiClient.post('/auth/logout', { refreshToken })
     } catch {
       // Ignore logout backend errors
     } finally {
-      clearTokens();
+      clearTokens()
     }
   },
-};
+}
 
-export default authService;
+export default authService

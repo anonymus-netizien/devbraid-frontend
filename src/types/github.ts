@@ -28,4 +28,3 @@ export interface Branch {
 
 export type ConnectionStatus = 'active' | 'expired' | 'revoked' | 'disconnected'
 export type ModalStep = 'enter-pat' | 'validating' | 'pick-repo' | 'pick-branch'
-

@@ -30,12 +30,12 @@ export function CreateThreadDialog({
   const [loadingRepos, setLoadingRepos] = useState(false)
   const [repos, setRepos] = useState<GitRepository[]>([])
   const [selectedRepo, setSelectedRepo] = useState<string>('')
-  
+
   const [loadingBranches, setLoadingBranches] = useState(false)
   const [branches, setBranches] = useState<Branch[]>([])
   const [headBranch, setHeadBranch] = useState<string>('')
   const [baseBranch, setBaseBranch] = useState<string>('')
-  
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -73,7 +73,7 @@ export function CreateThreadDialog({
           setBranches(branchList || [])
           if (branchList && branchList.length > 0) {
             setHeadBranch(branchList[0].name)
-            const mainOrMaster = branchList.find(b => b.name === 'main' || b.name === 'master')
+            const mainOrMaster = branchList.find((b) => b.name === 'main' || b.name === 'master')
             setBaseBranch(mainOrMaster ? mainOrMaster.name : branchList[0].name)
           }
         })
@@ -112,7 +112,8 @@ export function CreateThreadDialog({
       }
     } catch (err: unknown) {
       console.error('Failed to create thread:', err)
-      const errorMsg = err instanceof Error ? err.message : 'Failed to create Change Thread. Please try again.'
+      const errorMsg =
+        err instanceof Error ? err.message : 'Failed to create Change Thread. Please try again.'
       setError(errorMsg)
     } finally {
       setSubmitting(false)
@@ -244,7 +245,11 @@ export function CreateThreadDialog({
               {headBranch && baseBranch && headBranch === baseBranch && (
                 <div className="px-3 py-1.5 rounded-md bg-info-bg text-info-fg border border-info-border text-xs flex items-center gap-2">
                   <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                  <span><strong>Single Branch Mode:</strong> Tracks recent commits on <code className="font-mono bg-surface px-1 py-0.5 rounded">{headBranch}</code> for solo development.</span>
+                  <span>
+                    <strong>Single Branch Mode:</strong> Tracks recent commits on{' '}
+                    <code className="font-mono bg-surface px-1 py-0.5 rounded">{headBranch}</code>{' '}
+                    for solo development.
+                  </span>
                 </div>
               )}
             </div>

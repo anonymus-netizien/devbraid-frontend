@@ -4,7 +4,14 @@ import { toast } from 'sonner'
 import { AuthShell } from '../components/devbraid/auth-shell'
 import authService from '../services/auth.service'
 
-const OTP_SLOT_KEYS = ['otp-slot-0', 'otp-slot-1', 'otp-slot-2', 'otp-slot-3', 'otp-slot-4', 'otp-slot-5'];
+const OTP_SLOT_KEYS = [
+  'otp-slot-0',
+  'otp-slot-1',
+  'otp-slot-2',
+  'otp-slot-3',
+  'otp-slot-4',
+  'otp-slot-5',
+]
 
 export const Route = createFileRoute('/auth/otp')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -55,12 +62,12 @@ function OtpPage() {
   }
 
   useEffect(() => {
-    if (cooldown <= 0) return;
+    if (cooldown <= 0) return
     const timer = setInterval(() => {
-      setCooldown((c) => Math.max(0, c - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [cooldown]);
+      setCooldown((c) => Math.max(0, c - 1))
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [cooldown])
 
   const handleResend = async () => {
     if (cooldown > 0) return
@@ -72,7 +79,6 @@ function OtpPage() {
       toast.error(err.response?.data?.message || 'Failed to resend OTP')
     }
   }
-
 
   return (
     <AuthShell>

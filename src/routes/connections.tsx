@@ -21,7 +21,6 @@ function ConnectionsPage() {
   const [connection, setConnection] = useState<GitHubConnection | null>(null)
   const [reposCount, setReposCount] = useState<number>(0)
 
-
   const fetchConnection = useCallback(async () => {
     try {
       setLoading(true)
@@ -95,14 +94,12 @@ function ConnectionsPage() {
           <div>
             <p className="font-semibold text-primary">Welcome to DevBraid!</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              To get started, please connect your GitHub Personal Access Token (PAT) so DevBraid can fetch repositories and commits.
+              To get started, please connect your GitHub Personal Access Token (PAT) so DevBraid can
+              fetch repositories and commits.
             </p>
           </div>
           {connection && (
-            <Link
-              to="/dashboard"
-              className="btn btn-primary btn-sm shrink-0"
-            >
+            <Link to="/dashboard" className="btn btn-primary btn-sm shrink-0">
               Continue to Dashboard →
             </Link>
           )}
@@ -115,24 +112,16 @@ function ConnectionsPage() {
         actions={
           <div className="flex items-center gap-2">
             {connection && (
-              <Link
-                to="/dashboard"
-                className="btn btn-ghost btn-sm"
-              >
+              <Link to="/dashboard" className="btn btn-ghost btn-sm">
                 Go to Dashboard →
               </Link>
             )}
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="btn btn-primary btn-sm"
-            >
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
               + Add connection
             </button>
           </div>
         }
       />
-
 
       <div className="space-y-3">
         {loading ? (
@@ -149,7 +138,9 @@ function ConnectionsPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-foreground">{connection.githubUsername}</span>
+                      <span className="font-semibold text-foreground">
+                        {connection.githubUsername}
+                      </span>
                       <span className="inline-flex items-center gap-1.5 text-[11px] capitalize text-muted-foreground">
                         <StatusDot status={connection.status || 'active'} />
                         {connection.status || 'active'}
@@ -158,7 +149,10 @@ function ConnectionsPage() {
                     <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
                       added {new Date(connection.connectedAt).toLocaleDateString()}
                       {connection.lastValidatedAt && (
-                        <> · last used {new Date(connection.lastValidatedAt).toLocaleDateString()}</>
+                        <>
+                          {' '}
+                          · last used {new Date(connection.lastValidatedAt).toLocaleDateString()}
+                        </>
                       )}
                     </div>
                   </div>
@@ -211,11 +205,7 @@ function ConnectionsPage() {
             <p className="mt-1 text-xs text-muted-foreground">
               Add a Personal Access Token to start creating Change Threads.
             </p>
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="btn btn-primary btn-sm"
-            >
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
               Add connection
             </button>
           </div>
@@ -226,7 +216,9 @@ function ConnectionsPage() {
         <p className="mb-1 font-semibold text-foreground">A note on scopes</p>
         <p className="leading-relaxed">
           DevBraid never asks for <code className="font-mono">admin:*</code> or{' '}
-          <code className="font-mono">delete_repo</code>. The <code className="font-mono">repo</code> scope is required to read commits and post one PR comment. See{' '}
+          <code className="font-mono">delete_repo</code>. The{' '}
+          <code className="font-mono">repo</code> scope is required to read commits and post one PR
+          comment. See{' '}
           <Link to="/settings" className="text-primary hover:underline">
             Settings
           </Link>{' '}
@@ -234,11 +226,7 @@ function ConnectionsPage() {
         </p>
       </div>
 
-      <AddConnectionSheet
-        open={open}
-        onOpenChange={setOpen}
-        onSuccess={fetchConnection}
-      />
+      <AddConnectionSheet open={open} onOpenChange={setOpen} onSuccess={fetchConnection} />
     </div>
   )
 }

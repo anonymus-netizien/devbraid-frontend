@@ -32,7 +32,7 @@ const steps: Step[] = [
     id: 'debug',
     step: '03',
     title: 'Hit the wall',
-    body: 'The dead ends, the failed approach, the flaky test — the context reviewers never see is captured while it\'s fresh.',
+    body: "The dead ends, the failed approach, the flaky test — the context reviewers never see is captured while it's fresh.",
     meta: 'risk_flagged',
     icon: '\uD83D\uDC1B',
   },
@@ -65,10 +65,7 @@ const steps: Step[] = [
 export function LifecycleFlow() {
   const { ref, progress } = useScrollProgress<HTMLDivElement>()
   const railHeight = Math.min(100, Math.max(0, (progress - 0.12) / 0.68) * 100)
-  const activeIndex = Math.min(
-    steps.length - 1,
-    Math.floor((railHeight / 100) * steps.length),
-  )
+  const activeIndex = Math.min(steps.length - 1, Math.floor((railHeight / 100) * steps.length))
 
   return (
     <div ref={ref} className="relative">
@@ -98,9 +95,7 @@ export function LifecycleFlow() {
                     aria-hidden
                     className={cn(
                       'pointer-events-none absolute inset-[16%] -z-10 rounded-full blur-3xl transition-opacity duration-700',
-                      i <= activeIndex
-                        ? 'bg-primary/20 opacity-100'
-                        : 'bg-primary/10 opacity-40',
+                      i <= activeIndex ? 'bg-primary/20 opacity-100' : 'bg-primary/10 opacity-40',
                     )}
                   />
                   <div className="mx-auto flex w-full max-w-[180px] items-center justify-center text-7xl sm:max-w-[220px] sm:text-8xl">
@@ -126,12 +121,8 @@ export function LifecycleFlow() {
                       {s.meta}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-xl font-semibold tracking-tight">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {s.body}
-                  </p>
+                  <h3 className="mt-4 text-xl font-semibold tracking-tight">{s.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
                 </div>
               </Reveal>
             </div>

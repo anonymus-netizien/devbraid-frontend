@@ -1,4 +1,12 @@
-import type { ChangeThread, DecisionNote, ChangeBrief, GitRepository, Branch, GitHubConnection, User } from '../../types'
+import type {
+  ChangeThread,
+  DecisionNote,
+  ChangeBrief,
+  GitRepository,
+  Branch,
+  GitHubConnection,
+  User,
+} from '../../types'
 
 export const mockUser: User = {
   id: 1,
@@ -21,7 +29,6 @@ export const mockBranches: Branch[] = [
   { name: 'feat/user-auth' },
   { name: 'fix/rate-limiting' },
 ]
-
 
 export const mockThreads: ChangeThread[] = [
   {
@@ -68,8 +75,10 @@ export const mockNotes: DecisionNote[] = [
     id: '1',
     threadId: '1',
     decision: 'Use sliding window rate limiter with Redis backend',
-    rationale: 'Distributed rate limiting required for multi-instance deployment. Redis provides atomic operations.',
-    alternatives: 'In-memory rate limiting (rejected: not distributed), API gateway rate limiting (rejected: too coarse)',
+    rationale:
+      'Distributed rate limiting required for multi-instance deployment. Redis provides atomic operations.',
+    alternatives:
+      'In-memory rate limiting (rejected: not distributed), API gateway rate limiting (rejected: too coarse)',
     impact: 'Adds Redis dependency, ~2ms latency per request for rate limit check',
     createdAt: '2026-07-25T15:00:00Z',
   },
@@ -77,8 +86,10 @@ export const mockNotes: DecisionNote[] = [
     id: '2',
     threadId: '1',
     decision: 'Rate limit: 100 requests per minute per API key',
-    rationale: 'Based on traffic analysis of current API consumers. Top 10% of consumers peak at ~80 req/min.',
-    alternatives: '50 req/min (rejected: too restrictive), 200 req/min (rejected: insufficient protection)',
+    rationale:
+      'Based on traffic analysis of current API consumers. Top 10% of consumers peak at ~80 req/min.',
+    alternatives:
+      '50 req/min (rejected: too restrictive), 200 req/min (rejected: insufficient protection)',
     impact: 'May affect high-volume consumers; need monitoring dashboard',
     createdAt: '2026-07-25T16:30:00Z',
   },
@@ -133,7 +144,19 @@ export const mockChangedFiles = [
 ]
 
 export const mockCommits = [
-  { sha: 'a1b2c3d', message: 'feat: add Redis-based sliding window rate limiter', timestamp: '2026-07-25T14:30:00Z' },
-  { sha: 'e4f5g6h', message: 'test: add rate limiter unit tests', timestamp: '2026-07-25T16:00:00Z' },
-  { sha: 'i7j8k9l', message: 'config: add rateLimit.yaml schema', timestamp: '2026-07-26T09:00:00Z' },
+  {
+    sha: 'a1b2c3d',
+    message: 'feat: add Redis-based sliding window rate limiter',
+    timestamp: '2026-07-25T14:30:00Z',
+  },
+  {
+    sha: 'e4f5g6h',
+    message: 'test: add rate limiter unit tests',
+    timestamp: '2026-07-25T16:00:00Z',
+  },
+  {
+    sha: 'i7j8k9l',
+    message: 'config: add rateLimit.yaml schema',
+    timestamp: '2026-07-26T09:00:00Z',
+  },
 ]

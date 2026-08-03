@@ -29,9 +29,7 @@ export function Reveal({
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-      {children}
-    </div>
+    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{children}</div>
   )
 }
 
@@ -71,12 +69,7 @@ export function GlowPlate({
   className?: string
   tone?: 'primary' | 'danger' | 'info'
 }) {
-  const glow =
-    tone === 'danger'
-      ? 'bg-danger/20'
-      : tone === 'info'
-        ? 'bg-info/20'
-        : 'bg-primary/20'
+  const glow = tone === 'danger' ? 'bg-danger/20' : tone === 'info' ? 'bg-info/20' : 'bg-primary/20'
   return (
     <div className={cn('relative isolate', className)}>
       <div

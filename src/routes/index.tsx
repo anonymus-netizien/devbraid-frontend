@@ -12,11 +12,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { useSmoothScroll } from '@/hooks/use-motion'
-import {
-  Eyebrow,
-  Reveal,
-  SectionHeading,
-} from '@/components/marketing/primitives'
+import { Eyebrow, Reveal, SectionHeading } from '@/components/marketing/primitives'
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
 import { LifecycleFlow } from '@/components/marketing/lifecycle-flow'
 import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
@@ -120,10 +116,9 @@ function HomePage() {
                   Every pull request ships with the reasoning behind it.
                 </h1>
                 <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground">
-                  DevBraid watches your branch, collects the commits, and
-                  braids them with the decision notes you capture while you
-                  work. The result is a change brief where every claim is cited
-                  — and every guess is labelled.
+                  DevBraid watches your branch, collects the commits, and braids them with the
+                  decision notes you capture while you work. The result is a change brief where
+                  every claim is cited — and every guess is labelled.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link to="/auth/register">
@@ -254,9 +249,7 @@ function HomePage() {
                     <span className="grid size-8 place-items-center rounded-md border border-hairline bg-surface text-primary transition-colors group-hover:border-primary/30 group-hover:bg-primary/10">
                       <f.icon className="size-4" />
                     </span>
-                    <h3 className="mt-4 text-sm font-semibold tracking-tight">
-                      {f.title}
-                    </h3>
+                    <h3 className="mt-4 text-sm font-semibold tracking-tight">{f.title}</h3>
                     <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
                       {f.body}
                     </p>
@@ -297,19 +290,16 @@ function HomePage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    'Rollout notes',
-                    'Risk summary',
-                    'Open questions',
-                    'Reviewer checklist',
-                  ].map((t) => (
-                    <span
-                      key={t}
-                      className="rounded border border-hairline bg-surface px-2 py-1 text-[11px] text-muted-foreground"
-                    >
-                      {t}
-                    </span>
-                  ))}
+                  {['Rollout notes', 'Risk summary', 'Open questions', 'Reviewer checklist'].map(
+                    (t) => (
+                      <span
+                        key={t}
+                        className="rounded border border-hairline bg-surface px-2 py-1 text-[11px] text-muted-foreground"
+                      >
+                        {t}
+                      </span>
+                    ),
+                  )}
                 </div>
                 <Link
                   to="/briefs"
@@ -331,9 +321,8 @@ function HomePage() {
           <Reveal className="mx-auto max-w-3xl text-center">
             <Quote className="mx-auto size-5 text-primary" />
             <blockquote className="mt-5 text-balance text-lg font-medium leading-relaxed tracking-tight sm:text-xl">
-              &ldquo;Our reviewers stopped asking &apos;why is this
-              here?&apos; — the brief already answered it, with a commit hash
-              attached.&rdquo;
+              &ldquo;Our reviewers stopped asking &apos;why is this here?&apos; — the brief already
+              answered it, with a commit hash attached.&rdquo;
             </blockquote>
             <div className="mt-5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               staff engineer · platform team
