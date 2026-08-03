@@ -12,10 +12,10 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Ticket 02 — File comments (inline)
 
-- [ ] Service: `listComments(threadId)`, `listCommentsByFile(threadId, file)`, `createComment`, `updateComment`, `deleteComment`
-- [ ] Hooks + keys
-- [ ] Comment chips on FileChangesPanel rows → expandable inline comment thread
-- [ ] Tests
+- [x] Service: `listComments(threadId)`, `listCommentsByFile(threadId, file)`, `createComment`, `updateComment`, `deleteComment`
+- [x] Hooks + keys
+- [x] Comment chips on FileChangesPanel rows → expandable inline comment thread
+- [x] Tests
 
 ## Ticket 03 — Thread events timeline
 
