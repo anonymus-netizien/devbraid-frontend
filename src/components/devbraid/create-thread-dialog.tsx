@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Plus, X, GitBranch, FolderGit2, Loader2, Sparkles } from 'lucide-react'
+import { useBranchesQuery } from '@/hooks/queries'
 import { githubService } from '../../services/github.service'
 import { threadService } from '../../services/thread.service'
-import type { GitRepository, Branch } from '../../types/github'
+import type { GitRepository } from '../../types/github'
 import type { ChangeThread } from '../../types/thread'
 
 interface CreateThreadDialogProps {
@@ -30,9 +31,9 @@ export function CreateThreadDialog({
   const [loadingRepos, setLoadingRepos] = useState(false)
   const [repos, setRepos] = useState<GitRepository[]>([])
   const [selectedRepo, setSelectedRepo] = useState<string>('')
+  const [repoOwner, repoName] = selectedRepo.includes('/') ? selectedRepo.split('/') : ['', '']
 
-  const [loadingBranches, setLoadingBranches] = useState(false)
-  const [branches, setBranches] = useState<Branch[]>([])
+  const { data: branches = [], isLoading: loadingBranches } = useBranchesQuery(repoOwner, repoName)
   const [headBranch, setHeadBranch] = useState<string>('')
   const [baseBranch, setBaseBranch] = useState<string>('')
 
@@ -51,7 +52,7 @@ export function CreateThreadDialog({
         .then((repoList) => {
           setRepos(repoList || [])
           if (repoList && repoList.length > 0) {
-            setSelectedRepo(repoList[0].fullName)
+            setSelectedRepo(repoList[0].fullName ?? '')
           }
         })
         .catch((err) => {
@@ -62,27 +63,14 @@ export function CreateThreadDialog({
     }
   }, [open])
 
-  // Load branches when selectedRepo changes
+  // Default head/base branches from the loaded branch list
   useEffect(() => {
-    if (selectedRepo && selectedRepo.includes('/')) {
-      const [owner, repo] = selectedRepo.split('/')
-      setLoadingBranches(true)
-      githubService
-        .listBranches(owner, repo)
-        .then((branchList) => {
-          setBranches(branchList || [])
-          if (branchList && branchList.length > 0) {
-            setHeadBranch(branchList[0].name)
-            const mainOrMaster = branchList.find((b) => b.name === 'main' || b.name === 'master')
-            setBaseBranch(mainOrMaster ? mainOrMaster.name : branchList[0].name)
-          }
-        })
-        .catch((err) => {
-          console.error('Failed to load branches:', err)
-        })
-        .finally(() => setLoadingBranches(false))
+    if (branches.length > 0) {
+      setHeadBranch(branches[0].name ?? '')
+      const mainOrMaster = branches.find((b) => b.name === 'main' || b.name === 'master')
+      setBaseBranch(mainOrMaster ? (mainOrMaster.name ?? '') : (branches[0].name ?? ''))
     }
-  }, [selectedRepo])
+  }, [branches])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

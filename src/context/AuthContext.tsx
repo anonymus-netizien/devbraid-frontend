@@ -25,10 +25,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 function mapProfileToUser(profile: UserProfileResponseData): User {
   return {
-    id: profile.id,
-    fullName: profile.fullName,
-    email: profile.email,
-    role: profile.role as User['role'],
+    id: profile.id ?? '',
+    fullName: profile.fullName ?? '',
+    email: profile.email ?? '',
+    role: (profile.role as User['role']) ?? 'ROLE_USER',
     createdAt: profile.createdAt,
   }
 }

@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { PageHeader } from '@/components/devbraid/states'
-import { threadService } from '../services/thread.service'
+import { useNotesQuery } from '@/hooks/queries'
 import type { NoteListItem } from '../types/thread'
 import { RefreshCw } from 'lucide-react'
 
@@ -10,17 +9,8 @@ export const Route = createFileRoute('/notes')({
 })
 
 function NotesPage() {
-  const [notes, setNotes] = useState<NoteListItem[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setLoading(true)
-    threadService
-      .listNotes(0, 50)
-      .then((data) => setNotes(data?.content || []))
-      .catch(() => setNotes([]))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data, isLoading } = useNotesQuery()
+  const notes: NoteListItem[] = data?.content ?? []
 
   return (
     <div>
@@ -29,7 +19,7 @@ function NotesPage() {
         title="Decision Notes"
         description="Developer-attributed decisions, never generated."
       />
-      {loading ? (
+      {isLoading ? (
         <div className="py-12 text-center space-y-3">
           <RefreshCw className="h-6 w-6 animate-spin mx-auto text-primary" />
           <p className="text-sm text-muted-foreground">Loading decision notes...</p>

@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
 import { PageHeader } from '@/components/devbraid/states'
-import { threadService } from '../services/thread.service'
-import type { BriefResponse } from '../types/thread'
+import { useBriefQuery } from '@/hooks/queries'
 
 export const Route = createFileRoute('/briefs/$id')({
   component: BriefDetailPage,
@@ -11,19 +9,9 @@ export const Route = createFileRoute('/briefs/$id')({
 
 function BriefDetailPage() {
   const { id } = Route.useParams()
-  const [brief, setBrief] = useState<BriefResponse | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: brief, isLoading } = useBriefQuery(id)
 
-  useEffect(() => {
-    setLoading(true)
-    threadService
-      .getBriefById(id)
-      .then(setBrief)
-      .catch(() => setBrief(null))
-      .finally(() => setLoading(false))
-  }, [id])
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="py-20 text-center space-y-4">
         <RefreshCw className="h-8 w-8 animate-spin mx-auto text-primary" />

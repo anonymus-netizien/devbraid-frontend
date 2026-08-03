@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowUpRight, FileText, GitPullRequest, Github, Plus, StickyNote } from 'lucide-react'
 import { PageHeader, LoadingRows, EmptyState } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { useAuth } from '@/context/AuthContext'
-import githubService from '@/services/github.service'
+import { queryKeys, useGitHubStatusQuery, useReposQuery } from '@/hooks/queries'
 import { threadService } from '@/services/thread.service'
 import type { ChangeThread } from '@/types/thread'
 
@@ -62,39 +62,26 @@ function StatCard({
 
 function DashboardPage() {
   const { user } = useAuth()
-  const [ghConnected, setGhConnected] = useState<boolean | null>(null)
-  const [repoCount, setRepoCount] = useState(0)
   const [statusFilter, setStatusFilter] = useState('all')
+  const { data: ghStatus } = useGitHubStatusQuery()
+  const ghConnected = ghStatus ? (ghStatus.connected ?? false) && (ghStatus.valid ?? false) : null
+  const { data: ghRepos } = useReposQuery(ghConnected === true)
+  const repoCount = ghRepos?.length ?? 0
 
   const { data: threadsData, isLoading: threadsLoading } = useQuery({
-    queryKey: ['dashboard', 'threads'],
+    queryKey: queryKeys.dashboard.threads,
     queryFn: () => threadService.listThreads(0, 50),
   })
 
   const { data: notesData } = useQuery({
-    queryKey: ['dashboard', 'notes'],
+    queryKey: queryKeys.dashboard.notes,
     queryFn: () => threadService.listNotes(0, 10),
   })
 
   const { data: briefsData } = useQuery({
-    queryKey: ['dashboard', 'briefs'],
+    queryKey: queryKeys.dashboard.briefs,
     queryFn: () => threadService.listBriefs(0, 20),
   })
-
-  useEffect(() => {
-    githubService
-      .getStatus()
-      .then((s) => {
-        const c = s.connected && s.valid
-        setGhConnected(c)
-        if (c)
-          githubService
-            .listRepositories()
-            .then((r) => setRepoCount(r.length))
-            .catch(() => {})
-      })
-      .catch(() => setGhConnected(false))
-  }, [])
 
   const threads = threadsData?.content ?? []
   const notes = notesData?.content ?? []

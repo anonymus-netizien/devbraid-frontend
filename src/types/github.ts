@@ -1,10 +1,7 @@
-export interface GitHubStatusResponse {
-  connected: boolean
-  valid: boolean
-  githubUsername: string | null
-  connectedAt: string | null
-  lastValidatedAt: string | null
-}
+import type { Schema } from '../api/contract'
+
+/** Backend GET /github/status payload (ApiResponse.data). */
+export type GitHubStatusResponse = Schema<'GitHubStatusResponse'>
 
 export interface GitHubConnection {
   id?: string
@@ -16,15 +13,11 @@ export interface GitHubConnection {
   reposCount?: number
 }
 
-export interface GitRepository {
-  fullName: string
-  defaultBranch: string
-  isPrivate: boolean
-}
+/** Backend GET /github/repos payload item (ApiResponse.data). */
+export type GitRepository = Schema<'GitRepositoryDto'>
 
-export interface Branch {
-  name: string
-}
+/** Backend GET /github/repos/{repo}/branches payload item (ApiResponse.data). */
+export type Branch = Schema<'BranchDto'>
 
 export type ConnectionStatus = 'active' | 'expired' | 'revoked' | 'disconnected'
 export type ModalStep = 'enter-pat' | 'validating' | 'pick-repo' | 'pick-branch'
