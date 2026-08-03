@@ -25,9 +25,9 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Ticket 04 — Snapshots
 
-- [ ] Service: `listSnapshots`, `createSnapshot`, `getSnapshot`, `getLatestSnapshot`
-- [ ] Version history list + capture button on thread detail
-- [ ] Tests
+- [x] Service: `listSnapshots`, `createSnapshot`, `getSnapshot`, `getLatestSnapshot`
+- [x] Version history list + capture button on thread detail
+- [x] Tests
 
 ## Ticket 05 — Indexing explorer
 
