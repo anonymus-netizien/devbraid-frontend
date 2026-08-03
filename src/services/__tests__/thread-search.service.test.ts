@@ -153,3 +153,38 @@ describe('threadService events', () => {
     })
   })
 })
+
+describe('threadService snapshots', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  const envelope = (data: unknown) => ({ data: { success: true, message: 'ok', data } })
+
+  it('listSnapshots hits /threads/{id}/snapshots', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope([{ id: 's1', type: 'MANUAL' }]))
+    const result = await threadService.listSnapshots('t1')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/snapshots')
+    expect(result).toHaveLength(1)
+  })
+
+  it('createSnapshot POSTs the optional note', async () => {
+    mockAxiosInstance.post.mockResolvedValue(envelope({ id: 's2', type: 'MANUAL' }))
+    await threadService.createSnapshot('t1', 'before refactor')
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/threads/t1/snapshots', {
+      note: 'before refactor',
+    })
+  })
+
+  it('getSnapshot hits the snapshotId path', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope({ id: 's1' }))
+    await threadService.getSnapshot('t1', 's1')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/snapshots/s1')
+  })
+
+  it('getLatestSnapshot hits the latest path', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope({ id: 's2' }))
+    await threadService.getLatestSnapshot('t1')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/snapshots/latest')
+  })
+})
