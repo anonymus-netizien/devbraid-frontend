@@ -1,7 +1,18 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import { Link, useRouterState, useNavigate } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
-import { LayoutDashboard, GitPullRequest, FileText, BookOpen, Github, Settings, Search, Menu, X, LogOut } from 'lucide-react'
+import {
+  LayoutDashboard,
+  GitPullRequest,
+  FileText,
+  BookOpen,
+  Github,
+  Settings,
+  Search,
+  Menu,
+  X,
+  LogOut,
+} from 'lucide-react'
 import { Toaster } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
@@ -32,8 +43,7 @@ interface AppShellProps {
 }
 
 function crumbsFor(pathname: string): { label: string; to?: string }[] {
-  if (pathname === '/' || pathname === '/dashboard')
-    return [{ label: 'Dashboard' }]
+  if (pathname === '/' || pathname === '/dashboard') return [{ label: 'Dashboard' }]
   const parts = pathname.split('/').filter(Boolean)
   const first = parts[0]
   const map: Record<string, string> = {
@@ -44,9 +54,7 @@ function crumbsFor(pathname: string): { label: string; to?: string }[] {
     settings: 'Settings',
     dashboard: 'Dashboard',
   }
-  const out: { label: string; to?: string }[] = [
-    { label: map[first] ?? first, to: `/${first}` },
-  ]
+  const out: { label: string; to?: string }[] = [{ label: map[first] ?? first, to: `/${first}` }]
   if (parts.length > 1) out.push({ label: parts.slice(1).join('/') })
   return out
 }
@@ -75,7 +83,11 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   const userInitials = user?.fullName
-    ? user.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase()
+    ? user.fullName
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
     : user?.email
       ? user.email.substring(0, 2).toUpperCase()
       : 'DB'
@@ -92,7 +104,9 @@ export function AppShell({ children }: AppShellProps) {
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-[13px] font-semibold tracking-tight">DevBraid</span>
-            <span className="text-[9px] uppercase tracking-widest text-muted-foreground">Change threads</span>
+            <span className="text-[9px] uppercase tracking-widest text-muted-foreground">
+              Change threads
+            </span>
           </div>
         </div>
 
@@ -104,8 +118,7 @@ export function AppShell({ children }: AppShellProps) {
               </div>
               {group.items.map((item) => {
                 const active =
-                  pathname === item.to ||
-                  (item.to !== '/dashboard' && pathname.startsWith(item.to))
+                  pathname === item.to || (item.to !== '/dashboard' && pathname.startsWith(item.to))
                 const Icon = item.icon
                 return (
                   <Link
@@ -134,8 +147,12 @@ export function AppShell({ children }: AppShellProps) {
               {userInitials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-medium">{user?.fullName || user?.email || 'Developer'}</p>
-              <p className="truncate text-[10px] text-muted-foreground">{user?.email || 'Not signed in'}</p>
+              <p className="truncate text-xs font-medium">
+                {user?.fullName || user?.email || 'Developer'}
+              </p>
+              <p className="truncate text-[10px] text-muted-foreground">
+                {user?.email || 'Not signed in'}
+              </p>
             </div>
             <button
               type="button"

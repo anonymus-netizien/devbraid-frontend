@@ -22,17 +22,46 @@ function ResetPasswordPage() {
         <p className="text-sm text-muted-foreground mb-6">Enter your new password below.</p>
         <form onSubmit={handleResetSubmit} className="space-y-4">
           <div>
-            <label htmlFor="reset-password" className="block text-sm font-medium text-foreground mb-1.5">New password</label>
-            <input id="reset-password" type="password" placeholder="••••••••" required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <label
+              htmlFor="reset-password"
+              className="block text-sm font-medium text-foreground mb-1.5"
+            >
+              New password
+            </label>
+            <input
+              id="reset-password"
+              type="password"
+              placeholder="••••••••"
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
           <div>
-            <label htmlFor="reset-confirm" className="block text-sm font-medium text-foreground mb-1.5">Confirm password</label>
-            <input id="reset-confirm" type="password" placeholder="••••••••" required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <label
+              htmlFor="reset-confirm"
+              className="block text-sm font-medium text-foreground mb-1.5"
+            >
+              Confirm password
+            </label>
+            <input
+              id="reset-confirm"
+              type="password"
+              placeholder="••••••••"
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
-          <button type="submit" className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">Reset password</button>
+          <button
+            type="submit"
+            className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          >
+            Reset password
+          </button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link to="/auth/login" className="text-primary hover:underline">Back to sign in</Link>
+          <Link to="/auth/login" className="text-primary hover:underline">
+            Back to sign in
+          </Link>
         </p>
       </div>
     </AuthShell>

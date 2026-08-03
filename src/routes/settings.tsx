@@ -79,7 +79,6 @@ function SettingsPage() {
         description="Configure your DevBraid workspace."
       />
       <div className="space-y-8 max-w-2xl">
-
         {/* Profile Section */}
         <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-hairline pb-3">
@@ -88,7 +87,12 @@ function SettingsPage() {
           </div>
           <div className="space-y-4">
             <div>
-              <label htmlFor="displayName" className="block text-xs font-medium text-muted-foreground mb-1.5">Display name</label>
+              <label
+                htmlFor="displayName"
+                className="block text-xs font-medium text-muted-foreground mb-1.5"
+              >
+                Display name
+              </label>
               <input
                 id="displayName"
                 type="text"
@@ -99,7 +103,9 @@ function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Email</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                Email
+              </label>
               <input
                 type="email"
                 defaultValue={user?.email || ''}
@@ -151,8 +157,16 @@ function SettingsPage() {
                     required
                     className="w-full px-3 py-2 pr-9 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
-                  <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    {showCurrent ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrent(!showCurrent)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showCurrent ? (
+                      <EyeOff className="h-3.5 w-3.5" />
+                    ) : (
+                      <Eye className="h-3.5 w-3.5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -167,13 +181,19 @@ function SettingsPage() {
                     minLength={8}
                     className="w-full px-3 py-2 pr-9 rounded-lg bg-surface-2 border border-hairline text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
-                  <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <button
+                    type="button"
+                    onClick={() => setShowNew(!showNew)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
                     {showNew ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">Confirm new password</label>
+                <label className="block text-xs text-muted-foreground mb-1">
+                  Confirm new password
+                </label>
                 <input
                   type="password"
                   value={confirmPassword}
@@ -196,13 +216,18 @@ function SettingsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowPasswordForm(false); setPasswordError(null); }}
+                  onClick={() => {
+                    setShowPasswordForm(false)
+                    setPasswordError(null)
+                  }}
                   className="px-4 py-2 rounded-lg border border-hairline text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Cancel
                 </button>
               </div>
-              {passwordSaved && <p className="text-xs text-success-fg">Password updated successfully!</p>}
+              {passwordSaved && (
+                <p className="text-xs text-success-fg">Password updated successfully!</p>
+              )}
               {passwordError && <p className="text-xs text-danger-fg">{passwordError}</p>}
             </form>
           )}
@@ -214,7 +239,13 @@ function SettingsPage() {
             <Key className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">API Keys</h2>
           </div>
-          <p className="text-xs text-muted-foreground">OpenAI API key is configured via the backend environment variable <code className="text-[10px] px-1 py-0.5 rounded bg-surface-2 font-mono">OPENAI_API_KEY</code>.</p>
+          <p className="text-xs text-muted-foreground">
+            OpenAI API key is configured via the backend environment variable{' '}
+            <code className="text-[10px] px-1 py-0.5 rounded bg-surface-2 font-mono">
+              OPENAI_API_KEY
+            </code>
+            .
+          </p>
           <div className="flex items-center gap-2 p-3 rounded-lg bg-surface-2 border border-hairline">
             <div className="h-2 w-2 rounded-full bg-success-fg" />
             <span className="text-xs text-foreground">OpenAI integration ready</span>
@@ -230,7 +261,9 @@ function SettingsPage() {
           <label className="flex items-center justify-between">
             <div>
               <p className="text-xs text-foreground">Email notifications</p>
-              <p className="text-[10px] text-muted-foreground">Get notified when briefs are generated</p>
+              <p className="text-[10px] text-muted-foreground">
+                Get notified when briefs are generated
+              </p>
             </div>
             <input type="checkbox" className="toggle toggle-sm" defaultChecked />
           </label>
@@ -244,7 +277,9 @@ function SettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-xs text-foreground">Dark mode</span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-success-bg text-success-fg">Active</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-success-bg text-success-fg">
+              Active
+            </span>
           </div>
           <div className="flex items-center justify-between pt-1">
             <span className="text-xs text-muted-foreground">Light mode</span>
@@ -279,7 +314,9 @@ function SettingsPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-danger">Delete workspace</p>
-              <p className="mt-1 text-xs text-danger">Removes all change threads, decision notes and briefs. Cannot be undone.</p>
+              <p className="mt-1 text-xs text-danger">
+                Removes all change threads, decision notes and briefs. Cannot be undone.
+              </p>
             </div>
             <span className="inline-flex items-center rounded-md border border-danger-border bg-danger-bg px-3 py-1.5 text-xs font-medium text-danger cursor-not-allowed opacity-70">
               Coming soon

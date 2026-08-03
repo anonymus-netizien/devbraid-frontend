@@ -6,16 +6,10 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    TanStackRouterVite({ quoteStyle: 'single' }),
-    tailwindcss(),
-    react()
-  ],
+  plugins: [TanStackRouterVite({ quoteStyle: 'single' }), tailwindcss(), react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
 })
-
-

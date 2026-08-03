@@ -1,14 +1,14 @@
-import { OTPInput } from 'input-otp';
-import { cn } from '@/lib/utils';
+import { OTPInput } from 'input-otp'
+import { cn } from '@/lib/utils'
 
 interface OtpInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  maxLength?: number;
-  disabled?: boolean;
+  value: string
+  onChange: (value: string) => void
+  maxLength?: number
+  disabled?: boolean
 }
 
-const SLOT_KEYS = ['slot-0', 'slot-1', 'slot-2', 'slot-3', 'slot-4', 'slot-5'];
+const SLOT_KEYS = ['slot-0', 'slot-1', 'slot-2', 'slot-3', 'slot-4', 'slot-5']
 
 export function OtpInput({ value, onChange, maxLength = 6, disabled = false }: OtpInputProps) {
   return (
@@ -25,11 +25,17 @@ export function OtpInput({ value, onChange, maxLength = 6, disabled = false }: O
         </div>
       )}
     />
-  );
+  )
 }
 
-function Slot(props: React.HTMLAttributes<HTMLDivElement> & { char?: string | null; hasFakeCaret?: boolean; isActive?: boolean }) {
-  const { char, hasFakeCaret, isActive } = props;
+function Slot(
+  props: React.HTMLAttributes<HTMLDivElement> & {
+    char?: string | null
+    hasFakeCaret?: boolean
+    isActive?: boolean
+  },
+) {
+  const { char, hasFakeCaret, isActive } = props
 
   return (
     <div
@@ -37,7 +43,7 @@ function Slot(props: React.HTMLAttributes<HTMLDivElement> & { char?: string | nu
         'relative flex h-12 w-10 items-center justify-center rounded-md border text-lg font-mono transition-all',
         isActive && 'border-primary ring-2 ring-primary/20',
         !isActive && 'border-hairline',
-        char && 'border-primary/60'
+        char && 'border-primary/60',
       )}
     >
       {char && <span>{char}</span>}
@@ -47,5 +53,5 @@ function Slot(props: React.HTMLAttributes<HTMLDivElement> & { char?: string | nu
         </div>
       )}
     </div>
-  );
+  )
 }

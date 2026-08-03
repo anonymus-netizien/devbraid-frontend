@@ -29,12 +29,17 @@ function ThreadsPage() {
   const threads = data?.content ?? []
 
   const filtered = useMemo(
-    () => threads.filter((t: ChangeThread) => {
-      const repoName = t.repositoryFullName ?? ''
-      const matchesSearch = !q || t.title.toLowerCase().includes(q.toLowerCase()) || repoName.toLowerCase().includes(q.toLowerCase())
-      const matchesStatus = statusFilter === 'all' || t.status.toLowerCase() === statusFilter.toLowerCase()
-      return matchesSearch && matchesStatus
-    }),
+    () =>
+      threads.filter((t: ChangeThread) => {
+        const repoName = t.repositoryFullName ?? ''
+        const matchesSearch =
+          !q ||
+          t.title.toLowerCase().includes(q.toLowerCase()) ||
+          repoName.toLowerCase().includes(q.toLowerCase())
+        const matchesStatus =
+          statusFilter === 'all' || t.status.toLowerCase() === statusFilter.toLowerCase()
+        return matchesSearch && matchesStatus
+      }),
     [threads, q, statusFilter],
   )
 
@@ -56,11 +61,7 @@ function ThreadsPage() {
             >
               Refresh
             </button>
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="btn btn-primary btn-sm"
-            >
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
               <Plus className="size-3.5" /> New thread
             </button>
           </div>
@@ -75,9 +76,7 @@ function ThreadsPage() {
               key={s}
               onClick={() => setStatusFilter(s)}
               className={`btn btn-xs rounded text-[10px] font-medium uppercase tracking-wider ${
-                statusFilter === s
-                  ? 'btn-soft'
-                  : 'btn-ghost text-muted-foreground'
+                statusFilter === s ? 'btn-soft' : 'btn-ghost text-muted-foreground'
               }`}
             >
               {s}
@@ -100,17 +99,17 @@ function ThreadsPage() {
       {isLoading ? (
         <LoadingRows rows={5} />
       ) : isError ? (
-        <ErrorPanel code="E_THREADS" message="Couldn't load change threads." onRetry={() => refetch()} />
+        <ErrorPanel
+          code="E_THREADS"
+          message="Couldn't load change threads."
+          onRetry={() => refetch()}
+        />
       ) : filtered.length === 0 ? (
         <EmptyState
           title="No change threads match"
           description="Adjust your filters, or start a new thread."
           action={
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="btn btn-primary btn-sm"
-            >
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
               New thread
             </button>
           }
@@ -133,10 +132,14 @@ function ThreadsPage() {
                   <div className="mt-1.5 flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted-foreground">
                     <span>{t.repositoryFullName}</span>
                     <span className="hidden sm:inline">·</span>
-                    <span className="hidden sm:inline"><BranchPair head={t.headBranch} base={t.baseBranch} /></span>
+                    <span className="hidden sm:inline">
+                      <BranchPair head={t.headBranch} base={t.baseBranch} />
+                    </span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {t.riskFlags?.map((r: string) => <RiskChip key={r} flag={r} dense />)}
+                    {t.riskFlags?.map((r: string) => (
+                      <RiskChip key={r} flag={r} dense />
+                    ))}
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
@@ -144,7 +147,12 @@ function ThreadsPage() {
                     {t.notesCount ?? 0} notes
                   </div>
                   <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">
-                    {t.updatedAt ? new Date(t.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''}
+                    {t.updatedAt
+                      ? new Date(t.updatedAt).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                        })
+                      : ''}
                   </div>
                 </div>
               </div>

@@ -18,12 +18,7 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
   const dur = (s: number) => `${s}s`
 
   return (
-    <div
-      className={cn(
-        'relative isolate overflow-hidden rounded-2xl',
-        className,
-      )}
-    >
+    <div className={cn('relative isolate overflow-hidden rounded-2xl', className)}>
       {/* Ambient glow - danger tone */}
       <div
         aria-hidden
@@ -72,9 +67,37 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
             transformOrigin: '60px 70px',
           }}
         >
-          <rect x="40" y="55" width="44" height="36" rx="2" fill="var(--color-warning-bg)" stroke="var(--color-warning-border)" strokeWidth="0.8" opacity="0.7" />
-          <text x="48" y="72" fill="var(--color-warning-fg)" fontSize="6" fontFamily="var(--font-mono)" opacity="0.7">WIP</text>
-          <text x="48" y="80" fill="var(--color-warning-fg)" fontSize="5" fontFamily="var(--font-mono)" opacity="0.5">migration</text>
+          <rect
+            x="40"
+            y="55"
+            width="44"
+            height="36"
+            rx="2"
+            fill="var(--color-warning-bg)"
+            stroke="var(--color-warning-border)"
+            strokeWidth="0.8"
+            opacity="0.7"
+          />
+          <text
+            x="48"
+            y="72"
+            fill="var(--color-warning-fg)"
+            fontSize="6"
+            fontFamily="var(--font-mono)"
+            opacity="0.7"
+          >
+            WIP
+          </text>
+          <text
+            x="48"
+            y="80"
+            fill="var(--color-warning-fg)"
+            fontSize="5"
+            fontFamily="var(--font-mono)"
+            opacity="0.5"
+          >
+            migration
+          </text>
         </g>
 
         {/* Post-it 2 - floating center */}
@@ -85,9 +108,37 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
             transform: 'rotate(-8deg)',
           }}
         >
-          <rect x="100" y="95" width="48" height="34" rx="2" fill="var(--color-danger-bg)" stroke="var(--color-danger-border)" strokeWidth="0.8" opacity="0.6" />
-          <text x="108" y="112" fill="var(--color-danger-fg)" fontSize="6" fontFamily="var(--font-mono)" opacity="0.6">DON'T</text>
-          <text x="108" y="120" fill="var(--color-danger-fg)" fontSize="5" fontFamily="var(--font-mono)" opacity="0.5">MERGE</text>
+          <rect
+            x="100"
+            y="95"
+            width="48"
+            height="34"
+            rx="2"
+            fill="var(--color-danger-bg)"
+            stroke="var(--color-danger-border)"
+            strokeWidth="0.8"
+            opacity="0.6"
+          />
+          <text
+            x="108"
+            y="112"
+            fill="var(--color-danger-fg)"
+            fontSize="6"
+            fontFamily="var(--font-mono)"
+            opacity="0.6"
+          >
+            DON'T
+          </text>
+          <text
+            x="108"
+            y="120"
+            fill="var(--color-danger-fg)"
+            fontSize="5"
+            fontFamily="var(--font-mono)"
+            opacity="0.5"
+          >
+            MERGE
+          </text>
         </g>
 
         {/* Post-it 3 - right side */}
@@ -98,9 +149,37 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
             transform: 'rotate(5deg)',
           }}
         >
-          <rect x="280" y="65" width="52" height="38" rx="2" fill="var(--color-info-bg)" stroke="var(--color-info-border)" strokeWidth="0.8" opacity="0.5" />
-          <text x="288" y="82" fill="var(--color-info-fg)" fontSize="6" fontFamily="var(--font-mono)" opacity="0.5">API v2</text>
-          <text x="288" y="90" fill="var(--color-info-fg)" fontSize="5" fontFamily="var(--font-mono)" opacity="0.4">breaking</text>
+          <rect
+            x="280"
+            y="65"
+            width="52"
+            height="38"
+            rx="2"
+            fill="var(--color-info-bg)"
+            stroke="var(--color-info-border)"
+            strokeWidth="0.8"
+            opacity="0.5"
+          />
+          <text
+            x="288"
+            y="82"
+            fill="var(--color-info-fg)"
+            fontSize="6"
+            fontFamily="var(--font-mono)"
+            opacity="0.5"
+          >
+            API v2
+          </text>
+          <text
+            x="288"
+            y="90"
+            fill="var(--color-info-fg)"
+            fontSize="5"
+            fontFamily="var(--font-mono)"
+            opacity="0.4"
+          >
+            breaking
+          </text>
         </g>
 
         {/* === SLACK/CONVERSATION THREAD BUBBLE (center) === */}
@@ -118,14 +197,55 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
             opacity="0.8"
           />
           {/* Thread title */}
-          <text x="175" y="130" fill="var(--color-muted-foreground)" fontSize="7" fontFamily="var(--font-mono)" fontWeight="600" letterSpacing="0.05em" opacity="0.6">
+          <text
+            x="175"
+            y="130"
+            fill="var(--color-muted-foreground)"
+            fontSize="7"
+            fontFamily="var(--font-mono)"
+            fontWeight="600"
+            letterSpacing="0.05em"
+            opacity="0.6"
+          >
             # PR-247 review
           </text>
           {/* Message lines */}
-          <rect x="175" y="138" width="48" height="4" rx="2" fill="var(--color-foreground)" opacity="0.2" />
-          <rect x="175" y="146" width="38" height="4" rx="2" fill="var(--color-foreground)" opacity="0.15" />
-          <rect x="175" y="154" width="42" height="4" rx="2" fill="var(--color-foreground)" opacity="0.18" />
-          <rect x="175" y="162" width="28" height="4" rx="2" fill="var(--color-foreground)" opacity="0.12" />
+          <rect
+            x="175"
+            y="138"
+            width="48"
+            height="4"
+            rx="2"
+            fill="var(--color-foreground)"
+            opacity="0.2"
+          />
+          <rect
+            x="175"
+            y="146"
+            width="38"
+            height="4"
+            rx="2"
+            fill="var(--color-foreground)"
+            opacity="0.15"
+          />
+          <rect
+            x="175"
+            y="154"
+            width="42"
+            height="4"
+            rx="2"
+            fill="var(--color-foreground)"
+            opacity="0.18"
+          />
+          <rect
+            x="175"
+            y="162"
+            width="28"
+            height="4"
+            rx="2"
+            fill="var(--color-foreground)"
+            opacity="0.12"
+          />
         </g>
 
         {/* === Vanishing arrows (context lost) === */}
@@ -161,9 +281,24 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
           }}
         >
           {/* Head */}
-          <circle cx="280" cy="210" r="10" fill="var(--color-surface-2)" stroke="var(--color-hairline)" strokeWidth="0.8" />
+          <circle
+            cx="280"
+            cy="210"
+            r="10"
+            fill="var(--color-surface-2)"
+            stroke="var(--color-hairline)"
+            strokeWidth="0.8"
+          />
           {/* Question mark on head */}
-          <text x="276" y="196" fill="var(--color-danger)" fontSize="14" fontFamily="serif" fontWeight="700" opacity="0.7">
+          <text
+            x="276"
+            y="196"
+            fill="var(--color-danger)"
+            fontSize="14"
+            fontFamily="serif"
+            fontWeight="700"
+            opacity="0.7"
+          >
             ?
           </text>
           {/* Body */}
@@ -233,13 +368,39 @@ export function IsometricProblem({ className }: IsometricProblemProps) {
             opacity="0.35"
           />
           {/* Faint text on papers */}
-          <text x="68" y="252" fill="var(--color-muted-foreground)" fontSize="5" fontFamily="var(--font-mono)" opacity="0.3" transform="rotate(-12, 78, 244)">???</text>
+          <text
+            x="68"
+            y="252"
+            fill="var(--color-muted-foreground)"
+            fontSize="5"
+            fontFamily="var(--font-mono)"
+            opacity="0.3"
+            transform="rotate(-12, 78, 244)"
+          >
+            ???
+          </text>
         </g>
 
         {/* === DASHED CONNECTION LINES (disconnected context) === */}
         <g opacity="0.1">
-          <line x1="148" y1="178" x2="170" y2="220" stroke="var(--color-danger)" strokeWidth="0.8" strokeDasharray="3 4" />
-          <line x1="230" y1="178" x2="270" y2="210" stroke="var(--color-danger)" strokeWidth="0.8" strokeDasharray="3 4" />
+          <line
+            x1="148"
+            y1="178"
+            x2="170"
+            y2="220"
+            stroke="var(--color-danger)"
+            strokeWidth="0.8"
+            strokeDasharray="3 4"
+          />
+          <line
+            x1="230"
+            y1="178"
+            x2="270"
+            y2="210"
+            stroke="var(--color-danger)"
+            strokeWidth="0.8"
+            strokeDasharray="3 4"
+          />
         </g>
 
         {/* === DECORATIVE DOTS === */}

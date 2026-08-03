@@ -7,7 +7,9 @@ import { useEffect, useRef, useState } from 'react'
 export function useSmoothScroll() {
   useEffect(() => {
     const p = import('lenis').then(({ default: Lenis }) => new Lenis({ autoRaf: true }))
-    return () => { p.then(l => l.destroy()) }
+    return () => {
+      p.then((l) => l.destroy())
+    }
   }, [])
 }
 
