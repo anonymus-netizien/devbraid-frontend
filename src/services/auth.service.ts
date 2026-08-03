@@ -1,4 +1,5 @@
 import apiClient from '../api/axios'
+import { unwrap } from '../api/envelope'
 import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token'
 import type {
   LoginRequest,
@@ -26,7 +27,7 @@ export const authService = {
     const response = await apiClient.post<ApiResponse<OtpSendResponseData>>('/auth/otp/send', {
       email,
     } as OtpSendRequest)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async verifyOtp(email: string, otp: string): Promise<OtpVerifyResponseData> {
@@ -34,7 +35,7 @@ export const authService = {
       email,
       otp,
     } as OtpVerifyRequest)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async login(credentials: LoginRequest): Promise<LoginResponseData> {
@@ -55,7 +56,7 @@ export const authService = {
 
   async me(): Promise<UserProfileResponseData> {
     const response = await apiClient.get<ApiResponse<UserProfileResponseData>>('/user/profile')
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async updateProfile(data: UpdateProfileRequest): Promise<UserProfileResponseData> {
@@ -63,7 +64,7 @@ export const authService = {
       '/user/profile',
       data,
     )
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async updatePassword(data: UpdatePasswordRequest): Promise<void> {
