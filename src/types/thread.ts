@@ -87,6 +87,12 @@ export type PublishResponse = Schema<'PublishResponse'>
 
 export type NoteResponse = Schema<'NoteResponse'>
 
+export type ThreadEvent = Schema<'ThreadEventResponse'>
+
+export type CreateThreadEventRequest = Schema<'CreateThreadEventRequest'>
+
+export type PaginatedEvents = Page<ThreadEvent>
+
 export type FileComment = Schema<'FileCommentResponse'>
 
 export type CreateFileCommentRequest = Schema<'CreateFileCommentRequest'>

@@ -16,6 +16,7 @@ import {
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
+import { EventsTimeline } from '@/components/devbraid/event-timeline'
 import { threadService } from '../services/thread.service'
 import {
   queryKeys,
@@ -23,6 +24,7 @@ import {
   useThreadNotesQuery,
   useThreadBriefQuery,
   useThreadCommentsQuery,
+  useThreadEventsQuery,
 } from '@/hooks/queries'
 import type { ChangeThread, NoteResponse, NoteContext, FileComment } from '../types/thread'
 
@@ -36,6 +38,7 @@ function ThreadDetailPage() {
   const { data: thread, isLoading } = useThreadQuery(id)
   const { data: notes = [] } = useThreadNotesQuery(id)
   const { data: comments = [] } = useThreadCommentsQuery(id)
+  const { data: events = [] } = useThreadEventsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
@@ -252,6 +255,23 @@ function ThreadDetailPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to delete comment'
       setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const [loggingEvent, setLoggingEvent] = useState(false)
+
+  const handleAddEvent = async (summary: string) => {
+    setLoggingEvent(true)
+    setMessage(null)
+    try {
+      const created = await threadService.createEvent(id, summary)
+      queryClient.setQueryData(queryKeys.threadEvents(id), [created, ...events])
+      setMessage({ type: 'success', text: 'Event logged.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to log event'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setLoggingEvent(false)
     }
   }
 
@@ -798,6 +818,7 @@ function ThreadDetailPage() {
             onDeleteComment={handleDeleteComment}
           />
           <CommitsList commits={commitsList} />
+          <EventsTimeline events={events} onAddEvent={handleAddEvent} busy={loggingEvent} />
         </aside>
       </div>
     </div>

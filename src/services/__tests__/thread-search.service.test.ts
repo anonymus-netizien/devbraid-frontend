@@ -121,3 +121,35 @@ describe('threadService comments', () => {
     expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/threads/t1/comments/c2')
   })
 })
+
+describe('threadService events', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  const envelope = (data: unknown) => ({ data: { success: true, message: 'ok', data } })
+
+  it('listEvents hits /threads/{id}/events', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope([{ id: 'e1', type: 'MANUAL' }]))
+    const result = await threadService.listEvents('t1')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/events')
+    expect(result).toHaveLength(1)
+  })
+
+  it('listEventsPaged hits /events/paged with pagination', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope({ content: [], totalPages: 1 }))
+    await threadService.listEventsPaged('t1', 2, 10)
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/events/paged', {
+      params: { page: 2, size: 10 },
+    })
+  })
+
+  it('createEvent POSTs summary + metadata', async () => {
+    mockAxiosInstance.post.mockResolvedValue(envelope({ id: 'e2', type: 'MANUAL' }))
+    await threadService.createEvent('t1', 'PR merged', '{"prNumber":42}')
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/threads/t1/events', {
+      summary: 'PR merged',
+      metadata: '{"prNumber":42}',
+    })
+  })
+})
