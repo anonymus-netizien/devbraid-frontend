@@ -19,9 +19,9 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Ticket 03 — Thread events timeline
 
-- [ ] Service: `listEvents(threadId)`, `listEventsPaged`
-- [ ] Activity timeline section on thread detail
-- [ ] Tests
+- [x] Service: `listEvents(threadId)`, `listEventsPaged`
+- [x] Activity timeline section on thread detail
+- [x] Tests
 
 ## Ticket 04 — Snapshots
 
