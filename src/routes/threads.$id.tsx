@@ -17,6 +17,7 @@ import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
 import { EventsTimeline } from '@/components/devbraid/event-timeline'
+import { SnapshotsPanel } from '@/components/devbraid/snapshots-panel'
 import { threadService } from '../services/thread.service'
 import {
   queryKeys,
@@ -25,6 +26,7 @@ import {
   useThreadBriefQuery,
   useThreadCommentsQuery,
   useThreadEventsQuery,
+  useThreadSnapshotsQuery,
 } from '@/hooks/queries'
 import type { ChangeThread, NoteResponse, NoteContext, FileComment } from '../types/thread'
 
@@ -39,6 +41,7 @@ function ThreadDetailPage() {
   const { data: notes = [] } = useThreadNotesQuery(id)
   const { data: comments = [] } = useThreadCommentsQuery(id)
   const { data: events = [] } = useThreadEventsQuery(id)
+  const { data: snapshots = [] } = useThreadSnapshotsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
@@ -272,6 +275,23 @@ function ThreadDetailPage() {
       setMessage({ type: 'error', text: msg })
     } finally {
       setLoggingEvent(false)
+    }
+  }
+
+  const [capturing, setCapturing] = useState(false)
+
+  const handleCaptureSnapshot = async (note?: string) => {
+    setCapturing(true)
+    setMessage(null)
+    try {
+      const created = await threadService.createSnapshot(id, note || undefined)
+      queryClient.setQueryData(queryKeys.threadSnapshots(id), [created, ...snapshots])
+      setMessage({ type: 'success', text: 'Snapshot captured.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to capture snapshot'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setCapturing(false)
     }
   }
 
@@ -819,6 +839,11 @@ function ThreadDetailPage() {
           />
           <CommitsList commits={commitsList} />
           <EventsTimeline events={events} onAddEvent={handleAddEvent} busy={loggingEvent} />
+          <SnapshotsPanel
+            snapshots={snapshots}
+            onCapture={handleCaptureSnapshot}
+            busy={capturing}
+          />
         </aside>
       </div>
     </div>

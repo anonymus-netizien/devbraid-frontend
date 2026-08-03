@@ -93,6 +93,10 @@ export type CreateThreadEventRequest = Schema<'CreateThreadEventRequest'>
 
 export type PaginatedEvents = Page<ThreadEvent>
 
+export type Snapshot = Schema<'SnapshotResponse'>
+
+export type CreateSnapshotRequest = Schema<'CreateSnapshotRequest'>
+
 export type FileComment = Schema<'FileCommentResponse'>
 
 export type CreateFileCommentRequest = Schema<'CreateFileCommentRequest'>

@@ -17,6 +17,7 @@ import type {
   UpdateFileCommentRequest,
   ThreadEvent,
   PaginatedEvents,
+  Snapshot,
 } from '../types/thread'
 
 export const threadService = {
@@ -224,6 +225,44 @@ export const threadService = {
     const response = await apiClient.put<ApiResponse<FileComment>>(
       `/threads/${threadId}/comments/${commentId}`,
       comment,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * All snapshots captured for a thread, newest first.
+   */
+  async listSnapshots(threadId: string): Promise<Snapshot[]> {
+    const response = await apiClient.get<ApiResponse<Snapshot[]>>(`/threads/${threadId}/snapshots`)
+    return unwrap(response.data)
+  },
+
+  /**
+   * Capture a manual snapshot of the thread at its current state.
+   */
+  async createSnapshot(threadId: string, note?: string): Promise<Snapshot> {
+    const response = await apiClient.post<ApiResponse<Snapshot>>(`/threads/${threadId}/snapshots`, {
+      note,
+    })
+    return unwrap(response.data)
+  },
+
+  /**
+   * Single snapshot by ID.
+   */
+  async getSnapshot(threadId: string, snapshotId: string): Promise<Snapshot> {
+    const response = await apiClient.get<ApiResponse<Snapshot>>(
+      `/threads/${threadId}/snapshots/${snapshotId}`,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * The most recent snapshot for a thread.
+   */
+  async getLatestSnapshot(threadId: string): Promise<Snapshot> {
+    const response = await apiClient.get<ApiResponse<Snapshot>>(
+      `/threads/${threadId}/snapshots/latest`,
     )
     return unwrap(response.data)
   },
