@@ -1,4 +1,5 @@
 import apiClient from '../api/axios'
+import { unwrap } from '../api/envelope'
 import type { ApiResponse } from '../types/api'
 import type {
   ChangeThread,
@@ -19,7 +20,7 @@ export const threadService = {
    */
   async createThread(request: CreateThreadRequest): Promise<ChangeThread> {
     const response = await apiClient.post<ApiResponse<ChangeThread>>('/threads', request)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -29,7 +30,7 @@ export const threadService = {
     const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads', {
       params: { page, size },
     })
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -37,7 +38,7 @@ export const threadService = {
    */
   async getThread(id: string): Promise<ChangeThread> {
     const response = await apiClient.get<ApiResponse<ChangeThread>>(`/threads/${id}`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -45,7 +46,7 @@ export const threadService = {
    */
   async updateThread(id: string, request: UpdateThreadRequest): Promise<ChangeThread> {
     const response = await apiClient.put<ApiResponse<ChangeThread>>(`/threads/${id}`, request)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -60,7 +61,7 @@ export const threadService = {
    */
   async refreshThread(id: string): Promise<ChangeThread> {
     const response = await apiClient.post<ApiResponse<ChangeThread>>(`/threads/${id}/refresh`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -68,7 +69,7 @@ export const threadService = {
    */
   async analyzeThread(id: string): Promise<ChangeThread> {
     const response = await apiClient.post<ApiResponse<ChangeThread>>(`/threads/${id}/analyze`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -76,7 +77,7 @@ export const threadService = {
    */
   async generateBrief(id: string): Promise<BriefResponse> {
     const response = await apiClient.post<ApiResponse<BriefResponse>>(`/threads/${id}/brief`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -84,7 +85,7 @@ export const threadService = {
    */
   async getBrief(id: string): Promise<BriefResponse> {
     const response = await apiClient.get<ApiResponse<BriefResponse>>(`/threads/${id}/brief`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -98,7 +99,7 @@ export const threadService = {
         params: { prNumber },
       },
     )
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -112,7 +113,7 @@ export const threadService = {
       `/threads/${threadId}/notes`,
       note,
     )
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -120,7 +121,7 @@ export const threadService = {
    */
   async listThreadNotes(threadId: string): Promise<NoteResponse[]> {
     const response = await apiClient.get<ApiResponse<NoteResponse[]>>(`/threads/${threadId}/notes`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -135,7 +136,7 @@ export const threadService = {
       `/threads/${threadId}/notes/${noteId}`,
       note,
     )
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -152,7 +153,7 @@ export const threadService = {
     const response = await apiClient.get<ApiResponse<PaginatedBriefs>>('/briefs', {
       params: { page, size },
     })
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -160,7 +161,7 @@ export const threadService = {
    */
   async getBriefById(id: string): Promise<BriefResponse> {
     const response = await apiClient.get<ApiResponse<BriefResponse>>(`/briefs/${id}`)
-    return response.data.data
+    return unwrap(response.data)
   },
 
   /**
@@ -170,7 +171,7 @@ export const threadService = {
     const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/notes', {
       params: { page, size },
     })
-    return response.data.data
+    return unwrap(response.data)
   },
 }
 

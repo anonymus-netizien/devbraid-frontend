@@ -1,4 +1,5 @@
 import apiClient from '../api/axios'
+import { unwrap } from '../api/envelope'
 import type { ApiResponse } from '../types/api'
 import type { GitHubStatusResponse, GitRepository, Branch } from '../types/github'
 
@@ -7,7 +8,7 @@ export const githubService = {
     const response = await apiClient.post<ApiResponse<GitHubStatusResponse>>('/github/connect', {
       personalAccessToken,
     })
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async disconnect(): Promise<void> {
@@ -16,19 +17,19 @@ export const githubService = {
 
   async getStatus(): Promise<GitHubStatusResponse> {
     const response = await apiClient.get<ApiResponse<GitHubStatusResponse>>('/github/status')
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async listRepositories(): Promise<GitRepository[]> {
     const response = await apiClient.get<ApiResponse<GitRepository[]>>('/github/repos')
-    return response.data.data
+    return unwrap(response.data)
   },
 
   async listBranches(owner: string, repo: string): Promise<Branch[]> {
     const response = await apiClient.get<ApiResponse<Branch[]>>(
       `/github/repos/${owner}/${repo}/branches`,
     )
-    return response.data.data
+    return unwrap(response.data)
   },
 }
 
