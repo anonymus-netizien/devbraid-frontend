@@ -87,6 +87,12 @@ export type PublishResponse = Schema<'PublishResponse'>
 
 export type NoteResponse = Schema<'NoteResponse'>
 
+export type FileComment = Schema<'FileCommentResponse'>
+
+export type CreateFileCommentRequest = Schema<'CreateFileCommentRequest'>
+
+export type UpdateFileCommentRequest = Schema<'UpdateFileCommentRequest'>
+
 export type PaginatedThreads = Page<ChangeThread>
 
 export interface BriefListItem {

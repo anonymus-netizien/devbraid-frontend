@@ -73,3 +73,51 @@ describe('threadService search', () => {
     await expect(threadService.searchThreads('x')).rejects.toThrow('Search unavailable')
   })
 })
+
+describe('threadService comments', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  const envelope = (data: unknown) => ({ data: { success: true, message: 'ok', data } })
+
+  it('listComments hits /threads/{id}/comments', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope([{ id: 'c1', filePath: 'src/a.ts' }]))
+    const result = await threadService.listComments('t1')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/comments')
+    expect(result).toHaveLength(1)
+  })
+
+  it('listCommentsByFile hits the by-file endpoint with filePath param', async () => {
+    mockAxiosInstance.get.mockResolvedValue(envelope([]))
+    await threadService.listCommentsByFile('t1', 'src/a.ts')
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/threads/t1/comments/by-file', {
+      params: { filePath: 'src/a.ts' },
+    })
+  })
+
+  it('createComment POSTs the anchored request body', async () => {
+    mockAxiosInstance.post.mockResolvedValue(envelope({ id: 'c2', filePath: 'src/a.ts' }))
+    await threadService.createComment('t1', { filePath: 'src/a.ts', content: 'nit: rename' })
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/threads/t1/comments', {
+      filePath: 'src/a.ts',
+      content: 'nit: rename',
+    })
+  })
+
+  it('updateComment PUTs status resolution to the comment endpoint', async () => {
+    mockAxiosInstance.put.mockResolvedValue(
+      envelope({ id: 'c2', status: 'RESOLVED', filePath: 'src/a.ts' }),
+    )
+    await threadService.updateComment('t1', 'c2', { status: 'RESOLVED' })
+    expect(mockAxiosInstance.put).toHaveBeenCalledWith('/threads/t1/comments/c2', {
+      status: 'RESOLVED',
+    })
+  })
+
+  it('deleteComment DELETEs the comment endpoint', async () => {
+    mockAxiosInstance.delete.mockResolvedValue(envelope(null))
+    await threadService.deleteComment('t1', 'c2')
+    expect(mockAxiosInstance.delete).toHaveBeenCalledWith('/threads/t1/comments/c2')
+  })
+})
