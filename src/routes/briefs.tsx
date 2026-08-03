@@ -8,9 +8,16 @@ export const Route = createFileRoute('/briefs')({
   head: () => ({
     meta: [
       { title: 'Change Briefs · DevBraid' },
-      { name: 'description', content: 'All generated and published Change Briefs — evidence-linked summaries of your engineering work.' },
+      {
+        name: 'description',
+        content:
+          'All generated and published Change Briefs — evidence-linked summaries of your engineering work.',
+      },
       { property: 'og:title', content: 'DevBraid · Change Briefs' },
-      { property: 'og:description', content: 'Reviewer-ready briefs, every claim cited or marked inference.' },
+      {
+        property: 'og:description',
+        content: 'Reviewer-ready briefs, every claim cited or marked inference.',
+      },
     ],
   }),
   component: BriefsPage,
@@ -35,7 +42,11 @@ function BriefsPage() {
       {isLoading ? (
         <LoadingRows rows={4} />
       ) : isError ? (
-        <ErrorPanel code="E_BRIEFS" message="Couldn't load change briefs." onRetry={() => refetch()} />
+        <ErrorPanel
+          code="E_BRIEFS"
+          message="Couldn't load change briefs."
+          onRetry={() => refetch()}
+        />
       ) : briefs.length === 0 ? (
         <EmptyState
           title="No briefs yet"
@@ -46,10 +57,18 @@ function BriefsPage() {
           <table className="table">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Brief</th>
-                <th className="hidden sm:table-cell text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Thread</th>
-                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Updated</th>
+                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Brief
+                </th>
+                <th className="hidden sm:table-cell text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Thread
+                </th>
+                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Status
+                </th>
+                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Updated
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">
@@ -78,7 +97,10 @@ function BriefsPage() {
                   </td>
                   <td className="px-4 py-3 text-right font-mono text-[11px] text-muted-foreground">
                     {b.updatedAt
-                      ? new Date(b.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                      ? new Date(b.updatedAt).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                        })
                       : '\u2014'}
                   </td>
                 </tr>

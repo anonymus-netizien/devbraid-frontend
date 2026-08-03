@@ -26,21 +26,21 @@ npm run lint
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| UI Library | React 19.2 |
-| Language | TypeScript 5.8 |
-| Build Tool | Vite 8 |
-| Routing | TanStack Router 1.170 (file-based) |
-| Server State | TanStack React Query 5.101 |
-| HTTP Client | Axios 1.7 (interceptors, auto-refresh) |
-| Styling | Tailwind CSS 4.2 + DaisyUI 5.7 |
-| Components | shadcn/ui 4.16 + Radix UI primitives |
-| Forms | React Hook Form 7.71 + Zod 3.25 |
-| Animations | Framer Motion 12.43 |
-| Charts | Recharts 2.15 |
-| Icons | Lucide React 0.575 |
-| Notifications | Sonner 2.0 |
+| Component     | Technology                             |
+| ------------- | -------------------------------------- |
+| UI Library    | React 19.2                             |
+| Language      | TypeScript 5.8                         |
+| Build Tool    | Vite 8                                 |
+| Routing       | TanStack Router 1.170 (file-based)     |
+| Server State  | TanStack React Query 5.101             |
+| HTTP Client   | Axios 1.7 (interceptors, auto-refresh) |
+| Styling       | Tailwind CSS 4.2 + DaisyUI 5.7         |
+| Components    | shadcn/ui 4.16 + Radix UI primitives   |
+| Forms         | React Hook Form 7.71 + Zod 3.25        |
+| Animations    | Framer Motion 12.43                    |
+| Charts        | Recharts 2.15                          |
+| Icons         | Lucide React 0.575                     |
+| Notifications | Sonner 2.0                             |
 
 ## Project Structure
 
@@ -85,20 +85,20 @@ src/
 
 ## Routes
 
-| Route | Description |
-|-------|-------------|
-| `/` | Marketing homepage → redirect to `/dashboard` |
-| `/auth/login` | Login form |
-| `/auth/register` | Registration form |
-| `/auth/verify` | OTP verification (auto-submit at 6 digits) |
-| `/dashboard` | Stats cards, recent threads, quick actions |
-| `/threads` | Thread list with search + status filter |
-| `/threads/$id` | Thread detail with Refresh, Analyze, Generate Brief, Publish |
-| `/briefs` | Brief list |
-| `/briefs/$id` | Brief detail (markdown render) |
-| `/notes` | All decision notes |
-| `/connections` | GitHub PAT connect/disconnect/validate |
-| `/settings` | Profile update, password change |
+| Route            | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| `/`              | Marketing homepage → redirect to `/dashboard`                |
+| `/auth/login`    | Login form                                                   |
+| `/auth/register` | Registration form                                            |
+| `/auth/verify`   | OTP verification (auto-submit at 6 digits)                   |
+| `/dashboard`     | Stats cards, recent threads, quick actions                   |
+| `/threads`       | Thread list with search + status filter                      |
+| `/threads/$id`   | Thread detail with Refresh, Analyze, Generate Brief, Publish |
+| `/briefs`        | Brief list                                                   |
+| `/briefs/$id`    | Brief detail (markdown render)                               |
+| `/notes`         | All decision notes                                           |
+| `/connections`   | GitHub PAT connect/disconnect/validate                       |
+| `/settings`      | Profile update, password change                              |
 
 ## Auth Flow
 
@@ -113,8 +113,8 @@ Tokens stored in-memory (not localStorage) to prevent XSS exfiltration.
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable            | Default                        | Description          |
+| ------------------- | ------------------------------ | -------------------- |
 | `VITE_API_BASE_URL` | `http://localhost:8080/api/v1` | Backend API base URL |
 
 ## Docker
@@ -125,14 +125,14 @@ docker compose up --build -d    # Runs on http://localhost:3000
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Vite dev server (HMR) |
-| `npm run build` | Production build |
-| `npm run build:dev` | Development build |
-| `npm run preview` | Preview production build |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier |
+| Command             | Description              |
+| ------------------- | ------------------------ |
+| `npm run dev`       | Vite dev server (HMR)    |
+| `npm run build`     | Production build         |
+| `npm run build:dev` | Development build        |
+| `npm run preview`   | Preview production build |
+| `npm run lint`      | ESLint                   |
+| `npm run format`    | Prettier                 |
 
 ## Project Docs
 

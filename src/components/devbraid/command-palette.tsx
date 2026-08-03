@@ -106,11 +106,7 @@ export function CommandPalette({
           <>
             <CommandGroup heading="Recent">
               {recents.map((r) => (
-                <CommandItem
-                  key={r.to}
-                  value={`recent ${r.label}`}
-                  onSelect={() => go(r)}
-                >
+                <CommandItem key={r.to} value={`recent ${r.label}`} onSelect={() => go(r)}>
                   <History className="mr-2 size-3.5 text-muted-foreground" />
                   <span className="truncate">{r.label}</span>
                   <span className="ml-auto font-mono text-[10px] text-muted-foreground">
@@ -153,9 +149,7 @@ export function CommandPalette({
             >
               <n.icon className="mr-2 size-3.5 text-muted-foreground" />
               <span>{n.label}</span>
-              <span className="ml-auto font-mono text-[10px] text-muted-foreground">
-                {n.to}
-              </span>
+              <span className="ml-auto font-mono text-[10px] text-muted-foreground">{n.to}</span>
             </CommandItem>
           ))}
         </CommandGroup>

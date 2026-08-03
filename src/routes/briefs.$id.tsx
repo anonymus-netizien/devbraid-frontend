@@ -17,7 +17,8 @@ function BriefDetailPage() {
 
   useEffect(() => {
     setLoading(true)
-    threadService.getBriefById(id)
+    threadService
+      .getBriefById(id)
       .then(setBrief)
       .catch(() => setBrief(null))
       .finally(() => setLoading(false))

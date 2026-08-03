@@ -1,14 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import {
-  ArrowUpRight,
-  FileText,
-  GitPullRequest,
-  Github,
-  Plus,
-  StickyNote,
-} from 'lucide-react'
+import { ArrowUpRight, FileText, GitPullRequest, Github, Plus, StickyNote } from 'lucide-react'
 import { PageHeader, LoadingRows, EmptyState } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
@@ -21,21 +14,42 @@ export const Route = createFileRoute('/dashboard')({
   head: () => ({
     meta: [
       { title: 'Dashboard · DevBraid' },
-      { name: 'description', content: 'Your change threads, decision notes, and brief activity at a glance.' },
+      {
+        name: 'description',
+        content: 'Your change threads, decision notes, and brief activity at a glance.',
+      },
       { property: 'og:title', content: 'DevBraid · Dashboard' },
-      { property: 'og:description', content: 'Change threads, decision notes, and briefs at a glance.' },
+      {
+        property: 'og:description',
+        content: 'Change threads, decision notes, and briefs at a glance.',
+      },
     ],
   }),
   component: DashboardPage,
 })
 
-function StatCard({ label, value, hint, icon: Icon, to }: {
-  label: string; value: number; hint: string; icon: typeof FileText; to: string
+function StatCard({
+  label,
+  value,
+  hint,
+  icon: Icon,
+  to,
+}: {
+  label: string
+  value: number
+  hint: string
+  icon: typeof FileText
+  to: string
 }) {
   return (
-    <Link to={to} className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface">
+    <Link
+      to={to}
+      className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface"
+    >
       <div className="flex items-start justify-between">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          {label}
+        </span>
         <Icon className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
       </div>
       <div className="mt-3 font-mono text-3xl font-semibold tracking-tight">
@@ -68,11 +82,18 @@ function DashboardPage() {
   })
 
   useEffect(() => {
-    githubService.getStatus().then(s => {
-      const c = s.connected && s.valid
-      setGhConnected(c)
-      if (c) githubService.listRepositories().then(r => setRepoCount(r.length)).catch(() => {})
-    }).catch(() => setGhConnected(false))
+    githubService
+      .getStatus()
+      .then((s) => {
+        const c = s.connected && s.valid
+        setGhConnected(c)
+        if (c)
+          githubService
+            .listRepositories()
+            .then((r) => setRepoCount(r.length))
+            .catch(() => {})
+      })
+      .catch(() => setGhConnected(false))
   }, [])
 
   const threads = threadsData?.content ?? []
@@ -86,7 +107,14 @@ function DashboardPage() {
   })
 
   const hour = new Date().getHours()
-  const greeting = hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 17 ? 'Good afternoon' : hour >= 17 && hour < 22 ? 'Good evening' : 'Working late'
+  const greeting =
+    hour >= 5 && hour < 12
+      ? 'Good morning'
+      : hour >= 12 && hour < 17
+        ? 'Good afternoon'
+        : hour >= 17 && hour < 22
+          ? 'Good evening'
+          : 'Working late'
   const firstName = user?.fullName?.split(' ')[0] ?? user?.email?.split('@')[0] ?? 'Developer'
 
   return (
@@ -95,9 +123,13 @@ function DashboardPage() {
         <div className="mb-6 rounded-lg border border-warning-border bg-warning-bg p-4 flex items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-warning-fg">GitHub connection required</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Connect your Personal Access Token to inspect repositories and post PR briefs.</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Connect your Personal Access Token to inspect repositories and post PR briefs.
+            </p>
           </div>
-          <Link to="/connections" className="btn btn-soft btn-sm text-background">Connect PAT →</Link>
+          <Link to="/connections" className="btn btn-soft btn-sm text-background">
+            Connect PAT →
+          </Link>
         </div>
       )}
 
@@ -105,17 +137,42 @@ function DashboardPage() {
         eyebrow="Workspace"
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
-        actions={              <Link to="/threads" className="btn btn-primary btn-sm">
-                <Plus className="size-3.5" /> New thread
-              </Link>
+        actions={
+          <Link to="/threads" className="btn btn-primary btn-sm">
+            <Plus className="size-3.5" /> New thread
+          </Link>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Open threads" value={activeThreads.length} hint="Drafting, analyzing, or ready" icon={GitPullRequest} to="/threads" />
-        <StatCard label="Decision notes" value={notes.length} hint="Human-written reasoning" icon={StickyNote} to="/notes" />
-        <StatCard label="Change briefs" value={briefs.length} hint="Drafted and published" icon={FileText} to="/briefs" />
-        <StatCard label="Connections" value={ghConnected ? repoCount : 0} hint={ghConnected ? 'GitHub repos' : 'Not connected'} icon={Github} to="/connections" />
+        <StatCard
+          label="Open threads"
+          value={activeThreads.length}
+          hint="Drafting, analyzing, or ready"
+          icon={GitPullRequest}
+          to="/threads"
+        />
+        <StatCard
+          label="Decision notes"
+          value={notes.length}
+          hint="Human-written reasoning"
+          icon={StickyNote}
+          to="/notes"
+        />
+        <StatCard
+          label="Change briefs"
+          value={briefs.length}
+          hint="Drafted and published"
+          icon={FileText}
+          to="/briefs"
+        />
+        <StatCard
+          label="Connections"
+          value={ghConnected ? repoCount : 0}
+          hint={ghConnected ? 'GitHub repos' : 'Not connected'}
+          icon={Github}
+          to="/connections"
+        />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
@@ -124,14 +181,12 @@ function DashboardPage() {
           <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
             <h2 className="text-sm font-semibold">Recent change threads</h2>
             <div className="flex items-center gap-2">
-              {['all', 'draft', 'analyzing', 'ready', 'published'].map(s => (
+              {['all', 'draft', 'analyzing', 'ready', 'published'].map((s) => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`btn btn-xs rounded text-[10px] font-medium uppercase tracking-wider ${
-                    statusFilter === s
-                      ? 'btn-soft'
-                      : 'btn-ghost text-muted-foreground'
+                    statusFilter === s ? 'btn-soft' : 'btn-ghost text-muted-foreground'
                   }`}
                 >
                   {s}
@@ -141,9 +196,13 @@ function DashboardPage() {
           </div>
 
           {threadsLoading ? (
-            <div className="p-4"><LoadingRows rows={4} /></div>
+            <div className="p-4">
+              <LoadingRows rows={4} />
+            </div>
           ) : filtered.length === 0 ? (
-            <div className="p-4"><EmptyState title="No threads yet" description="Create one to get started." /></div>
+            <div className="p-4">
+              <EmptyState title="No threads yet" description="Create one to get started." />
+            </div>
           ) : (
             <div className="divide-y divide-hairline">
               {filtered.slice(0, 8).map((t: ChangeThread) => (
@@ -164,7 +223,9 @@ function DashboardPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {t.riskFlags?.slice(0, 2).map((f: string) => <RiskChip key={f} flag={f} dense />)}
+                    {t.riskFlags?.slice(0, 2).map((f: string) => (
+                      <RiskChip key={f} flag={f} dense />
+                    ))}
                     <span className="font-mono text-[11px] text-muted-foreground">
                       {t.notesCount || 0} notes
                     </span>
@@ -192,7 +253,9 @@ function DashboardPage() {
                     className="block rounded border border-hairline bg-background/60 p-2.5 text-xs transition-colors hover:border-primary/30"
                   >
                     <p className="line-clamp-2 font-medium">{n.decision || n.content}</p>
-                    <p className="mt-1 text-[10px] text-muted-foreground">{n.authorName} · {new Date(n.createdAt).toLocaleDateString()}</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">
+                      {n.authorName} · {new Date(n.createdAt).toLocaleDateString()}
+                    </p>
                   </Link>
                 ))}
               </div>

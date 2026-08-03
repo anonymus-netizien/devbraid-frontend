@@ -2,13 +2,7 @@ import type { ReactNode } from 'react'
 import { GitBranch } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export function CitationChip({
-  kind,
-  ref: r,
-}: {
-  kind: 'c' | 'f'
-  ref: string
-}) {
+export function CitationChip({ kind, ref: r }: { kind: 'c' | 'f'; ref: string }) {
   return (
     <span className="mx-0.5 inline-flex items-baseline gap-1 rounded border border-hairline bg-surface px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground align-middle">
       <span className="text-primary/80">{kind}:</span>

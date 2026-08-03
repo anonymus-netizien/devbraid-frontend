@@ -1,94 +1,118 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { User, LoginRequest, RegisterRequest } from '../types/auth';
-import authService from '../services/auth.service';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
+import type { User, LoginRequest, RegisterRequest } from '../types/auth'
+import authService from '../services/auth.service'
 
 interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (credentials: LoginRequest) => Promise<void>;
-  register: (data: RegisterRequest) => Promise<void>;
-  sendOtp: (email: string) => Promise<void>;
-  verifyOtp: (email: string, otp: string) => Promise<void>;
-  logout: () => void;
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  login: (credentials: LoginRequest) => Promise<void>
+  register: (data: RegisterRequest) => Promise<void>
+  sendOtp: (email: string) => Promise<void>
+  verifyOtp: (email: string, otp: string) => Promise<void>
+  logout: () => void
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-function mapProfileToUser(profile: { id: string; fullName: string; email: string; role: string; createdAt: string }): User {
-  return { id: profile.id, fullName: profile.fullName, email: profile.email, role: profile.role, createdAt: profile.createdAt };
+function mapProfileToUser(profile: {
+  id: string
+  fullName: string
+  email: string
+  role: string
+  createdAt: string
+}): User {
+  return {
+    id: profile.id,
+    fullName: profile.fullName,
+    email: profile.email,
+    role: profile.role,
+    createdAt: profile.createdAt,
+  }
 }
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const bootstrapSession = async () => {
       try {
-        const profile = await authService.me();
-        setUser(mapProfileToUser(profile));
+        const profile = await authService.me()
+        setUser(mapProfileToUser(profile))
       } catch {
         try {
-          await authService.refresh();
-          const profile = await authService.me();
-          setUser(mapProfileToUser(profile));
+          await authService.refresh()
+          const profile = await authService.me()
+          setUser(mapProfileToUser(profile))
         } catch {
-          await authService.logout();
-          setUser(null);
+          await authService.logout()
+          setUser(null)
         }
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    bootstrapSession();
-  }, []);
+    }
+    bootstrapSession()
+  }, [])
 
   const login = useCallback(async (credentials: LoginRequest) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await authService.login(credentials);
-      const profile = await authService.me();
-      setUser(mapProfileToUser(profile));
+      await authService.login(credentials)
+      const profile = await authService.me()
+      setUser(mapProfileToUser(profile))
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, []);
+  }, [])
 
   const sendOtp = useCallback(async (email: string) => {
-    await authService.sendOtp(email);
-  }, []);
+    await authService.sendOtp(email)
+  }, [])
 
   const verifyOtp = useCallback(async (email: string, otp: string) => {
-    await authService.verifyOtp(email, otp);
-  }, []);
+    await authService.verifyOtp(email, otp)
+  }, [])
 
   const register = useCallback(async (data: RegisterRequest) => {
-    await authService.register(data);
-  }, []);
+    await authService.register(data)
+  }, [])
 
   const logout = useCallback(async () => {
-    await authService.logout();
-    setUser(null);
-  }, []);
+    await authService.logout()
+    setUser(null)
+  }, [])
 
   const contextValue = useMemo(
-    () => ({ user, isAuthenticated: !!user, isLoading, login, register, sendOtp, verifyOtp, logout }),
-    [user, isLoading, login, register, sendOtp, verifyOtp, logout]
-  );
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      login,
+      register,
+      sendOtp,
+      verifyOtp,
+      logout,
+    }),
+    [user, isLoading, login, register, sendOtp, verifyOtp, logout],
+  )
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+}
 
 export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
-
+  return context
+}

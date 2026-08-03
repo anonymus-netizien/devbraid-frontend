@@ -15,15 +15,20 @@ function NotesPage() {
 
   useEffect(() => {
     setLoading(true)
-    threadService.listNotes(0, 50)
-      .then(data => setNotes(data?.content || []))
+    threadService
+      .listNotes(0, 50)
+      .then((data) => setNotes(data?.content || []))
       .catch(() => setNotes([]))
       .finally(() => setLoading(false))
   }, [])
 
   return (
     <div>
-      <PageHeader eyebrow="Workspace" title="Decision Notes" description="Developer-attributed decisions, never generated." />
+      <PageHeader
+        eyebrow="Workspace"
+        title="Decision Notes"
+        description="Developer-attributed decisions, never generated."
+      />
       {loading ? (
         <div className="py-12 text-center space-y-3">
           <RefreshCw className="h-6 w-6 animate-spin mx-auto text-primary" />
@@ -33,11 +38,16 @@ function NotesPage() {
         <p className="text-sm text-muted-foreground py-8">No decision notes yet.</p>
       ) : (
         <div className="space-y-4">
-          {notes.map(note => (
-            <div key={note.id} className="rounded-xl border border-hairline bg-surface p-5 space-y-3">
+          {notes.map((note) => (
+            <div
+              key={note.id}
+              className="rounded-xl border border-hairline bg-surface p-5 space-y-3"
+            >
               <div className="flex items-center justify-between border-b border-hairline pb-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xs font-mono text-primary font-medium truncate">{note.threadTitle}</span>
+                  <span className="text-xs font-mono text-primary font-medium truncate">
+                    {note.threadTitle}
+                  </span>
                 </div>
                 <span className="text-[10px] text-muted-foreground font-mono shrink-0">
                   {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : ''}

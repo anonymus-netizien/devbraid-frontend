@@ -59,8 +59,8 @@ export function NewsletterRow() {
             Join our newsletter
           </h3>
           <p className="mt-3 max-w-[38ch] text-sm leading-relaxed text-muted-foreground">
-            Get all the latest DevBraid news — new surfaces, brief formats, and
-            review workflow ideas — delivered to your inbox.
+            Get all the latest DevBraid news — new surfaces, brief formats, and review workflow
+            ideas — delivered to your inbox.
           </p>
         </div>
         <form

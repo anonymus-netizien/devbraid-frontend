@@ -26,9 +26,7 @@ export function EmptyState({
       </div>
       <div className="space-y-1">
         <p className="text-sm font-medium">{title}</p>
-        {description && (
-          <p className="max-w-sm text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="max-w-sm text-xs text-muted-foreground">{description}</p>}
       </div>
       {action}
     </div>
@@ -60,9 +58,7 @@ export function ErrorPanel({
 }) {
   return (
     <div className="rounded-lg border border-danger-border bg-danger-bg p-6">
-      <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-danger">
-        {code}
-      </div>
+      <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-danger">{code}</div>
       <p className="text-sm text-danger">{message}</p>
       {onRetry && (
         <button
@@ -95,13 +91,9 @@ export function PageHeader({
             {eyebrow}
           </div>
         )}
-        <h1 className="text-balance text-2xl font-semibold tracking-tight">
-          {title}
-        </h1>
+        <h1 className="text-balance text-2xl font-semibold tracking-tight">{title}</h1>
         {description && (
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            {description}
-          </p>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{description}</p>
         )}
       </div>
       {actions && <div className="shrink-0">{actions}</div>}
