@@ -12,6 +12,9 @@ import type {
   PaginatedNotes,
   DecisionNote,
   NoteResponse,
+  FileComment,
+  CreateFileCommentRequest,
+  UpdateFileCommentRequest,
 } from '../types/thread'
 
 export const threadService = {
@@ -174,6 +177,60 @@ export const threadService = {
    */
   async deleteNote(threadId: string, noteId: string): Promise<void> {
     await apiClient.delete<ApiResponse<null>>(`/threads/${threadId}/notes/${noteId}`)
+  },
+
+  /**
+   * List all file comments on a thread.
+   */
+  async listComments(threadId: string): Promise<FileComment[]> {
+    const response = await apiClient.get<ApiResponse<FileComment[]>>(
+      `/threads/${threadId}/comments`,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * List comments anchored to a single file path.
+   */
+  async listCommentsByFile(threadId: string, filePath: string): Promise<FileComment[]> {
+    const response = await apiClient.get<ApiResponse<FileComment[]>>(
+      `/threads/${threadId}/comments/by-file`,
+      { params: { filePath } },
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Add a comment anchored to a file path (and optional line range).
+   */
+  async createComment(threadId: string, comment: CreateFileCommentRequest): Promise<FileComment> {
+    const response = await apiClient.post<ApiResponse<FileComment>>(
+      `/threads/${threadId}/comments`,
+      comment,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Update a comment's body, line range, or resolution status.
+   */
+  async updateComment(
+    threadId: string,
+    commentId: string,
+    comment: UpdateFileCommentRequest,
+  ): Promise<FileComment> {
+    const response = await apiClient.put<ApiResponse<FileComment>>(
+      `/threads/${threadId}/comments/${commentId}`,
+      comment,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Permanently delete a file comment.
+   */
+  async deleteComment(threadId: string, commentId: string): Promise<void> {
+    await apiClient.delete<ApiResponse<null>>(`/threads/${threadId}/comments/${commentId}`)
   },
 
   /**

@@ -22,8 +22,9 @@ import {
   useThreadQuery,
   useThreadNotesQuery,
   useThreadBriefQuery,
+  useThreadCommentsQuery,
 } from '@/hooks/queries'
-import type { ChangeThread, NoteResponse, NoteContext } from '../types/thread'
+import type { ChangeThread, NoteResponse, NoteContext, FileComment } from '../types/thread'
 
 export const Route = createFileRoute('/threads/$id')({
   component: ThreadDetailPage,
@@ -34,6 +35,7 @@ function ThreadDetailPage() {
   const queryClient = useQueryClient()
   const { data: thread, isLoading } = useThreadQuery(id)
   const { data: notes = [] } = useThreadNotesQuery(id)
+  const { data: comments = [] } = useThreadCommentsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
@@ -209,6 +211,47 @@ function ThreadDetailPage() {
       setMessage({ type: 'error', text: msg })
     } finally {
       setDeletingNoteId(null)
+    }
+  }
+
+  const updateCommentsCache = (next: FileComment[]) =>
+    queryClient.setQueryData(queryKeys.threadComments(id), next)
+
+  const handleAddComment = async (filePath: string, content: string) => {
+    setMessage(null)
+    try {
+      const created = await threadService.createComment(id, { filePath, content })
+      updateCommentsCache([created, ...comments])
+      setMessage({ type: 'success', text: 'Comment added.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to add comment'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const handleResolveComment = async (commentId: string | undefined) => {
+    if (!commentId) return
+    setMessage(null)
+    try {
+      const updated = await threadService.updateComment(id, commentId, { status: 'RESOLVED' })
+      updateCommentsCache(comments.map((c) => (c.id === commentId ? updated : c)))
+      setMessage({ type: 'success', text: 'Comment resolved.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to resolve comment'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const handleDeleteComment = async (commentId: string | undefined) => {
+    if (!commentId) return
+    setMessage(null)
+    try {
+      await threadService.deleteComment(id, commentId)
+      updateCommentsCache(comments.filter((c) => c.id !== commentId))
+      setMessage({ type: 'success', text: 'Comment deleted.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete comment'
+      setMessage({ type: 'error', text: msg })
     }
   }
 
@@ -747,7 +790,13 @@ function ThreadDetailPage() {
 
         {/* Evidence Panel (Changed Files & Commits) */}
         <aside className="w-80 shrink-0 space-y-6">
-          <FileChangesPanel files={filesList} />
+          <FileChangesPanel
+            files={filesList}
+            comments={comments}
+            onAddComment={handleAddComment}
+            onResolveComment={handleResolveComment}
+            onDeleteComment={handleDeleteComment}
+          />
           <CommitsList commits={commitsList} />
         </aside>
       </div>
