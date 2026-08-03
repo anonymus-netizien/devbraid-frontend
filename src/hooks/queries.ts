@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { threadService } from '@/services/thread.service'
 import githubService from '@/services/github.service'
+import indexingService from '@/services/indexing.service'
 
 /**
  * Central query-key factory. All pages derive keys from here so mutations can
@@ -23,6 +24,14 @@ export const queryKeys = {
     status: ['github', 'status'] as const,
     repos: ['github', 'repos'] as const,
     branches: (owner: string, repo: string) => ['github', 'branches', owner, repo] as const,
+  },
+  indexing: {
+    indexes: ['indexing', 'indexes'] as const,
+    index: (id: string) => ['indexing', 'indexes', id] as const,
+    files: (id: string) => ['indexing', 'indexes', id, 'files'] as const,
+    search: (id: string, pattern: string) =>
+      ['indexing', 'indexes', id, 'search', pattern] as const,
+    graph: (id: string) => ['indexing', 'indexes', id, 'graph'] as const,
   },
   dashboard: {
     threads: ['dashboard', 'threads'] as const,
@@ -119,6 +128,37 @@ export function useNotesQuery() {
 
 export function useGitHubStatusQuery() {
   return useQuery({ queryKey: queryKeys.github.status, queryFn: () => githubService.getStatus() })
+}
+
+export function useIndexesQuery() {
+  return useQuery({
+    queryKey: queryKeys.indexing.indexes,
+    queryFn: () => indexingService.listIndexes(),
+  })
+}
+
+export function useIndexFilesQuery(indexId: string, enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.indexing.files(indexId),
+    queryFn: () => indexingService.getFiles(indexId),
+    enabled: !!indexId && enabled,
+  })
+}
+
+export function useIndexSearchQuery(indexId: string, pattern: string) {
+  return useQuery({
+    queryKey: queryKeys.indexing.search(indexId, pattern),
+    queryFn: () => indexingService.searchFiles(indexId, pattern),
+    enabled: !!indexId && pattern.trim().length > 0,
+  })
+}
+
+export function useIndexGraphQuery(indexId: string, enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.indexing.graph(indexId),
+    queryFn: () => indexingService.getGraph(indexId),
+    enabled: !!indexId && enabled,
+  })
 }
 
 export function useReposQuery(enabled = true) {
