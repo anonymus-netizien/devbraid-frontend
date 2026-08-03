@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import {
-  GitCommit,
-  FileCode,
   Plus,
   RefreshCw,
   Sparkles,
@@ -17,6 +15,7 @@ import {
 } from 'lucide-react'
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
+import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
 import { threadService } from '../services/thread.service'
 import {
   queryKeys,
@@ -748,59 +747,8 @@ function ThreadDetailPage() {
 
         {/* Evidence Panel (Changed Files & Commits) */}
         <aside className="w-80 shrink-0 space-y-6">
-          {/* Files Changed */}
-          <div className="rounded-xl border border-hairline bg-surface p-4 space-y-3">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              Changed Files ({filesList.length})
-            </p>
-            {filesList.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No changed files detected.</p>
-            ) : (
-              <div className="space-y-2">
-                {filesList.map((f: any) => (
-                  <div
-                    key={f.filename || f.path}
-                    className="flex items-center gap-2 text-xs font-mono py-1 border-b border-hairline/50 last:border-0"
-                  >
-                    <FileCode className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <span className="text-foreground truncate flex-1">{f.filename || f.path}</span>
-                    <span className="text-success-fg font-mono text-[10px]">
-                      +{f.additions || 0}
-                    </span>
-                    <span className="text-danger-fg font-mono text-[10px]">
-                      -{f.deletions || 0}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Commits List */}
-          <div className="rounded-xl border border-hairline bg-surface p-4 space-y-3">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              Commits ({commitsList.length})
-            </p>
-            {commitsList.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No commits synced yet.</p>
-            ) : (
-              <div className="space-y-3">
-                {commitsList.map((c: any) => (
-                  <div key={c.sha} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <GitCommit className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span className="text-xs font-mono text-primary">
-                        {c.sha?.substring(0, 7)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-foreground line-clamp-2 pl-5 font-sans">
-                      {c.message}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <FileChangesPanel files={filesList} />
+          <CommitsList commits={commitsList} />
         </aside>
       </div>
     </div>

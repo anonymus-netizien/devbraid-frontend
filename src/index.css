@@ -1,5 +1,7 @@
 @import 'tailwindcss';
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: false;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -43,6 +45,67 @@
 }
 
 :root {
+  --radius: 0.5rem;
+  /* Warm light — same charcoal-blue + amber identity as dark */
+  --background: oklch(0.982 0.003 264);
+  --foreground: oklch(0.22 0.012 264);
+  --surface: oklch(0.965 0.004 264);
+  --surface-2: oklch(0.93 0.005 264);
+  --hairline: oklch(0.2 0.01 264 / 12%);
+  --card: oklch(0.965 0.004 264);
+  --card-foreground: oklch(0.22 0.012 264);
+  --popover: oklch(0.982 0.003 264);
+  --popover-foreground: oklch(0.22 0.012 264);
+  --primary: oklch(0.55 0.16 70);
+  --primary-foreground: oklch(0.16 0.02 60);
+  --secondary: oklch(0.9 0.006 264);
+  --secondary-foreground: oklch(0.32 0.012 264);
+  --muted: oklch(0.93 0.005 264);
+  --muted-foreground: oklch(0.45 0.01 264);
+  --accent: oklch(0.91 0.02 75 / 45%);
+  --accent-foreground: oklch(0.4 0.12 70);
+  --destructive: oklch(0.55 0.2 22);
+  --destructive-foreground: oklch(0.99 0.002 80);
+  --border: oklch(0.2 0.01 264 / 10%);
+  --input: oklch(0.2 0.01 264 / 14%);
+  --ring: oklch(0.55 0.16 70);
+  --sidebar: oklch(0.975 0.004 264);
+  --sidebar-foreground: oklch(0.22 0.012 264);
+  --sidebar-primary: oklch(0.55 0.16 70);
+  --sidebar-primary-foreground: oklch(0.16 0.02 60);
+  --sidebar-accent: oklch(0.91 0.02 75 / 45%);
+  --sidebar-accent-foreground: oklch(0.4 0.12 70);
+  --sidebar-border: oklch(0.2 0.01 264 / 10%);
+  --sidebar-ring: oklch(0.55 0.16 70);
+  /* Semantic severity triplets — fg / bg / border */
+  --danger: oklch(0.52 0.19 22);
+  --danger-bg: oklch(0.6 0.19 22 / 10%);
+  --danger-border: oklch(0.6 0.19 22 / 30%);
+  --danger-fg: oklch(0.45 0.18 22);
+  --warning: oklch(0.55 0.14 70);
+  --warning-bg: oklch(0.75 0.13 75 / 12%);
+  --warning-border: oklch(0.75 0.13 75 / 28%);
+  --warning-fg: oklch(0.52 0.13 70);
+  --success: oklch(0.5 0.12 160);
+  --success-bg: oklch(0.72 0.12 158 / 12%);
+  --success-border: oklch(0.72 0.12 158 / 28%);
+  --success-fg: oklch(0.45 0.11 158);
+  --info: oklch(0.48 0.11 240);
+  --info-bg: oklch(0.7 0.1 240 / 12%);
+  --info-border: oklch(0.7 0.1 240 / 28%);
+  --info-fg: oklch(0.42 0.1 238);
+  --neutral-accent: oklch(0.52 0.14 300);
+  --neutral-accent-bg: oklch(0.72 0.14 300 / 12%);
+  --neutral-accent-border: oklch(0.72 0.14 300 / 28%);
+
+  --elevation-1: 0 1px 2px oklch(0.2 0.01 264 / 8%);
+  --elevation-2: 0 6px 20px -8px oklch(0.2 0.01 264 / 14%);
+  --elevation-3: 0 24px 60px -20px oklch(0.2 0.01 264 / 20%);
+  --glow-primary: 0 0 60px -10px color-mix(in oklab, var(--primary) 25%, transparent);
+  --measure: 68ch;
+}
+
+.dark {
   --radius: 0.5rem;
   --background: oklch(0.16 0.005 264);
   --foreground: oklch(0.98 0 0);
@@ -276,4 +339,19 @@
   --color-neutral-accent: var(--neutral-accent);
   --color-neutral-accent-bg: var(--neutral-accent-bg);
   --color-neutral-accent-border: var(--neutral-accent-border);
+  /* daisyui component mapping — consume our tokens, never built-in themes */
+  --color-base-100: var(--background);
+  --color-base-200: var(--surface);
+  --color-base-300: var(--surface-2);
+  --color-base-content: var(--foreground);
+  --color-primary-content: var(--primary-foreground);
+  --color-secondary-content: var(--secondary-foreground);
+  --color-accent-content: var(--accent-foreground);
+  --color-neutral: var(--surface-2);
+  --color-neutral-content: var(--foreground);
+  --color-info-content: var(--info-fg);
+  --color-success-content: var(--success-fg);
+  --color-warning-content: var(--warning-fg);
+  --color-error: var(--danger);
+  --color-error-content: var(--danger-fg);
 }
