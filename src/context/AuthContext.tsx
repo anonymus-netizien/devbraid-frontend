@@ -7,7 +7,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react'
-import type { User, LoginRequest, RegisterRequest } from '../types/auth'
+import type { User, LoginRequest, RegisterRequest, UserProfileResponseData } from '../types/auth'
 import authService from '../services/auth.service'
 
 interface AuthContextType {
@@ -23,18 +23,12 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-function mapProfileToUser(profile: {
-  id: string
-  fullName: string
-  email: string
-  role: string
-  createdAt: string
-}): User {
+function mapProfileToUser(profile: UserProfileResponseData): User {
   return {
     id: profile.id,
     fullName: profile.fullName,
     email: profile.email,
-    role: profile.role,
+    role: profile.role as User['role'],
     createdAt: profile.createdAt,
   }
 }

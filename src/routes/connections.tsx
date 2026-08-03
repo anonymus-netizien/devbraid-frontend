@@ -8,8 +8,8 @@ import githubService from '../services/github.service'
 import type { GitHubConnection } from '../types/github'
 
 export const Route = createFileRoute('/connections')({
-  validateSearch: (search: Record<string, unknown>) => ({
-    onboarding: (search.onboarding as string) || undefined,
+  validateSearch: (search: Record<string, unknown>): { onboarding?: string } => ({
+    onboarding: typeof search.onboarding === 'string' ? search.onboarding : undefined,
   }),
   component: ConnectionsPage,
 })

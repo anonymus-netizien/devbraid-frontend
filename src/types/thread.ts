@@ -14,7 +14,7 @@ export type RiskFlag =
  * Mirrors the backend `NoteContext` enum (changethread/entity/NoteContext.java).
  * COMMIT/FILE take an optional contextRef pointing at the specific commit sha or file path.
  */
-export type NoteContext = 'COMMIT' | 'FILE' | 'THREAD';
+export type NoteContext = 'COMMIT' | 'FILE' | 'THREAD'
 
 export interface DecisionNote {
   id?: string
