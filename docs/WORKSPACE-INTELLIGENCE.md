@@ -31,9 +31,9 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Ticket 05 — Indexing explorer
 
-- [ ] Service: `listIndexes`, `startIndexing`, `getIndex`, `searchFiles`, `getFilesByLanguage`, `getGraph`, `getFiles`
-- [ ] New `/indexing` route: index list, start-index dialog (repo/branch/fileContents), per-index files + language + graph
-- [ ] Tests
+- [x] Service: `listIndexes`, `startIndexing`, `getIndex`, `searchFiles`, `getFilesByLanguage`, `getGraph`, `getFiles`
+- [x] New `/indexing` route: index list, start-index dialog (repo/branch/fileContents), per-index files + language + graph
+- [x] Tests
 
 ## Ticket 06 — API keys (Settings)
 
