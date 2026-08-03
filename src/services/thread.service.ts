@@ -42,6 +42,36 @@ export const threadService = {
   },
 
   /**
+   * Server-side keyword search over thread title + description.
+   */
+  async searchThreads(q: string, page = 0, size = 20): Promise<PaginatedThreads> {
+    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search', {
+      params: { q, page, size },
+    })
+    return unwrap(response.data)
+  },
+
+  /**
+   * Paginated threads for one repository (owner/name).
+   */
+  async searchByRepo(repositoryFullName: string, page = 0, size = 20): Promise<PaginatedThreads> {
+    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search/repo', {
+      params: { repositoryFullName, page, size },
+    })
+    return unwrap(response.data)
+  },
+
+  /**
+   * Paginated threads filtered by lifecycle status (DRAFT | ANALYZING | READY | PUBLISHED).
+   */
+  async searchByStatus(status: string, page = 0, size = 20): Promise<PaginatedThreads> {
+    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search/status', {
+      params: { status, page, size },
+    })
+    return unwrap(response.data)
+  },
+
+  /**
    * Update Change Thread details or status.
    */
   async updateThread(id: string, request: UpdateThreadRequest): Promise<ChangeThread> {

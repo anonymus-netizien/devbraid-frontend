@@ -8,6 +8,8 @@ import githubService from '@/services/github.service'
  */
 export const queryKeys = {
   threads: ['threads'] as const,
+  threadsSearch: (q: string) => ['threads', 'search', q] as const,
+  threadsByStatus: (status: string) => ['threads', 'status', status] as const,
   thread: (id: string) => ['threads', id] as const,
   threadNotes: (id: string) => ['threads', id, 'notes'] as const,
   threadBrief: (id: string) => ['threads', id, 'brief'] as const,
@@ -28,6 +30,22 @@ export const queryKeys = {
 
 export function useThreadsQuery() {
   return useQuery({ queryKey: queryKeys.threads, queryFn: () => threadService.listThreads(0, 20) })
+}
+
+export function useThreadsSearchQuery(q: string) {
+  return useQuery({
+    queryKey: queryKeys.threadsSearch(q),
+    queryFn: () => threadService.searchThreads(q, 0, 50),
+    enabled: q.trim().length > 0,
+  })
+}
+
+export function useThreadsByStatusQuery(status: string) {
+  return useQuery({
+    queryKey: queryKeys.threadsByStatus(status),
+    queryFn: () => threadService.searchByStatus(status, 0, 50),
+    enabled: status !== 'all',
+  })
 }
 
 export function useThreadQuery(id: string) {

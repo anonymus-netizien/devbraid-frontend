@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
@@ -15,33 +15,66 @@ export const Route = createFileRoute('/threads')({
 
 const statusFilters = ['all', 'draft', 'analyzing', 'ready', 'published'] as const
 
+/** Backend lifecycle statuses are uppercase; the UI chips are lowercase labels. */
+const STATUS_TO_BACKEND: Record<string, string> = {
+  draft: 'DRAFT',
+  analyzing: 'ANALYZING',
+  ready: 'READY',
+  published: 'PUBLISHED',
+}
+
 function ThreadsPage() {
   const { location } = useRouterState()
   const isDetailPage = location.pathname.startsWith('/threads/') && location.pathname !== '/threads'
   const [open, setOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [repoFilter, setRepoFilter] = useState<string>('all')
   const [q, setQ] = useState('')
+  const [debouncedQ, setDebouncedQ] = useState('')
+
+  // Debounce the keyword search before hitting the server.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQ(q), 300)
+    return () => clearTimeout(timer)
+  }, [q])
+
+  const isSearching = debouncedQ.trim().length > 0
+  const backendStatus = STATUS_TO_BACKEND[statusFilter] ?? null
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: queryKeys.threads,
-    queryFn: () => threadService.listThreads(0, 50),
+    queryKey: isSearching
+      ? queryKeys.threadsSearch(debouncedQ)
+      : statusFilter === 'all'
+        ? queryKeys.threads
+        : queryKeys.threadsByStatus(backendStatus as string),
+    queryFn: () =>
+      isSearching
+        ? threadService.searchThreads(debouncedQ.trim(), 0, 50)
+        : statusFilter === 'all'
+          ? threadService.listThreads(0, 50)
+          : threadService.searchByStatus(backendStatus as string, 0, 50),
   })
 
   const threads = data?.content ?? []
 
+  const repos = useMemo(
+    () =>
+      [
+        ...new Set(
+          threads
+            .map((t: ChangeThread) => t.repositoryFullName)
+            .filter((r): r is string => Boolean(r)),
+        ),
+      ].sort(),
+    [threads],
+  )
+
   const filtered = useMemo(
     () =>
-      threads.filter((t: ChangeThread) => {
-        const repoName = t.repositoryFullName ?? ''
-        const matchesSearch =
-          !q ||
-          t.title.toLowerCase().includes(q.toLowerCase()) ||
-          repoName.toLowerCase().includes(q.toLowerCase())
-        const matchesStatus =
-          statusFilter === 'all' || t.status.toLowerCase() === statusFilter.toLowerCase()
-        return matchesSearch && matchesStatus
-      }),
-    [threads, q, statusFilter],
+      repoFilter === 'all'
+        ? threads
+        : threads.filter((t: ChangeThread) => t.repositoryFullName === repoFilter),
+    [threads, repoFilter],
   )
 
   if (isDetailPage) return <Outlet />
@@ -85,15 +118,32 @@ function ThreadsPage() {
           ))}
         </div>
 
-        <div className="relative w-full lg:w-64">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search threads\u2026"
-            className="input input-sm w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
-          />
+        <div className="flex items-center gap-2">
+          {repos.length > 1 && (
+            <select
+              value={repoFilter}
+              onChange={(e) => setRepoFilter(e.target.value)}
+              className="input input-sm w-auto max-w-40 text-xs text-foreground border border-hairline bg-surface/60 pr-7"
+              title="Filter by repository"
+            >
+              <option value="all">All repos</option>
+              {repos.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          )}
+          <div className="relative w-full lg:w-64">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={isSearching ? 'Searching\u2026' : 'Search threads\u2026'}
+              className="input input-sm w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
+            />
+          </div>
         </div>
       </div>
 
