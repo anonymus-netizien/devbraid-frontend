@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useSpring,
-} from 'framer-motion'
+import { motion, useMotionValue, useMotionValueEvent, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface AnimatedCounterProps {
@@ -72,7 +67,9 @@ export function AnimatedCounter({
       aria-atomic="true"
       aria-label={`${prefix}${formatNumber(to)}${suffix}`}
     >
-      {prefix}{formatNumber(displayValue)}{suffix}
+      {prefix}
+      {formatNumber(displayValue)}
+      {suffix}
     </motion.span>
   )
 }

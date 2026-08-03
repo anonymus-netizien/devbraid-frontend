@@ -20,12 +20,7 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
   const dur = (s: number) => `${s * speed}s`
 
   return (
-    <div
-      className={cn(
-        'relative isolate overflow-hidden rounded-2xl',
-        className,
-      )}
-    >
+    <div className={cn('relative isolate overflow-hidden rounded-2xl', className)}>
       {/* Ambient glow */}
       <div
         aria-hidden
@@ -117,11 +112,55 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             />
             {/* Screen content — code lines */}
             <g opacity="0.85">
-              <line x1="190" y1="218" x2="225" y2="201" stroke="var(--color-success)" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="195" y1="222" x2="235" y2="202" stroke="var(--color-foreground)" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
-              <line x1="200" y1="226" x2="230" y2="211" stroke="var(--color-info)" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
-              <line x1="205" y1="230" x2="240" y2="213" stroke="var(--color-foreground)" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
-              <line x1="198" y1="224" x2="220" y2="213" stroke="var(--color-warning)" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+              <line
+                x1="190"
+                y1="218"
+                x2="225"
+                y2="201"
+                stroke="var(--color-success)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <line
+                x1="195"
+                y1="222"
+                x2="235"
+                y2="202"
+                stroke="var(--color-foreground)"
+                strokeWidth="1"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+              <line
+                x1="200"
+                y1="226"
+                x2="230"
+                y2="211"
+                stroke="var(--color-info)"
+                strokeWidth="1"
+                strokeLinecap="round"
+                opacity="0.5"
+              />
+              <line
+                x1="205"
+                y1="230"
+                x2="240"
+                y2="213"
+                stroke="var(--color-foreground)"
+                strokeWidth="1"
+                strokeLinecap="round"
+                opacity="0.4"
+              />
+              <line
+                x1="198"
+                y1="224"
+                x2="220"
+                y2="213"
+                stroke="var(--color-warning)"
+                strokeWidth="1"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
               {/* Blinking cursor */}
               <rect
                 x="221"
@@ -164,7 +203,14 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             strokeWidth="1"
           />
           <circle cx="100" cy="144" r="4" fill="var(--color-success)" opacity="0.8" />
-          <text x="112" y="148" fill="var(--color-success-fg)" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">
+          <text
+            x="112"
+            y="148"
+            fill="var(--color-success-fg)"
+            fontSize="9"
+            fontFamily="var(--font-mono)"
+            fontWeight="600"
+          >
             #247 merged
           </text>
         </g>
@@ -184,8 +230,18 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             stroke="var(--color-info-border)"
             strokeWidth="1"
           />
-          <text x="325" y="128" fill="var(--color-info-fg)" fontSize="9" fontFamily="var(--font-mono)" fontWeight="500">
-            <tspan fill="var(--color-primary)" opacity="0.7">c:</tspan> a91f4c2
+          <text
+            x="325"
+            y="128"
+            fill="var(--color-info-fg)"
+            fontSize="9"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
+            <tspan fill="var(--color-primary)" opacity="0.7">
+              c:
+            </tspan>{' '}
+            a91f4c2
           </text>
         </g>
 
@@ -204,7 +260,14 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             stroke="var(--color-warning-border)"
             strokeWidth="1"
           />
-          <text x="335" y="217" fill="var(--color-warning-fg)" fontSize="9" fontFamily="var(--font-mono)" fontWeight="500">
+          <text
+            x="335"
+            y="217"
+            fill="var(--color-warning-fg)"
+            fontSize="9"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
             +128 −47 files
           </text>
         </g>
@@ -225,7 +288,15 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             stroke="var(--color-primary)"
             strokeWidth="1"
           />
-          <text x="82" y="210" fill="var(--color-primary)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700" letterSpacing="0.08em">
+          <text
+            x="82"
+            y="210"
+            fill="var(--color-primary)"
+            fontSize="8"
+            fontFamily="var(--font-mono)"
+            fontWeight="700"
+            letterSpacing="0.08em"
+          >
             Inference
           </text>
         </g>
@@ -245,15 +316,35 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
             stroke="var(--color-danger-border)"
             strokeWidth="1"
           />
-          <text x="108" y="317" fill="var(--color-danger-fg)" fontSize="9" fontFamily="var(--font-mono)" fontWeight="500">
+          <text
+            x="108"
+            y="317"
+            fill="var(--color-danger-fg)"
+            fontSize="9"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
             ⚠ auth surface
           </text>
         </g>
 
         {/* === COFFEE CUP === */}
         <g className="isometric-coffee">
-          <ellipse cx="355" cy="235" rx="14" ry="7" fill="var(--color-surface-2)" stroke="var(--color-hairline)" strokeWidth="0.8" />
-          <path d="M341 235 L341 222 Q341 215 355 215 Q369 215 369 222 L369 235" fill="var(--color-surface)" stroke="var(--color-hairline)" strokeWidth="0.8" />
+          <ellipse
+            cx="355"
+            cy="235"
+            rx="14"
+            ry="7"
+            fill="var(--color-surface-2)"
+            stroke="var(--color-hairline)"
+            strokeWidth="0.8"
+          />
+          <path
+            d="M341 235 L341 222 Q341 215 355 215 Q369 215 369 222 L369 235"
+            fill="var(--color-surface)"
+            stroke="var(--color-hairline)"
+            strokeWidth="0.8"
+          />
           {/* Steam */}
           <path
             d="M349 213 Q352 205 349 198"
@@ -279,7 +370,14 @@ export function IsometricHero({ className, speed = 1 }: IsometricHeroProps) {
         <g className="isometric-developer">
           {/* Head */}
           <circle cx="240" cy="158" r="8" fill="var(--color-primary)" opacity="0.3" />
-          <circle cx="240" cy="158" r="6" fill="var(--color-surface)" stroke="var(--color-primary)" strokeWidth="1" />
+          <circle
+            cx="240"
+            cy="158"
+            r="6"
+            fill="var(--color-surface)"
+            stroke="var(--color-primary)"
+            strokeWidth="1"
+          />
           {/* Body */}
           <path
             d="M235 165 L240 175 L245 165"

@@ -1,6 +1,19 @@
 import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { GitCommit, FileCode, Plus, RefreshCw, Sparkles, Send, ShieldAlert, CheckCircle2, AlertTriangle, Loader2, Pencil, Trash2 } from 'lucide-react'
+import {
+  GitCommit,
+  FileCode,
+  Plus,
+  RefreshCw,
+  Sparkles,
+  Send,
+  ShieldAlert,
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
+  Pencil,
+  Trash2,
+} from 'lucide-react'
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
@@ -182,7 +195,7 @@ function ThreadDetailPage() {
         alternatives: editAlternatives.trim() || undefined,
         impact: editImpact.trim() || undefined,
       })
-      setNotes(notes.map(n => n.id === noteId ? updated : n))
+      setNotes(notes.map((n) => (n.id === noteId ? updated : n)))
       setEditingNoteId(null)
       setMessage({ type: 'success', text: 'Note updated.' })
     } catch (err: unknown) {
@@ -196,7 +209,7 @@ function ThreadDetailPage() {
     setMessage(null)
     try {
       await threadService.deleteNote(id, noteId)
-      setNotes(notes.filter(n => n.id !== noteId))
+      setNotes(notes.filter((n) => n.id !== noteId))
       setMessage({ type: 'success', text: 'Note deleted.' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to delete note'
@@ -215,25 +228,35 @@ function ThreadDetailPage() {
     )
   }
 
-  if (!thread) return <EmptyState title="Thread not found" description="This thread may have been deleted." />
+  if (!thread)
+    return <EmptyState title="Thread not found" description="This thread may have been deleted." />
 
   // Backward-compat: JSONB columns now arrive typed from the backend, but older
   // responses may still carry them as JSON strings — parse defensively.
   const parseJson = (field: unknown): any[] => {
     if (Array.isArray(field)) return field
     if (typeof field === 'string') {
-      try { return JSON.parse(field) } catch { return [] }
+      try {
+        return JSON.parse(field)
+      } catch {
+        return []
+      }
     }
     return []
   }
 
   const commitsList = Array.isArray(thread.commits) ? thread.commits : parseJson(thread.commits)
-  const filesList = Array.isArray(thread.changedFiles) ? thread.changedFiles : parseJson(thread.changedFiles)
+  const filesList = Array.isArray(thread.changedFiles)
+    ? thread.changedFiles
+    : parseJson(thread.changedFiles)
 
   // riskReport arrives as a typed object now — parse strings only for older responses
-  const riskReportData = (thread.riskReport && typeof thread.riskReport === 'object')
-    ? thread.riskReport
-    : (thread.riskReport && typeof thread.riskReport === 'string' ? parseJson(thread.riskReport) : {})
+  const riskReportData =
+    thread.riskReport && typeof thread.riskReport === 'object'
+      ? thread.riskReport
+      : thread.riskReport && typeof thread.riskReport === 'string'
+        ? parseJson(thread.riskReport)
+        : {}
   const riskFlagsFromReport = Array.isArray(riskReportData?.flags) ? riskReportData.flags : []
 
   const repoName = thread.repositoryFullName || ''
@@ -261,7 +284,9 @@ function ThreadDetailPage() {
               disabled={analyzing}
               className="btn btn-ghost btn-sm"
             >
-              <Sparkles className={`h-3.5 w-3.5 text-warning-fg ${analyzing ? 'animate-spin' : ''}`} />
+              <Sparkles
+                className={`h-3.5 w-3.5 text-warning-fg ${analyzing ? 'animate-spin' : ''}`}
+              />
               <span>AI Risk Analysis</span>
             </button>
             <button
@@ -308,7 +333,11 @@ function ThreadDetailPage() {
               : 'bg-danger-bg text-danger-fg border-danger-border'
           }`}
         >
-          {message.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+          {message.type === 'success' ? (
+            <CheckCircle2 className="h-4 w-4" />
+          ) : (
+            <AlertTriangle className="h-4 w-4" />
+          )}
           <span>{message.text}</span>
         </div>
       )}
@@ -325,7 +354,10 @@ function ThreadDetailPage() {
         <div className="stat py-3">
           <div className="stat-title text-xs text-muted-foreground">Thread Status</div>
           <div className="stat-value text-sm mt-1 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status={statusLower} />{thread.status?.toLowerCase() || 'draft'}</span>
+            <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+              <StatusDot status={statusLower} />
+              {thread.status?.toLowerCase() || 'draft'}
+            </span>
           </div>
         </div>
 
@@ -345,9 +377,7 @@ function ThreadDetailPage() {
 
         <div className="stat py-3">
           <div className="stat-title text-xs text-muted-foreground">Decision Notes</div>
-          <div className="stat-value text-sm font-mono text-foreground mt-1">
-            {notes.length}
-          </div>
+          <div className="stat-value text-sm font-mono text-foreground mt-1">{notes.length}</div>
         </div>
       </div>
 
@@ -361,13 +391,15 @@ function ThreadDetailPage() {
                 Risk Profile · {thread.riskLevel ? 'Deterministic Analysis' : 'Not analyzed'}
               </p>
               {thread.riskLevel && (
-                <span className={`text-xs font-mono px-2 py-0.5 rounded-full border ${
-                  thread.riskLevel === 'HIGH' || thread.riskLevel === 'CRITICAL'
-                    ? 'bg-danger-bg text-danger-fg border-danger-border'
-                    : thread.riskLevel === 'MEDIUM'
-                    ? 'bg-warning-bg text-warning-fg border-warning-border'
-                    : 'bg-success-bg text-success-fg border-success-border'
-                }`}>
+                <span
+                  className={`text-xs font-mono px-2 py-0.5 rounded-full border ${
+                    thread.riskLevel === 'HIGH' || thread.riskLevel === 'CRITICAL'
+                      ? 'bg-danger-bg text-danger-fg border-danger-border'
+                      : thread.riskLevel === 'MEDIUM'
+                        ? 'bg-warning-bg text-warning-fg border-warning-border'
+                        : 'bg-success-bg text-success-fg border-success-border'
+                  }`}
+                >
                   {thread.riskLevel}
                 </span>
               )}
@@ -382,8 +414,8 @@ function ThreadDetailPage() {
                         f.severity === 'HIGH' || f.severity === 'CRITICAL'
                           ? 'border-danger-border bg-danger-bg text-danger-fg'
                           : f.severity === 'MEDIUM'
-                          ? 'border-warning-border bg-warning-bg text-warning-fg'
-                          : 'border-hairline bg-surface-2 text-muted-foreground'
+                            ? 'border-warning-border bg-warning-bg text-warning-fg'
+                            : 'border-hairline bg-surface-2 text-muted-foreground'
                       }`}
                       title={f.message || ''}
                     >
@@ -391,16 +423,24 @@ function ThreadDetailPage() {
                     </span>
                   ))}
                 </div>
-                {riskFlagsFromReport.map((f: any, i: number) => f.message && (
-                  <p key={`msg-${i}`} className="text-xs text-muted-foreground pl-1">
-                    {f.message}
-                  </p>
-                ))}
+                {riskFlagsFromReport.map(
+                  (f: any, i: number) =>
+                    f.message && (
+                      <p key={`msg-${i}`} className="text-xs text-muted-foreground pl-1">
+                        {f.message}
+                      </p>
+                    ),
+                )}
               </div>
             ) : thread.riskLevel ? (
-              <p className="text-sm text-muted-foreground">Risk assessed: <span className="font-mono text-foreground">{thread.riskLevel}</span>. No specific risk flags detected.</p>
+              <p className="text-sm text-muted-foreground">
+                Risk assessed: <span className="font-mono text-foreground">{thread.riskLevel}</span>
+                . No specific risk flags detected.
+              </p>
             ) : (
-              <p className="text-sm text-muted-foreground">Run AI Risk Analysis to evaluate this thread.</p>
+              <p className="text-sm text-muted-foreground">
+                Run AI Risk Analysis to evaluate this thread.
+              </p>
             )}
           </section>
 
@@ -427,9 +467,14 @@ function ThreadDetailPage() {
 
             {/* Note creation form */}
             {showNoteForm && (
-              <form onSubmit={handleAddNote} className="p-4 rounded-xl border border-primary/30 bg-surface-2 space-y-3">
+              <form
+                onSubmit={handleAddNote}
+                className="p-4 rounded-xl border border-primary/30 bg-surface-2 space-y-3"
+              >
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">Decision Made *</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Decision Made *
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. Switched to RSA-SHA256 for token hashing"
@@ -440,7 +485,9 @@ function ThreadDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">Rationale *</label>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Rationale *
+                  </label>
                   <textarea
                     rows={2}
                     placeholder="Why this decision was chosen..."
@@ -452,7 +499,9 @@ function ThreadDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Alternatives Considered</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">
+                      Alternatives Considered
+                    </label>
                     <input
                       type="text"
                       placeholder="e.g. HMAC-SHA512"
@@ -462,7 +511,9 @@ function ThreadDetailPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Expected Impact</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">
+                      Expected Impact
+                    </label>
                     <input
                       type="text"
                       placeholder="e.g. Backward compatible security upgrade"
@@ -486,13 +537,20 @@ function ThreadDetailPage() {
             )}
 
             {notes.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4">No decision notes yet. Add one to give context to your PR brief.</p>
+              <p className="text-sm text-muted-foreground py-4">
+                No decision notes yet. Add one to give context to your PR brief.
+              </p>
             ) : (
               <div className="space-y-3">
                 {notes.map((note) => (
-                  <div key={note.id} className="rounded-xl border border-hairline bg-surface p-4 space-y-2 group">
+                  <div
+                    key={note.id}
+                    className="rounded-xl border border-hairline bg-surface p-4 space-y-2 group"
+                  >
                     <div className="flex items-center justify-between pb-2 border-b border-hairline">
-                      <span className="text-xs font-mono font-medium text-primary">Decision Note</span>
+                      <span className="text-xs font-mono font-medium text-primary">
+                        Decision Note
+                      </span>
                       <div className="flex items-center gap-2">
                         {note.createdAt && (
                           <span className="text-[10px] text-muted-foreground font-mono">
@@ -511,7 +569,11 @@ function ThreadDetailPage() {
                           <button
                             type="button"
                             onClick={() => {
-                              if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+                              if (
+                                window.confirm(
+                                  'Are you sure you want to delete this note? This action cannot be undone.',
+                                )
+                              ) {
                                 handleDeleteNote(note.id)
                               }
                             }}
@@ -519,7 +581,11 @@ function ThreadDetailPage() {
                             className="p-1 rounded text-muted-foreground hover:text-danger-fg hover:bg-danger-bg transition-colors"
                             title="Delete note"
                           >
-                            {deletingNoteId === note.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+                            {deletingNoteId === note.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-3 w-3" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -528,28 +594,65 @@ function ThreadDetailPage() {
                     {editingNoteId === note.id ? (
                       <div className="space-y-3 pt-2">
                         <div>
-                          <label className="block text-xs font-medium text-foreground mb-1">Decision</label>
-                          <input type="text" value={editDecision} onChange={e => setEditDecision(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                          <label className="block text-xs font-medium text-foreground mb-1">
+                            Decision
+                          </label>
+                          <input
+                            type="text"
+                            value={editDecision}
+                            onChange={(e) => setEditDecision(e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                          />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-foreground mb-1">Rationale</label>
-                          <textarea rows={2} value={editRationale} onChange={e => setEditRationale(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none" />
+                          <label className="block text-xs font-medium text-foreground mb-1">
+                            Rationale
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={editRationale}
+                            onChange={(e) => setEditRationale(e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                          />
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs text-muted-foreground mb-1">Alternatives</label>
-                            <input type="text" value={editAlternatives} onChange={e => setEditAlternatives(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                            <label className="block text-xs text-muted-foreground mb-1">
+                              Alternatives
+                            </label>
+                            <input
+                              type="text"
+                              value={editAlternatives}
+                              onChange={(e) => setEditAlternatives(e.target.value)}
+                              className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                            />
                           </div>
                           <div>
-                            <label className="block text-xs text-muted-foreground mb-1">Impact</label>
-                            <input type="text" value={editImpact} onChange={e => setEditImpact(e.target.value)} className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+                            <label className="block text-xs text-muted-foreground mb-1">
+                              Impact
+                            </label>
+                            <input
+                              type="text"
+                              value={editImpact}
+                              onChange={(e) => setEditImpact(e.target.value)}
+                              className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                            />
                           </div>
                         </div>
                         <div className="flex items-center gap-2 pt-1">
-                          <button type="button" onClick={() => handleSaveEdit(note.id)} disabled={!editDecision.trim() || !editRationale.trim()} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 disabled:opacity-50">
+                          <button
+                            type="button"
+                            onClick={() => handleSaveEdit(note.id)}
+                            disabled={!editDecision.trim() || !editRationale.trim()}
+                            className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 disabled:opacity-50"
+                          >
                             Save
                           </button>
-                          <button type="button" onClick={() => setEditingNoteId(null)} className="px-3 py-1.5 rounded-lg border border-hairline text-xs text-muted-foreground hover:text-foreground">
+                          <button
+                            type="button"
+                            onClick={() => setEditingNoteId(null)}
+                            className="px-3 py-1.5 rounded-lg border border-hairline text-xs text-muted-foreground hover:text-foreground"
+                          >
                             Cancel
                           </button>
                         </div>
@@ -595,9 +698,15 @@ function ThreadDetailPage() {
                   </p>
                 </div>
                 {brief.publishedToGithub ? (
-                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status="published" />published</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+                    <StatusDot status="published" />
+                    published
+                  </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground"><StatusDot status="ready" />ready</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+                    <StatusDot status="ready" />
+                    ready
+                  </span>
                 )}
               </div>
               <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg border border-hairline">
@@ -619,11 +728,18 @@ function ThreadDetailPage() {
             ) : (
               <div className="space-y-2">
                 {filesList.map((f: any) => (
-                  <div key={f.filename || f.path} className="flex items-center gap-2 text-xs font-mono py-1 border-b border-hairline/50 last:border-0">
+                  <div
+                    key={f.filename || f.path}
+                    className="flex items-center gap-2 text-xs font-mono py-1 border-b border-hairline/50 last:border-0"
+                  >
                     <FileCode className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     <span className="text-foreground truncate flex-1">{f.filename || f.path}</span>
-                    <span className="text-success-fg font-mono text-[10px]">+{f.additions || 0}</span>
-                    <span className="text-danger-fg font-mono text-[10px]">-{f.deletions || 0}</span>
+                    <span className="text-success-fg font-mono text-[10px]">
+                      +{f.additions || 0}
+                    </span>
+                    <span className="text-danger-fg font-mono text-[10px]">
+                      -{f.deletions || 0}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -643,9 +759,13 @@ function ThreadDetailPage() {
                   <div key={c.sha} className="space-y-1">
                     <div className="flex items-center gap-2">
                       <GitCommit className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span className="text-xs font-mono text-primary">{c.sha?.substring(0, 7)}</span>
+                      <span className="text-xs font-mono text-primary">
+                        {c.sha?.substring(0, 7)}
+                      </span>
                     </div>
-                    <p className="text-xs text-foreground line-clamp-2 pl-5 font-sans">{c.message}</p>
+                    <p className="text-xs text-foreground line-clamp-2 pl-5 font-sans">
+                      {c.message}
+                    </p>
                   </div>
                 ))}
               </div>

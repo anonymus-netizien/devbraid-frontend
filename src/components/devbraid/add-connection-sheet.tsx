@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '../ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet'
 import githubService from '../../services/github.service'
 
 const scopes = [
@@ -56,8 +50,8 @@ export function AddConnectionSheet({
         <SheetHeader>
           <SheetTitle className="text-foreground">Add GitHub connection</SheetTitle>
           <SheetDescription className="text-muted-foreground">
-            Paste a fine-grained personal access token. It's encrypted at rest and only
-            used for the calls DevBraid makes on your behalf.
+            Paste a fine-grained personal access token. It's encrypted at rest and only used for the
+            calls DevBraid makes on your behalf.
           </SheetDescription>
         </SheetHeader>
 

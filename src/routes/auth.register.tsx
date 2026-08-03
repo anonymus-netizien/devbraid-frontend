@@ -51,38 +51,89 @@ function RegisterPage() {
     }
   }
 
-
   return (
     <AuthShell variant="register">
       <div>
         <h2 className="text-2xl font-semibold text-foreground mb-1">Create workspace</h2>
-        <p className="text-sm text-muted-foreground mb-6">Start capturing your engineering narrative</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          Start capturing your engineering narrative
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-foreground mb-1.5">Full name</label>
-            <input id="fullName" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <label htmlFor="fullName" className="block text-sm font-medium text-foreground mb-1.5">
+              Full name
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
           <div>
-            <label htmlFor="reg-email" className="block text-sm font-medium text-foreground mb-1.5">Email</label>
-            <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <label htmlFor="reg-email" className="block text-sm font-medium text-foreground mb-1.5">
+              Email
+            </label>
+            <input
+              id="reg-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="reg-password" className="text-sm font-medium text-foreground">Password</label>
-              {password && <span className={`text-xs ${passwordStrength.color}`}>{passwordStrength.label}</span>}
+              <label htmlFor="reg-password" className="text-sm font-medium text-foreground">
+                Password
+              </label>
+              {password && (
+                <span className={`text-xs ${passwordStrength.color}`}>
+                  {passwordStrength.label}
+                </span>
+              )}
             </div>
-            <input id="reg-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <input
+              id="reg-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-foreground mb-1.5">Confirm password</label>
-            <input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary" />
+            <label
+              htmlFor="confirm-password"
+              className="block text-sm font-medium text-foreground mb-1.5"
+            >
+              Confirm password
+            </label>
+            <input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 rounded-lg bg-surface border border-hairline text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            />
           </div>
-          <button type="submit" disabled={loading} className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+          >
             {loading ? 'Creating…' : 'Create workspace'}
           </button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account? <Link to="/auth/login" className="text-primary hover:underline">Sign in</Link>
+          Already have an account?{' '}
+          <Link to="/auth/login" className="text-primary hover:underline">
+            Sign in
+          </Link>
         </p>
       </div>
     </AuthShell>

@@ -72,16 +72,17 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             fill="var(--color-primary)"
             opacity="0.15"
           />
-          <rect
-            x="130"
-            y="100"
-            width="140"
-            height="8"
-            fill="var(--color-primary)"
-            opacity="0.15"
-          />
+          <rect x="130" y="100" width="140" height="8" fill="var(--color-primary)" opacity="0.15" />
           {/* Title */}
-          <text x="148" y="100" fill="var(--color-foreground)" fontSize="9" fontFamily="var(--font-mono)" fontWeight="700" letterSpacing="0.05em">
+          <text
+            x="148"
+            y="100"
+            fill="var(--color-foreground)"
+            fontSize="9"
+            fontFamily="var(--font-mono)"
+            fontWeight="700"
+            letterSpacing="0.05em"
+          >
             CHANGE BRIEF
           </text>
           {/* Content lines */}
@@ -119,7 +120,13 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             stroke="var(--color-info-border)"
             strokeWidth="0.5"
           />
-          <text x="210" y="152" fill="var(--color-info-fg)" fontSize="7" fontFamily="var(--font-mono)">
+          <text
+            x="210"
+            y="152"
+            fill="var(--color-info-fg)"
+            fontSize="7"
+            fontFamily="var(--font-mono)"
+          >
             c:a91f4c2
           </text>
           {/* Inference tag */}
@@ -132,7 +139,15 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             fill="var(--color-primary)"
             opacity="0.2"
           />
-          <text x="180" y="224" fill="var(--color-primary)" fontSize="6.5" fontFamily="var(--font-mono)" fontWeight="700" letterSpacing="0.1em">
+          <text
+            x="180"
+            y="224"
+            fill="var(--color-primary)"
+            fontSize="6.5"
+            fontFamily="var(--font-mono)"
+            fontWeight="700"
+            letterSpacing="0.1em"
+          >
             Inference
           </text>
         </g>
@@ -151,7 +166,14 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             strokeWidth="0.8"
           />
           <circle cx="64" cy="131" r="3" fill="var(--color-success)" opacity="0.7" />
-          <text x="72" y="135" fill="var(--color-success-fg)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="600">
+          <text
+            x="72"
+            y="135"
+            fill="var(--color-success-fg)"
+            fontSize="8"
+            fontFamily="var(--font-mono)"
+            fontWeight="600"
+          >
             READY
           </text>
         </g>
@@ -168,7 +190,14 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             stroke="var(--color-warning-border)"
             strokeWidth="0.8"
           />
-          <text x="300" y="114" fill="var(--color-warning-fg)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="500">
+          <text
+            x="300"
+            y="114"
+            fill="var(--color-warning-fg)"
+            fontSize="8"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
             14 commits
           </text>
         </g>
@@ -185,7 +214,14 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             stroke="var(--color-danger-border)"
             strokeWidth="0.8"
           />
-          <text x="52" y="214" fill="var(--color-danger-fg)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="500">
+          <text
+            x="52"
+            y="214"
+            fill="var(--color-danger-fg)"
+            fontSize="8"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
             ⚠ API surface
           </text>
         </g>
@@ -202,7 +238,14 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
             stroke="var(--color-hairline)"
             strokeWidth="0.8"
           />
-          <text x="302" y="194" fill="var(--color-success-fg)" fontSize="8" fontFamily="var(--font-mono)" fontWeight="500">
+          <text
+            x="302"
+            y="194"
+            fill="var(--color-success-fg)"
+            fontSize="8"
+            fontFamily="var(--font-mono)"
+            fontWeight="500"
+          >
             +128 −47
           </text>
         </g>
@@ -210,7 +253,16 @@ export function IsometricAuth({ className, variant = 'login' }: IsometricAuthPro
         {/* === DECORATIVE ELEMENTS === */}
         {/* Small desk plant */}
         <g>
-          <rect x="310" y="260" width="16" height="20" rx="3" fill="var(--color-surface-2)" stroke="var(--color-hairline)" strokeWidth="0.5" />
+          <rect
+            x="310"
+            y="260"
+            width="16"
+            height="20"
+            rx="3"
+            fill="var(--color-surface-2)"
+            stroke="var(--color-hairline)"
+            strokeWidth="0.5"
+          />
           <path d="M318 260 Q314 245 322 250" fill="var(--color-success)" opacity="0.4" />
           <path d="M318 260 Q322 242 318 248" fill="var(--color-success)" opacity="0.3" />
           <path d="M318 260 Q312 248 316 252" fill="var(--color-success)" opacity="0.35" />

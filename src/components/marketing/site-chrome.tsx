@@ -112,39 +112,23 @@ export function SiteFooter() {
             <span className="text-sm font-semibold tracking-tight">DevBraid</span>
           </div>
           <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
-            Evidence-backed change briefs, braided from your commits and your
-            reasoning.
+            Evidence-backed change briefs, braided from your commits and your reasoning.
           </p>
         </div>
         <nav className="grid grid-cols-2 gap-x-10 gap-y-2 text-xs sm:grid-cols-3">
-          <Link
-            to="/dashboard"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
             Dashboard
           </Link>
-          <Link
-            to="/threads"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/threads" className="text-muted-foreground hover:text-foreground">
             Change threads
           </Link>
-          <Link
-            to="/notes"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/notes" className="text-muted-foreground hover:text-foreground">
             Decision notes
           </Link>
-          <Link
-            to="/briefs"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/briefs" className="text-muted-foreground hover:text-foreground">
             Change briefs
           </Link>
-          <Link
-            to="/connections"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/connections" className="text-muted-foreground hover:text-foreground">
             Connections
           </Link>
         </nav>
