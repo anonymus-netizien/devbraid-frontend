@@ -1,6 +1,7 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, setAccessToken, getRefreshToken, setRefreshToken, clearTokens } from './token';
-import type { ApiResponse, LoginResponseData } from '../types/auth';
+import type { LoginResponseData } from '../types/auth'
+import type { ApiResponse } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
 
