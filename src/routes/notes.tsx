@@ -25,7 +25,13 @@ function NotesPage() {
           <p className="text-sm text-muted-foreground">Loading decision notes...</p>
         </div>
       ) : notes.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-8">No decision notes yet.</p>
+        <div className="py-8 text-center">
+          <p className="text-sm font-medium text-foreground">No decision notes yet</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Open a Change Thread and add a note to record a decision — it becomes the evidence your
+            AI briefs cite.
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
           {notes.map((note) => (
