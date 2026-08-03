@@ -1,12 +1,11 @@
-import type { ChangeThread, DecisionNote, ChangeBrief, GitRepository, Branch, GitHubConnection, User } from '../../types'
+import type { ChangeThread, DecisionNote, ChangeBrief, GitRepository, Branch, User } from '../../types'
 
 export const mockUser: User = {
-  id: 1,
-  name: 'Alex Chen',
+  id: '1',
+  fullName: 'Alex Chen',
   email: 'alex@devbraid.com',
-  phone: '9876543210',
   role: 'ROLE_USER',
-  emailVerified: true,
+  createdAt: '2026-07-01T09:00:00Z',
 }
 
 export const mockRepos: GitRepository[] = [
@@ -27,10 +26,9 @@ export const mockThreads: ChangeThread[] = [
   {
     id: '1',
     title: 'Add rate limiting to public API',
-    repo: 'acme/web-platform',
+    repositoryFullName: 'acme/web-platform',
     headBranch: 'feat/rate-limit',
     baseBranch: 'main',
-    issueNumber: 142,
     status: 'ready',
     riskFlags: ['PUBLIC_API', 'CI'],
     notesCount: 3,
@@ -40,7 +38,7 @@ export const mockThreads: ChangeThread[] = [
   {
     id: '2',
     title: 'Refactor auth middleware',
-    repo: 'acme/api-gateway',
+    repositoryFullName: 'acme/api-gateway',
     headBranch: 'refactor/auth',
     baseBranch: 'develop',
     status: 'analyzing',
@@ -52,7 +50,7 @@ export const mockThreads: ChangeThread[] = [
   {
     id: '3',
     title: 'Update database migrations for v2',
-    repo: 'acme/web-platform',
+    repositoryFullName: 'acme/web-platform',
     headBranch: 'db/v2-migrations',
     baseBranch: 'main',
     status: 'drafting',
