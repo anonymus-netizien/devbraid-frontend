@@ -15,6 +15,8 @@ import type {
   FileComment,
   CreateFileCommentRequest,
   UpdateFileCommentRequest,
+  ThreadEvent,
+  PaginatedEvents,
 } from '../types/thread'
 
 export const threadService = {
@@ -231,6 +233,36 @@ export const threadService = {
    */
   async deleteComment(threadId: string, commentId: string): Promise<void> {
     await apiClient.delete<ApiResponse<null>>(`/threads/${threadId}/comments/${commentId}`)
+  },
+
+  /**
+   * Full event timeline for a thread.
+   */
+  async listEvents(threadId: string): Promise<ThreadEvent[]> {
+    const response = await apiClient.get<ApiResponse<ThreadEvent[]>>(`/threads/${threadId}/events`)
+    return unwrap(response.data)
+  },
+
+  /**
+   * Paginated event timeline for a thread.
+   */
+  async listEventsPaged(threadId: string, page = 0, size = 20): Promise<PaginatedEvents> {
+    const response = await apiClient.get<ApiResponse<PaginatedEvents>>(
+      `/threads/${threadId}/events/paged`,
+      { params: { page, size } },
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Add a manual event to the thread timeline.
+   */
+  async createEvent(threadId: string, summary: string, metadata?: string): Promise<ThreadEvent> {
+    const response = await apiClient.post<ApiResponse<ThreadEvent>>(`/threads/${threadId}/events`, {
+      summary,
+      metadata,
+    })
+    return unwrap(response.data)
   },
 
   /**

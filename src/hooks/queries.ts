@@ -13,6 +13,7 @@ export const queryKeys = {
   thread: (id: string) => ['threads', id] as const,
   threadNotes: (id: string) => ['threads', id, 'notes'] as const,
   threadComments: (id: string) => ['threads', id, 'comments'] as const,
+  threadEvents: (id: string) => ['threads', id, 'events'] as const,
   threadBrief: (id: string) => ['threads', id, 'brief'] as const,
   briefs: ['briefs'] as const,
   brief: (id: string) => ['briefs', id] as const,
@@ -69,6 +70,14 @@ export function useThreadCommentsQuery(id: string) {
   return useQuery({
     queryKey: queryKeys.threadComments(id),
     queryFn: () => threadService.listComments(id),
+    enabled: !!id,
+  })
+}
+
+export function useThreadEventsQuery(id: string) {
+  return useQuery({
+    queryKey: queryKeys.threadEvents(id),
+    queryFn: () => threadService.listEvents(id),
     enabled: !!id,
   })
 }
