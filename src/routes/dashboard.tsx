@@ -127,7 +127,7 @@ function DashboardPage() {
               Connect your Personal Access Token to inspect repositories and post PR briefs.
             </p>
           </div>
-          <Link to="/connections" className="btn btn-soft btn-sm text-background">
+          <Link to="/connections" search={{}} className="btn btn-soft btn-sm text-background">
             Connect PAT →
           </Link>
         </div>

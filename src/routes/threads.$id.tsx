@@ -257,13 +257,13 @@ function ThreadDetailPage() {
     : parseJson(thread.changedFiles)
 
   // riskReport arrives as a typed object now — parse strings only for older responses
-  const riskReportData =
-    thread.riskReport && typeof thread.riskReport === 'object'
-      ? thread.riskReport
-      : thread.riskReport && typeof thread.riskReport === 'string'
-        ? parseJson(thread.riskReport)
-        : {}
-  const riskFlagsFromReport = Array.isArray(riskReportData?.flags) ? riskReportData.flags : []
+  const riskReportData: unknown =
+    typeof thread.riskReport === 'string' ? parseJson(thread.riskReport) : thread.riskReport
+  const riskReportObj: Record<string, unknown> =
+    riskReportData && typeof riskReportData === 'object' && !Array.isArray(riskReportData)
+      ? (riskReportData as Record<string, unknown>)
+      : {}
+  const riskFlagsFromReport = Array.isArray(riskReportObj.flags) ? riskReportObj.flags : []
 
   const repoName = thread.repositoryFullName || ''
   const statusLower = (thread.status || 'drafting').toLowerCase()
@@ -505,7 +505,9 @@ function ThreadDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Context</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">
+                      Context
+                    </label>
                     <select
                       value={noteContext}
                       onChange={(e) => {
@@ -527,7 +529,9 @@ function ThreadDetailPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder={noteContext === 'COMMIT' ? 'e.g. a1b2c3d' : 'e.g. src/main/java/App.java'}
+                        placeholder={
+                          noteContext === 'COMMIT' ? 'e.g. a1b2c3d' : 'e.g. src/main/java/App.java'
+                        }
                         value={contextRef}
                         onChange={(e) => setContextRef(e.target.value)}
                         className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
@@ -537,7 +541,9 @@ function ThreadDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Alternatives Considered</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">
+                      Alternatives Considered
+                    </label>
                     <input
                       type="text"
                       placeholder="e.g. HMAC-SHA512"
