@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { PageHeader } from '@/components/devbraid/states'
 import { SectionLabel, StatusDot } from '@/components/devbraid/chips'
 import { AddConnectionSheet } from '../components/devbraid/add-connection-sheet'
+import { queryKeys, useGitHubStatusQuery, useReposQuery } from '@/hooks/queries'
 import githubService from '../services/github.service'
 import type { GitHubConnection } from '../types/github'
 
@@ -17,54 +19,34 @@ export const Route = createFileRoute('/connections')({
 function ConnectionsPage() {
   const { onboarding } = Route.useSearch()
   const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [connection, setConnection] = useState<GitHubConnection | null>(null)
-  const [reposCount, setReposCount] = useState<number>(0)
+  const queryClient = useQueryClient()
+  const { data: status, isLoading } = useGitHubStatusQuery()
+  const isConnected = !!(status?.connected && status?.githubUsername)
+  const { data: repos } = useReposQuery(isConnected)
+  const reposCount = repos?.length ?? 0
 
-  const fetchConnection = useCallback(async () => {
-    try {
-      setLoading(true)
-      const status = await githubService.getStatus()
-
-      if (status.connected && status.githubUsername) {
-        let repoCount = 0
-        try {
-          const repos = await githubService.listRepositories()
-          repoCount = repos.length
-          setReposCount(repoCount)
-        } catch {
-          // Repo fetch might fail if PAT scope is limited
-        }
-
-        const connStatus = status.valid ? 'active' : 'expired'
-        setConnection({
-          githubUsername: status.githubUsername,
-          connectedAt: status.connectedAt || new Date().toISOString(),
-          lastValidatedAt: status.lastValidatedAt ?? null,
-          scopes: ['repo', 'read:user'],
-          status: connStatus,
-          reposCount: repoCount,
-        })
-      } else {
-        setConnection(null)
+  const connection: GitHubConnection | null = isConnected
+    ? {
+        githubUsername: status!.githubUsername ?? '',
+        connectedAt: status!.connectedAt || new Date().toISOString(),
+        lastValidatedAt: status!.lastValidatedAt ?? null,
+        scopes: ['repo', 'read:user'],
+        status: status!.valid ? 'active' : 'expired',
+        reposCount,
       }
-    } catch {
-      setConnection(null)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    : null
 
-  useEffect(() => {
-    fetchConnection()
-  }, [fetchConnection])
+  const refetchConnection = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.github.status })
+    queryClient.invalidateQueries({ queryKey: queryKeys.github.repos })
+  }
 
   const handleValidate = async () => {
     try {
       const status = await githubService.getStatus()
       if (status.valid) {
         toast.success('Token validated successfully')
-        fetchConnection()
+        refetchConnection()
       } else {
         toast.error('Token validation failed', {
           description: 'The personal access token may be expired or revoked.',
@@ -78,11 +60,10 @@ function ConnectionsPage() {
   const handleDisconnect = async () => {
     try {
       await githubService.disconnect()
-      setConnection(null)
+      refetchConnection()
       toast.success('Connection removed')
     } catch {
-      // Local state disconnect fallback
-      setConnection(null)
+      refetchConnection()
       toast.success('Connection removed')
     }
   }
@@ -124,7 +105,7 @@ function ConnectionsPage() {
       />
 
       <div className="space-y-3">
-        {loading ? (
+        {isLoading ? (
           <div className="h-32 animate-pulse rounded-lg border border-hairline bg-surface/40" />
         ) : connection ? (
           <div className="rounded-lg border border-hairline bg-surface/40 p-5">
@@ -226,7 +207,7 @@ function ConnectionsPage() {
         </p>
       </div>
 
-      <AddConnectionSheet open={open} onOpenChange={setOpen} onSuccess={fetchConnection} />
+      <AddConnectionSheet open={open} onOpenChange={setOpen} onSuccess={refetchConnection} />
     </div>
   )
 }
