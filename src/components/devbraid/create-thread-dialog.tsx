@@ -51,7 +51,7 @@ export function CreateThreadDialog({
         .then((repoList) => {
           setRepos(repoList || [])
           if (repoList && repoList.length > 0) {
-            setSelectedRepo(repoList[0].fullName)
+            setSelectedRepo(repoList[0].fullName ?? '')
           }
         })
         .catch((err) => {
@@ -72,9 +72,9 @@ export function CreateThreadDialog({
         .then((branchList) => {
           setBranches(branchList || [])
           if (branchList && branchList.length > 0) {
-            setHeadBranch(branchList[0].name)
+            setHeadBranch(branchList[0].name ?? '')
             const mainOrMaster = branchList.find((b) => b.name === 'main' || b.name === 'master')
-            setBaseBranch(mainOrMaster ? mainOrMaster.name : branchList[0].name)
+            setBaseBranch(mainOrMaster ? (mainOrMaster.name ?? '') : (branchList[0].name ?? ''))
           }
         })
         .catch((err) => {

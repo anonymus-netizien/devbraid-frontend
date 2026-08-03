@@ -44,8 +44,8 @@ export const authService = {
     )
     const apiData = response.data
     const data = apiData.data
-    setAccessToken(data.accessToken)
-    setRefreshToken(data.refreshToken)
+    setAccessToken(data.accessToken ?? null)
+    setRefreshToken(data.refreshToken ?? null)
     return data
   },
 
@@ -78,8 +78,8 @@ export const authService = {
     })
     const apiData = response.data
     const data = apiData.data
-    setAccessToken(data.accessToken)
-    setRefreshToken(data.refreshToken)
+    setAccessToken(data.accessToken ?? null)
+    setRefreshToken(data.refreshToken ?? null)
     return data
   },
 

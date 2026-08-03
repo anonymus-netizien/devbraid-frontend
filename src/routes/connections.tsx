@@ -40,7 +40,7 @@ function ConnectionsPage() {
         setConnection({
           githubUsername: status.githubUsername,
           connectedAt: status.connectedAt || new Date().toISOString(),
-          lastValidatedAt: status.lastValidatedAt,
+          lastValidatedAt: status.lastValidatedAt ?? null,
           scopes: ['repo', 'read:user'],
           status: connStatus,
           reposCount: repoCount,

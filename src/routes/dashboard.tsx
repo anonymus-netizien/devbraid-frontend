@@ -85,7 +85,7 @@ function DashboardPage() {
     githubService
       .getStatus()
       .then((s) => {
-        const c = s.connected && s.valid
+        const c = (s.connected ?? false) && (s.valid ?? false)
         setGhConnected(c)
         if (c)
           githubService

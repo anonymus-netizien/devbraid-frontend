@@ -65,9 +65,9 @@ apiClient.interceptors.response.use(
         )
 
         const apiData = response.data
-        if (apiData.success && apiData.data) {
-          setAccessToken(apiData.data.accessToken)
-          setRefreshToken(apiData.data.refreshToken)
+        if (apiData.success && apiData.data?.accessToken) {
+          setAccessToken(apiData.data.accessToken ?? null)
+          setRefreshToken(apiData.data.refreshToken ?? null)
 
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${apiData.data.accessToken}`
