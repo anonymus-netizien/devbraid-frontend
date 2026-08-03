@@ -231,10 +231,13 @@ function ThreadDetailPage() {
   const filesList = Array.isArray(thread.changedFiles) ? thread.changedFiles : parseJson(thread.changedFiles)
 
   // riskReport arrives as a typed object now — parse strings only for older responses
-  const riskReportData = (thread.riskReport && typeof thread.riskReport === 'object')
-    ? thread.riskReport
-    : (thread.riskReport && typeof thread.riskReport === 'string' ? parseJson(thread.riskReport) : {})
-  const riskFlagsFromReport = Array.isArray(riskReportData?.flags) ? riskReportData.flags : []
+  const riskReportData: unknown =
+    typeof thread.riskReport === 'string' ? parseJson(thread.riskReport) : thread.riskReport
+  const riskReportObj: Record<string, unknown> =
+    riskReportData && typeof riskReportData === 'object' && !Array.isArray(riskReportData)
+      ? (riskReportData as Record<string, unknown>)
+      : {}
+  const riskFlagsFromReport = Array.isArray(riskReportObj.flags) ? riskReportObj.flags : []
 
   const repoName = thread.repositoryFullName || ''
   const statusLower = (thread.status || 'drafting').toLowerCase()

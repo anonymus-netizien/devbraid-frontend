@@ -7,9 +7,7 @@ import type {
   BriefResponse,
   PublishResponse,
   PaginatedThreads,
-  BriefListItem,
   PaginatedBriefs,
-  NoteListItem,
   PaginatedNotes,
   DecisionNote,
   NoteResponse

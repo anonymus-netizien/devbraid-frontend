@@ -97,7 +97,9 @@ function DashboardPage() {
             <p className="font-semibold text-warning-fg">GitHub connection required</p>
             <p className="text-xs text-muted-foreground mt-0.5">Connect your Personal Access Token to inspect repositories and post PR briefs.</p>
           </div>
-          <Link to="/connections" className="btn btn-soft btn-sm text-background">Connect PAT →</Link>
+          <Link to="/connections" search={{}} className="btn btn-soft btn-sm text-background">
+            Connect PAT →
+          </Link>
         </div>
       )}
 

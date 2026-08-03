@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
 import { PageHeader } from '@/components/devbraid/states'
-import { StatusDot } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
 import type { BriefResponse } from '../types/thread'
 
