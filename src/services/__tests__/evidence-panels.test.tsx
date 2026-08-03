@@ -35,7 +35,9 @@ describe('FileChangesPanel', () => {
   })
 
   it('falls back to path when filename is absent', () => {
-    const html = renderToStaticMarkup(<FileChangesPanel files={[{ path: 'a/b.ts', additions: 1, deletions: 1 }]} />)
+    const html = renderToStaticMarkup(
+      <FileChangesPanel files={[{ path: 'a/b.ts', additions: 1, deletions: 1 }]} />,
+    )
     expect(html).toContain('a/')
     expect(html).toContain('b.ts')
   })
