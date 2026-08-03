@@ -2,7 +2,6 @@ import apiClient from '../api/axios';
 import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token';
 import type {
   LoginRequest,
-  ApiResponse,
   LoginResponseData,
   RegisterRequest,
   UserProfileResponseData,
@@ -10,7 +9,8 @@ import type {
   OtpSendResponseData,
   OtpVerifyRequest,
   OtpVerifyResponseData,
-} from '../types/auth';
+} from '../types/auth'
+import type { ApiResponse } from '../types/api';
 
 interface UpdateProfileRequest {
   fullName: string;
