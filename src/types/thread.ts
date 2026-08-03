@@ -1,3 +1,5 @@
+import type { Page, Schema } from '../api/contract'
+
 export type ThreadStatus =
   | 'DRAFTING'
   | 'ANALYZING'
@@ -75,56 +77,17 @@ export interface ChangeThread {
   updatedAt: string
 }
 
-export interface CreateThreadRequest {
-  repositoryFullName: string
-  headBranch: string
-  baseBranch: string
-  title: string
-  description?: string
-}
+export type CreateThreadRequest = Schema<'CreateThreadRequest'>
 
-export interface UpdateThreadRequest {
-  title?: string
-  description?: string
-  status?: ThreadStatus
-}
+export type UpdateThreadRequest = Schema<'UpdateThreadRequest'>
 
-export interface BriefResponse {
-  id: string
-  threadId: string
-  content: string
-  publishedToGithub: boolean
-  publishUrl?: string
-  createdAt: string
-}
+export type BriefResponse = Schema<'BriefResponse'>
 
-export interface PublishResponse {
-  success: boolean
-  commentUrl: string
-  publishedAt: string
-}
+export type PublishResponse = Schema<'PublishResponse'>
 
-export interface NoteResponse {
-  id: string
-  threadId: string
-  authorId?: string
-  context?: string
-  contextRef?: string
-  decision: string
-  rationale: string
-  alternatives?: string
-  impact?: string
-  status?: string
-  createdAt: string
-}
+export type NoteResponse = Schema<'NoteResponse'>
 
-export interface PaginatedThreads {
-  content: ChangeThread[]
-  totalPages: number
-  totalElements: number
-  size: number
-  number: number
-}
+export type PaginatedThreads = Page<ChangeThread>
 
 export interface BriefListItem {
   id: string

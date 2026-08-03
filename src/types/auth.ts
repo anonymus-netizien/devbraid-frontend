@@ -1,3 +1,6 @@
+import type { Schema } from '../api/contract'
+
+/** Frontend session/user model (derived from login response + profile). */
 export interface User {
   id: string
   fullName: string
@@ -6,52 +9,26 @@ export interface User {
   createdAt?: string
 }
 
-export interface LoginRequest {
-  email: string
-  password: string
-}
+/** Backend POST /auth/login request body. */
+export type LoginRequest = Schema<'LoginRequest'>
 
 /** Backend POST /auth/login + /auth/refresh payload (ApiResponse.data). Flat — no nested user object. */
-export interface LoginResponseData {
-  accessToken: string
-  refreshToken: string
-  issuedAt?: string
-  expiresAt?: string
-  fullName?: string
-  email?: string
-  userId?: string
-  role?: string
-}
+export type LoginResponseData = Schema<'LoginResponse'>
 
 /** Backend GET/PUT /user/profile payload (ApiResponse.data). */
-export interface UserProfileResponseData {
-  id: string
-  fullName: string
-  email: string
-  role: string
-  createdAt?: string
-}
+export type UserProfileResponseData = Schema<'UserProfileResponse'>
 
-export interface RegisterRequest {
-  fullName: string
-  email: string
-  password: string
-}
+/** Backend POST /auth/register request body. */
+export type RegisterRequest = Schema<'RegisterRequest'>
 
-export interface OtpSendRequest {
-  email: string
-}
+/** Backend POST /auth/otp/send request body. */
+export type OtpSendRequest = Schema<'OtpSendRequest'>
 
-export interface OtpSendResponseData {
-  email: string
-}
+/** Backend POST /auth/otp/send payload (ApiResponse.data). */
+export type OtpSendResponseData = Schema<'OtpSendResponse'>
 
-export interface OtpVerifyRequest {
-  email: string
-  otp: string
-}
+/** Backend POST /auth/otp/verify request body. */
+export type OtpVerifyRequest = Schema<'OtpVerifyRequest'>
 
-export interface OtpVerifyResponseData {
-  email: string
-  verified: boolean
-}
+/** Backend POST /auth/otp/verify payload (ApiResponse.data). */
+export type OtpVerifyResponseData = Schema<'OtpVerifyResponse'>
