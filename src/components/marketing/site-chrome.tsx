@@ -141,10 +141,7 @@ export function SiteFooter() {
           >
             Change briefs
           </Link>
-          <Link
-            to="/connections"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link to="/connections" search={{}} className="text-muted-foreground hover:text-foreground">
             Connections
           </Link>
         </nav>
