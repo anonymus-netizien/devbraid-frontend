@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   GitCommit,
   FileCode,
@@ -17,7 +18,13 @@ import {
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
-import type { ChangeThread, BriefResponse, NoteResponse, NoteContext } from '../types/thread'
+import {
+  queryKeys,
+  useThreadQuery,
+  useThreadNotesQuery,
+  useThreadBriefQuery,
+} from '@/hooks/queries'
+import type { ChangeThread, NoteResponse, NoteContext } from '../types/thread'
 
 export const Route = createFileRoute('/threads/$id')({
   component: ThreadDetailPage,
@@ -25,10 +32,10 @@ export const Route = createFileRoute('/threads/$id')({
 
 function ThreadDetailPage() {
   const { id } = Route.useParams()
-  const [thread, setThread] = useState<ChangeThread | null>(null)
-  const [brief, setBrief] = useState<BriefResponse | null>(null)
-  const [notes, setNotes] = useState<NoteResponse[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
+  const { data: thread, isLoading } = useThreadQuery(id)
+  const { data: notes = [] } = useThreadNotesQuery(id)
+  const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [generatingBrief, setGeneratingBrief] = useState(false)
@@ -52,37 +59,9 @@ function ThreadDetailPage() {
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const loadThreadData = async () => {
-    setLoading(true)
-    try {
-      const fetchedThread = await threadService.getThread(id)
-      setThread(fetchedThread)
-
-      // Load notes separately via the dedicated notes endpoint
-      try {
-        const fetchedNotes = await threadService.listThreadNotes(id)
-        setNotes(fetchedNotes)
-      } catch {
-        setNotes([])
-      }
-
-      // Try loading brief if exists
-      try {
-        const fetchedBrief = await threadService.getBrief(id)
-        setBrief(fetchedBrief)
-      } catch {
-        setBrief(null)
-      }
-    } catch {
-      setThread(null)
-    } finally {
-      setLoading(false)
-    }
+  const updateThreadCache = (updated: ChangeThread) => {
+    queryClient.setQueryData(queryKeys.thread(id), updated)
   }
-
-  useEffect(() => {
-    loadThreadData()
-  }, [id])
 
   const handleRefresh = async () => {
     if (!thread) return
@@ -90,7 +69,7 @@ function ThreadDetailPage() {
     setMessage(null)
     try {
       const updated = await threadService.refreshThread(id)
-      setThread(updated)
+      updateThreadCache(updated)
       setMessage({ type: 'success', text: 'Thread commits and diffs refreshed from GitHub.' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to refresh thread'
@@ -106,7 +85,7 @@ function ThreadDetailPage() {
     setMessage(null)
     try {
       const updated = await threadService.analyzeThread(id)
-      setThread(updated)
+      updateThreadCache(updated)
       setMessage({ type: 'success', text: 'AI Risk Analysis completed.' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to run risk analysis'
@@ -122,7 +101,7 @@ function ThreadDetailPage() {
     setMessage(null)
     try {
       const newBrief = await threadService.generateBrief(id)
-      setBrief(newBrief)
+      queryClient.setQueryData(queryKeys.threadBrief(id), newBrief)
       setMessage({ type: 'success', text: 'AI Change Brief generated successfully!' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to generate brief'
@@ -140,7 +119,7 @@ function ThreadDetailPage() {
       await threadService.publishBrief(id, prNumberInput)
       setMessage({ type: 'success', text: `Published to GitHub PR #${prNumberInput}!` })
       if (thread) {
-        setThread({ ...thread, status: 'PUBLISHED' })
+        updateThreadCache({ ...thread, status: 'PUBLISHED' })
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to publish brief'
@@ -166,7 +145,7 @@ function ThreadDetailPage() {
         alternatives: alternatives.trim() || undefined,
         impact: impact.trim() || undefined,
       })
-      setNotes([createdNote, ...notes])
+      queryClient.setQueryData(queryKeys.threadNotes(id), [createdNote, ...notes])
       setDecision('')
       setRationale('')
       setAlternatives('')
@@ -203,7 +182,10 @@ function ThreadDetailPage() {
         alternatives: editAlternatives.trim() || undefined,
         impact: editImpact.trim() || undefined,
       })
-      setNotes(notes.map((n) => (n.id === noteId ? updated : n)))
+      queryClient.setQueryData(
+        queryKeys.threadNotes(id),
+        notes.map((n) => (n.id === noteId ? updated : n)),
+      )
       setEditingNoteId(null)
       setMessage({ type: 'success', text: 'Note updated.' })
     } catch (err: unknown) {
@@ -218,7 +200,10 @@ function ThreadDetailPage() {
     setMessage(null)
     try {
       await threadService.deleteNote(id, noteId)
-      setNotes(notes.filter((n) => n.id !== noteId))
+      queryClient.setQueryData(
+        queryKeys.threadNotes(id),
+        notes.filter((n) => n.id !== noteId),
+      )
       setMessage({ type: 'success', text: 'Note deleted.' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to delete note'
@@ -228,7 +213,7 @@ function ThreadDetailPage() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="py-20 text-center space-y-4">
         <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />

@@ -5,6 +5,7 @@ import { Plus, Search } from 'lucide-react'
 import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { CreateThreadDialog } from '@/components/devbraid/create-thread-dialog'
+import { queryKeys } from '@/hooks/queries'
 import { threadService } from '@/services/thread.service'
 import type { ChangeThread } from '@/types/thread'
 
@@ -22,7 +23,7 @@ function ThreadsPage() {
   const [q, setQ] = useState('')
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['threads'],
+    queryKey: queryKeys.threads,
     queryFn: () => threadService.listThreads(0, 50),
   })
 
