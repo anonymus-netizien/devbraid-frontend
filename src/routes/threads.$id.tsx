@@ -4,7 +4,7 @@ import { GitCommit, FileCode, Plus, RefreshCw, Sparkles, Send, ShieldAlert, Chec
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { threadService } from '../services/thread.service'
-import type { ChangeThread, BriefResponse, NoteResponse } from '../types/thread'
+import type { ChangeThread, BriefResponse, NoteResponse, NoteContext } from '../types/thread'
 
 export const Route = createFileRoute('/threads/$id')({
   component: ThreadDetailPage,
@@ -28,6 +28,8 @@ function ThreadDetailPage() {
   const [rationale, setRationale] = useState('')
   const [alternatives, setAlternatives] = useState('')
   const [impact, setImpact] = useState('')
+  const [noteContext, setNoteContext] = useState<NoteContext>('THREAD')
+  const [contextRef, setContextRef] = useState('')
   const [addingNote, setAddingNote] = useState(false)
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [editDecision, setEditDecision] = useState('')
@@ -144,6 +146,8 @@ function ThreadDetailPage() {
 
     try {
       const createdNote = await threadService.addDecisionNote(id, {
+        context: noteContext,
+        contextRef: contextRef.trim() || undefined,
         decision: decision.trim(),
         rationale: rationale.trim(),
         alternatives: alternatives.trim() || undefined,
@@ -154,6 +158,8 @@ function ThreadDetailPage() {
       setRationale('')
       setAlternatives('')
       setImpact('')
+      setNoteContext('THREAD')
+      setContextRef('')
       setShowNoteForm(false)
       setMessage({ type: 'success', text: 'Decision note added.' })
     } catch (err: unknown) {
@@ -449,6 +455,38 @@ function ThreadDetailPage() {
                     required
                     className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-foreground mb-1">Context</label>
+                    <select
+                      value={noteContext}
+                      onChange={(e) => {
+                        const next = e.target.value as NoteContext
+                        setNoteContext(next)
+                        if (next === 'THREAD') setContextRef('')
+                      }}
+                      className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    >
+                      <option value="THREAD">Thread</option>
+                      <option value="COMMIT">Commit</option>
+                      <option value="FILE">File</option>
+                    </select>
+                  </div>
+                  {(noteContext === 'COMMIT' || noteContext === 'FILE') && (
+                    <div>
+                      <label className="block text-xs font-medium text-foreground mb-1">
+                        {noteContext === 'COMMIT' ? 'Commit SHA' : 'File Path'}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={noteContext === 'COMMIT' ? 'e.g. a1b2c3d' : 'e.g. src/main/java/App.java'}
+                        value={contextRef}
+                        onChange={(e) => setContextRef(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-lg bg-surface border border-hairline text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>

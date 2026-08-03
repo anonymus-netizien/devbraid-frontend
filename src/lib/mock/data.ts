@@ -67,6 +67,7 @@ export const mockNotes: DecisionNote[] = [
   {
     id: '1',
     threadId: '1',
+    context: 'THREAD',
     decision: 'Use sliding window rate limiter with Redis backend',
     rationale: 'Distributed rate limiting required for multi-instance deployment. Redis provides atomic operations.',
     alternatives: 'In-memory rate limiting (rejected: not distributed), API gateway rate limiting (rejected: too coarse)',
@@ -76,6 +77,7 @@ export const mockNotes: DecisionNote[] = [
   {
     id: '2',
     threadId: '1',
+    context: 'THREAD',
     decision: 'Rate limit: 100 requests per minute per API key',
     rationale: 'Based on traffic analysis of current API consumers. Top 10% of consumers peak at ~80 req/min.',
     alternatives: '50 req/min (rejected: too restrictive), 200 req/min (rejected: insufficient protection)',

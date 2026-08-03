@@ -1,9 +1,19 @@
 export type ThreadStatus = 'DRAFTING' | 'ANALYZING' | 'READY' | 'PUBLISHED' | 'drafting' | 'analyzing' | 'ready' | 'published';
 export type RiskFlag = 'AUTH' | 'MIGRATIONS' | 'PUBLIC_API' | 'DEPENDENCY' | 'CI' | 'SECURITY' | 'PERFORMANCE';
 
+/**
+ * Mirrors the backend `NoteContext` enum (changethread/entity/NoteContext.java).
+ * COMMIT/FILE take an optional contextRef pointing at the specific commit sha or file path.
+ */
+export type NoteContext = 'COMMIT' | 'FILE' | 'THREAD';
+
 export interface DecisionNote {
   id?: string;
   threadId?: string;
+  /** Required by the backend CreateNoteRequest — must be sent on create. */
+  context: NoteContext;
+  /** Optional reference for COMMIT/FILE contexts (commit sha or file path). */
+  contextRef?: string;
   decision: string;
   rationale: string;
   alternatives?: string;
