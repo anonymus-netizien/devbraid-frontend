@@ -184,14 +184,16 @@ function ThreadDetailPage() {
   }
 
   const handleEditNote = (note: NoteResponse) => {
+    if (!note.id) return
     setEditingNoteId(note.id)
-    setEditDecision(note.decision)
-    setEditRationale(note.rationale)
+    setEditDecision(note.decision ?? '')
+    setEditRationale(note.rationale ?? '')
     setEditAlternatives(note.alternatives || '')
     setEditImpact(note.impact || '')
   }
 
-  const handleSaveEdit = async (noteId: string) => {
+  const handleSaveEdit = async (noteId: string | undefined) => {
+    if (!noteId) return
     if (!editDecision.trim() || !editRationale.trim()) return
     setMessage(null)
     try {
@@ -210,7 +212,8 @@ function ThreadDetailPage() {
     }
   }
 
-  const handleDeleteNote = async (noteId: string) => {
+  const handleDeleteNote = async (noteId: string | undefined) => {
+    if (!noteId) return
     setDeletingNoteId(noteId)
     setMessage(null)
     try {
