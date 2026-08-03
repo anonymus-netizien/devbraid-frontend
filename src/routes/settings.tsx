@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { PageHeader } from '@/components/devbraid/states'
 import { SectionLabel } from '@/components/devbraid/chips'
+import { ApiKeysSection } from '@/components/devbraid/api-keys-section'
 import { useAuth } from '@/context/AuthContext'
 import authService from '@/services/auth.service'
 import { RefreshCw, Eye, EyeOff, Save, Key, Moon, Bell, Shield, Globe } from 'lucide-react'
@@ -307,6 +308,9 @@ function SettingsPage() {
             <span className="text-[10px] text-muted-foreground">For decision-note timestamps</span>
           </div>
         </section>
+
+        {/* API Keys */}
+        <ApiKeysSection />
 
         {/* Danger Zone */}
         <section className="rounded-xl border border-danger-border bg-danger-bg p-5 space-y-4">
