@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { threadService } from '@/services/thread.service'
 import githubService from '@/services/github.service'
 import indexingService from '@/services/indexing.service'
+import { apiKeyService } from '@/services/api-key.service'
 
 /**
  * Central query-key factory. All pages derive keys from here so mutations can
@@ -38,6 +39,7 @@ export const queryKeys = {
     notes: ['dashboard', 'notes'] as const,
     briefs: ['dashboard', 'briefs'] as const,
   },
+  apiKeys: ['api-keys'] as const,
 } as const
 
 export function useThreadsQuery() {
@@ -196,4 +198,8 @@ export function useDashboardBriefsQuery() {
     queryKey: queryKeys.dashboard.briefs,
     queryFn: () => threadService.listBriefs(0, 20),
   })
+}
+
+export function useApiKeysQuery() {
+  return useQuery({ queryKey: queryKeys.apiKeys, queryFn: () => apiKeyService.listApiKeys() })
 }
