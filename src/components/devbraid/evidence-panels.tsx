@@ -101,7 +101,7 @@ export function FileChangesPanel({
           from GitHub.
         </p>
       ) : (
-        <ul className="divide-y divide-hairline/60">
+        <ul className="max-h-72 divide-y divide-hairline/60 overflow-y-auto [scrollbar-color:var(--color-surface-2)_transparent] [scrollbar-width:thin]">
           {files.map((f, i) => {
             const path = f.filename || f.path || ''
             const { dir, name } = pathParts(path)
@@ -283,7 +283,7 @@ export function CommitsList({ commits }: { commits: CommitSummary[] }) {
           No commits synced yet. Run <span className="font-mono">Refresh Diff</span>.
         </p>
       ) : (
-        <ul className="divide-y divide-hairline/60">
+        <ul className="max-h-64 divide-y divide-hairline/60 overflow-y-auto [scrollbar-color:var(--color-surface-2)_transparent] [scrollbar-width:thin]">
           {commits.map((c) => (
             <li key={c.sha} className="px-4 py-2.5">
               <div className="flex items-center gap-2">
