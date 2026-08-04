@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
 import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/devbraid/states'
 import { StatusDot } from '@/components/devbraid/chips'
-import { queryKeys } from '@/hooks/queries'
-import { threadService } from '@/services/thread.service'
+import { useBriefsQuery } from '@/hooks/queries'
 
 export const Route = createFileRoute('/briefs')({
   head: () => ({
@@ -25,10 +23,7 @@ export const Route = createFileRoute('/briefs')({
 })
 
 function BriefsPage() {
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: queryKeys.briefs,
-    queryFn: () => threadService.listBriefs(0, 50),
-  })
+  const { data, isLoading, isError, refetch } = useBriefsQuery()
 
   const briefs = data?.content ?? []
 
