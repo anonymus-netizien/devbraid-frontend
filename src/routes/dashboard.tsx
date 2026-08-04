@@ -48,7 +48,7 @@ function StatCard({
   return (
     <Link
       to={to}
-      className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface"
+      className="group block rounded-lg bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface"
     >
       <div className="flex items-start justify-between">
         <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -163,8 +163,8 @@ function DashboardPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
         {/* Threads table */}
-        <div className="rounded-lg border border-hairline bg-surface/30">
-          <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+        <div className="rounded-lg bg-surface/30">
+          <div className="flex items-center justify-between px-4 py-3">
             <h2 className="text-sm font-semibold">Recent change threads</h2>
             <div className="flex items-center gap-2">
               {['all', 'draft', 'analyzing', 'ready', 'published'].map((s) => (
@@ -198,7 +198,7 @@ function DashboardPage() {
               <EmptyState title="No threads yet" description="Create one to get started." />
             </div>
           ) : (
-            <div className="divide-y divide-hairline">
+            <div>
               {filtered.slice(0, 8).map((t: ChangeThread) => (
                 <Link
                   key={t.id}
@@ -232,7 +232,7 @@ function DashboardPage() {
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+          <div className="rounded-lg bg-surface/30 p-4">
             <h3 className="text-sm font-semibold">Latest notes</h3>
             <p className="text-xs text-muted-foreground mb-3">Always human-written.</p>
             {notes.length === 0 ? (
@@ -256,7 +256,7 @@ function DashboardPage() {
             )}
           </div>
 
-          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+          <div className="rounded-lg bg-surface/30 p-4">
             <h3 className="text-sm font-semibold mb-3">Briefs to review</h3>
             {briefs.length === 0 ? (
               <p className="text-xs text-muted-foreground">No briefs yet.</p>

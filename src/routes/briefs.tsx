@@ -49,10 +49,10 @@ function BriefsPage() {
           description="Generate a brief from a change thread once it has decision notes and evidence."
         />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-hairline">
+        <div className="overflow-x-auto rounded-lg">
           <table className="table">
             <thead>
-              <tr className="border-b border-hairline">
+              <tr>
                 <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Brief
                 </th>

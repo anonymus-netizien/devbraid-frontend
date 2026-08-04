@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 export function EmptyState({
@@ -36,11 +37,7 @@ export function LoadingRows({ rows = 5 }: { rows?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: rows }).map((_, i) => (
-        <div
-          key={i}
-          className="h-9 animate-pulse rounded-md bg-surface/60"
-          style={{ opacity: 1 - i * 0.12 }}
-        />
+        <Skeleton key={i} className="h-9 w-full rounded-md" style={{ opacity: 1 - i * 0.12 }} />
       ))}
     </div>
   )

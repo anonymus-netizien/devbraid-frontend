@@ -108,13 +108,13 @@ function ConnectionsPage() {
 
       <div className="space-y-3">
         {isLoading ? (
-          <div className="h-32 animate-pulse rounded-lg border border-hairline bg-surface/40" />
+          <div className="h-32 animate-pulse rounded-lg bg-surface/40" />
         ) : connection ? (
-          <div className="rounded-lg border border-hairline bg-surface/40 p-5">
+          <div className="rounded-lg bg-surface/40 p-5">
             <div className="flex items-start justify-between gap-6">
               <div className="min-w-0 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="grid size-8 place-items-center rounded-full border border-hairline bg-background">
+                  <div className="grid size-8 place-items-center rounded-full bg-background">
                     <svg viewBox="0 0 24 24" className="size-4" fill="currentColor">
                       <path d="M12 .5C5.7.5.5 5.7.5 12c0 5 3.3 9.3 7.9 10.8.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.3.8 1 .8 2v3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.8C23.5 5.7 18.3.5 12 .5z" />
                     </svg>

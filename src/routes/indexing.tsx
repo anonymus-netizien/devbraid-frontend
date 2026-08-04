@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/devbraid/states'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   queryKeys,
   useIndexesQuery,
@@ -99,8 +100,8 @@ export function StartIndexDialog({ onStarted }: { onStarted: () => void }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 animate-in fade-in bg-black/60 backdrop-blur-xs duration-200" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 rounded-xl border border-hairline bg-surface p-4 shadow-elevation-3 duration-200 focus:outline-none sm:p-6">
-          <div className="mb-5 flex items-center justify-between border-b border-hairline pb-4">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 rounded-xl bg-surface p-4 shadow-elevation-3 duration-200 focus:outline-none sm:p-6">
+          <div className="mb-5 flex items-center justify-between pb-4">
             <div className="flex items-center gap-2">
               <Boxes className="size-4 text-primary" />
               <h2 className="text-sm font-semibold text-foreground">Start Code Index</h2>
@@ -193,14 +194,14 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
     <div className="space-y-6">
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl border border-hairline bg-surface p-4">
+        <div className="rounded-xl bg-surface p-4">
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Files</p>
           <p className="mt-1 font-mono text-xl text-foreground tabular-nums">
             {index.indexedFiles ?? 0}
             <span className="text-xs text-muted-foreground">/{index.totalFiles ?? 0}</span>
           </p>
         </div>
-        <div className="rounded-xl border border-hairline bg-surface p-4">
+        <div className="rounded-xl bg-surface p-4">
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
             Functions
           </p>
@@ -208,7 +209,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
             {index.totalFunctions ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-hairline bg-surface p-4">
+        <div className="rounded-xl bg-surface p-4">
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
             Classes
           </p>
@@ -216,7 +217,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
             {index.totalClasses ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-hairline bg-surface p-4">
+        <div className="rounded-xl bg-surface p-4">
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
             Dependencies
           </p>
@@ -233,7 +234,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
       )}
 
       {/* Language breakdown */}
-      <div className="rounded-xl border border-hairline bg-surface p-4">
+      <div className="rounded-xl bg-surface p-4">
         <p className="mb-3 text-xs font-mono uppercase tracking-widest text-muted-foreground">
           Languages
         </p>
@@ -244,7 +245,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
             {languages.map(([lang, count]) => (
               <span
                 key={lang}
-                className="flex items-center gap-1.5 rounded-full border border-hairline bg-surface-2 px-2.5 py-1 font-mono text-[10px] text-foreground"
+                className="flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 font-mono text-[10px] text-foreground"
               >
                 <Braces className="size-3 text-muted-foreground" />
                 {lang}
@@ -256,7 +257,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
       </div>
 
       {/* File search */}
-      <div className="rounded-xl border border-hairline bg-surface p-4">
+      <div className="rounded-xl bg-surface p-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Files</p>
           <div className="relative w-56">
@@ -271,9 +272,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
           </div>
         </div>
         {isLoading ? (
-          <p className="flex items-center gap-2 py-6 text-xs text-muted-foreground">
-            <Loader2 className="size-3 animate-spin" /> Loading files…
-          </p>
+          <Skeleton className="mt-3 h-10 w-full rounded-md" />
         ) : searching ? (
           <p className="flex items-center gap-2 py-6 text-xs text-muted-foreground">
             <Loader2 className="size-3 animate-spin" /> Searching…
@@ -283,7 +282,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
             {pattern.trim() ? 'No files match that pattern.' : 'No indexed files yet.'}
           </p>
         ) : (
-          <ul className="max-h-80 divide-y divide-hairline/60 overflow-y-auto">
+          <ul className="max-h-80 overflow-y-auto">
             {visibleFiles.map((f) => (
               <li key={f.id} className="flex items-center gap-3 py-2">
                 <FileCode2 className="size-3.5 shrink-0 text-muted-foreground" />
@@ -303,7 +302,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
       </div>
 
       {/* Dependency graph summary */}
-      <div className="rounded-xl border border-hairline bg-surface p-4">
+      <div className="rounded-xl bg-surface p-4">
         <p className="mb-3 text-xs font-mono uppercase tracking-widest text-muted-foreground">
           Dependency Graph
         </p>
@@ -372,10 +371,8 @@ function IndexingPage() {
                   type="button"
                   onClick={() => setSelectedId(idx.id ?? null)}
                   className={cn(
-                    'rounded-xl border bg-surface p-4 text-left transition-colors',
-                    selectedId === idx.id
-                      ? 'border-primary/50 ring-1 ring-primary/30'
-                      : 'border-hairline hover:border-hairline hover:bg-surface-2/50',
+                    'rounded-xl bg-surface p-4 text-left transition-colors',
+                    selectedId === idx.id ? 'ring-1 ring-primary/50' : 'hover:bg-surface-2/50',
                   )}
                 >
                   <div className="flex items-center justify-between gap-2">

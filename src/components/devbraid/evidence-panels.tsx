@@ -75,9 +75,9 @@ export function FileChangesPanel({
   }
 
   return (
-    <div className="rounded-xl border border-hairline bg-surface">
+    <div className="rounded-xl bg-surface">
       {/* Panel header — counts rendered as a mini diff summary */}
-      <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3">
         <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
           Changed Files ({files.length})
         </p>
@@ -179,17 +179,14 @@ export function FileChangesPanel({
                 </div>
 
                 {expanded && (
-                  <div className="mt-2.5 space-y-2 rounded-lg border border-hairline bg-surface-2/40 p-3">
+                  <div className="mt-2.5 space-y-2 rounded-lg bg-surface-2/40 p-3">
                     {fileComments.length === 0 && (
                       <p className="text-[11px] text-muted-foreground">
                         No comments on this file yet.
                       </p>
                     )}
                     {fileComments.map((c) => (
-                      <div
-                        key={c.id}
-                        className="rounded-md border border-hairline bg-surface p-2.5"
-                      >
+                      <div key={c.id} className="rounded-md bg-surface p-2.5">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-[10px] text-muted-foreground">
                             {c.lineStart
@@ -271,8 +268,8 @@ export function FileChangesPanel({
 
 export function CommitsList({ commits }: { commits: CommitSummary[] }) {
   return (
-    <div className="rounded-xl border border-hairline bg-surface">
-      <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+    <div className="rounded-xl bg-surface">
+      <div className="flex items-center justify-between px-4 py-3">
         <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
           Commits ({commits.length})
         </p>

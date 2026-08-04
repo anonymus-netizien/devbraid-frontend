@@ -84,8 +84,8 @@ export function EventsTimeline({
   }
 
   return (
-    <div className="rounded-xl border border-hairline bg-surface">
-      <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+    <div className="rounded-xl bg-surface">
+      <div className="flex items-center justify-between px-4 py-3">
         <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
           Activity
         </p>
@@ -125,10 +125,7 @@ export function EventsTimeline({
       )}
 
       {onAddEvent && (
-        <form
-          onSubmit={submit}
-          className="flex items-center gap-2 border-t border-hairline px-4 py-2.5"
-        >
+        <form onSubmit={submit} className="flex items-center gap-2 px-4 py-2.5">
           <input
             type="text"
             value={summary}

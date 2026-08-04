@@ -166,7 +166,7 @@ function ThreadsPage() {
           }
         />
       ) : (
-        <div className="divide-y divide-hairline overflow-hidden rounded-lg border border-hairline">
+        <div className="overflow-hidden rounded-lg">
           {filtered.map((t: ChangeThread) => (
             <Link
               key={t.id}
