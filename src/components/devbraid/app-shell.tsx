@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   LayoutDashboard,
   GitPullRequest,
+  Library,
   FileText,
   BookOpen,
   Github,
@@ -26,6 +27,7 @@ const navGroups = [
     items: [
       { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/threads', label: 'Change Threads', icon: GitPullRequest },
+      { to: '/indexing', label: 'Code Index', icon: Library },
       { to: '/notes', label: 'Decision Notes', icon: FileText },
       { to: '/briefs', label: 'Change Briefs', icon: BookOpen },
     ],

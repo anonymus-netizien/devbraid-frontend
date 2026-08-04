@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BriefsRouteImport } from './routes/briefs'
 import { Route as ConnectionsRouteImport } from './routes/connections'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as IndexingRouteImport } from './routes/indexing'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ThreadsRouteImport } from './routes/threads'
@@ -42,6 +43,11 @@ const ConnectionsRoute = ConnectionsRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexingRoute = IndexingRouteImport.update({
+  id: '/indexing',
+  path: '/indexing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesRoute = NotesRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
+  '/indexing': typeof IndexingRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
+  '/indexing': typeof IndexingRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
+  '/indexing': typeof IndexingRoute
   '/notes': typeof NotesRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/briefs'
     | '/connections'
     | '/dashboard'
+    | '/indexing'
     | '/notes'
     | '/settings'
     | '/threads'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/briefs'
     | '/connections'
     | '/dashboard'
+    | '/indexing'
     | '/notes'
     | '/settings'
     | '/threads'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/briefs'
     | '/connections'
     | '/dashboard'
+    | '/indexing'
     | '/notes'
     | '/settings'
     | '/threads'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   BriefsRoute: typeof BriefsRouteWithChildren
   ConnectionsRoute: typeof ConnectionsRoute
   DashboardRoute: typeof DashboardRoute
+  IndexingRoute: typeof IndexingRoute
   NotesRoute: typeof NotesRoute
   SettingsRoute: typeof SettingsRoute
   ThreadsRoute: typeof ThreadsRouteWithChildren
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indexing': {
+      id: '/indexing'
+      path: '/indexing'
+      fullPath: '/indexing'
+      preLoaderRoute: typeof IndexingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notes': {
@@ -340,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   BriefsRoute: BriefsRouteWithChildren,
   ConnectionsRoute: ConnectionsRoute,
   DashboardRoute: DashboardRoute,
+  IndexingRoute: IndexingRoute,
   NotesRoute: NotesRoute,
   SettingsRoute: SettingsRoute,
   ThreadsRoute: ThreadsRouteWithChildren,
