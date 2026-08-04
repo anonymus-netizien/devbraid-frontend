@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   ArrowRight,
-  BookOpen,
   Command,
   FileText,
   GitPullRequest,
@@ -14,9 +13,11 @@ import { useState } from 'react'
 import { useSmoothScroll } from '@/hooks/use-motion'
 import { Eyebrow, Reveal, SectionHeading } from '@/components/marketing/primitives'
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
-import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
-import { IsometricHero } from '@/components/marketing/isometric-hero'
+import { CtaBanner } from '@/components/marketing/cta-banner'
+import { ProductDemo } from '@/components/marketing/product-demo'
+import { HowItWorks } from '@/components/marketing/how-it-works'
 import { LiquidChrome } from '@/components/marketing/liquid-chrome'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -43,36 +44,57 @@ export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
-const features = [
+const featureRows = [
   {
-    icon: GitPullRequest,
-    title: 'Change threads',
-    body: 'A living workspace per branch: commits, touched files, diff stats, and open questions in one dense timeline.',
+    eyebrow: 'the workspace',
+    title: 'A living workspace per branch.',
+    body: 'Commits, touched files, diff stats, and open questions — all in one dense timeline. Nothing decorative, nothing hiding evidence behind a click.',
+    items: [
+      {
+        icon: GitPullRequest,
+        title: 'Change threads',
+        body: 'A living workspace per branch: commits, touched files, diff stats, and open questions in one dense timeline.',
+      },
+      {
+        icon: FileText,
+        title: 'Decision notes',
+        body: 'Capture what you chose and what you rejected in seconds. Notes attach to the thread and outlive the PR.',
+      },
+    ],
   },
   {
-    icon: FileText,
-    title: 'Decision notes',
-    body: 'Capture what you chose and what you rejected in seconds. Notes attach to the thread and outlive the PR.',
+    eyebrow: 'the output',
+    title: 'Briefs that survive review.',
+    body: 'Readable in ninety seconds, auditable forever. Every sentence carries a citation to the commit or file that backs it.',
+    items: [
+      {
+        icon: Sparkles,
+        title: 'Cited change briefs',
+        body: 'Every sentence carries a citation to a commit or file. Anything the model infers is labelled Inference.',
+      },
+      {
+        icon: ShieldAlert,
+        title: 'Risk flags',
+        body: 'Auth, migrations, public API, dependency, and CI surfaces are flagged automatically before review starts.',
+      },
+    ],
   },
   {
-    icon: Sparkles,
-    title: 'Cited change briefs',
-    body: 'Every sentence carries a citation to a commit or file. Anything the model infers is labelled Inference.',
-  },
-  {
-    icon: ShieldAlert,
-    title: 'Risk flags',
-    body: 'Auth, migrations, public API, dependency, and CI surfaces are flagged automatically before review starts.',
-  },
-  {
-    icon: Github,
-    title: 'GitHub connections',
-    body: 'Grant access per repository. Scoped, revocable, and auditable — no blanket organisation install.',
-  },
-  {
-    icon: Command,
-    title: 'Keyboard first',
-    body: '\u2318K opens everything. Threads, briefs, repos, and actions are reachable without touching the mouse.',
+    eyebrow: 'the fit',
+    title: 'Scoped, revocable, keyboard-first.',
+    body: 'Per-repository access you can audit at any time — and a shell where every surface answers to ⌘K.',
+    items: [
+      {
+        icon: Github,
+        title: 'GitHub connections',
+        body: 'Grant access per repository. Scoped, revocable, and auditable — no blanket organisation install.',
+      },
+      {
+        icon: Command,
+        title: 'Keyboard first',
+        body: '⌘K opens everything. Threads, briefs, repos, and actions are reachable without touching the mouse.',
+      },
+    ],
   },
 ]
 
@@ -95,8 +117,6 @@ const faqItems = [
   },
 ]
 
-const logos = ['TypeScript', 'React', 'Next.js', 'Tailwind', 'PostgreSQL', 'Vercel']
-
 function HomePage() {
   useSmoothScroll()
 
@@ -105,9 +125,8 @@ function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* Hero — full-width LiquidChrome background + centered content */}
-        <section className="relative isolate min-h-[85vh] overflow-hidden">
-          {/* LiquidChrome background — full bleed */}
+        {/* Hero — centered, full-bleed LiquidChrome */}
+        <section className="relative isolate min-h-[88vh] overflow-hidden">
           <div className="absolute inset-0 -z-20">
             <LiquidChrome
               baseColor={[0.047, 0.024, 0.098]}
@@ -118,164 +137,139 @@ function HomePage() {
               interactive={false}
             />
           </div>
-          {/* Fade gradient: blends into page background at the bottom */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-background to-transparent"
           />
-          {/* Top fade for header readability */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-background/60 to-transparent"
           />
 
-          <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-36 sm:px-6 sm:pb-24 sm:pt-44 lg:grid-cols-[1.05fr_0.95fr]">
-            <Reveal>
-              <div className="measure">
-                <Link
-                  to="/briefs"
-                  className="mb-6 inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/70 py-1 pl-1.5 pr-3 text-[11px] text-muted-foreground backdrop-blur transition-colors hover:border-primary/30 hover:text-foreground"
-                >
-                  <span className="rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-primary">
-                    new
-                  </span>
-                  Cited change briefs are live
-                  <ArrowRight className="size-3" />
-                </Link>
-                <Eyebrow>evidence over archaeology</Eyebrow>
-                <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
-                  Every pull request ships with the reasoning behind it.
-                </h1>
-                <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground">
-                  DevBraid watches your branch, collects the commits, and braids them with the
-                  decision notes you capture while you work. The result is a change brief where
-                  every claim is cited — and every guess is labelled.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <Link to="/auth/register">
-                    <span className="group relative inline-flex h-11 items-center gap-2 overflow-hidden rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]">
-                      Start free
-                      <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </Link>
-                  <Link to="/dashboard">
-                    <span className="inline-flex h-11 items-center rounded-md border border-hairline bg-surface/60 px-5 text-sm font-medium text-foreground transition-colors hover:bg-surface">
-                      Explore the product
-                    </span>
-                  </Link>
-                </div>
-                <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  <span>no card required</span>
-                  <span className="hidden sm:inline">·</span>
-                  <span>per-repo access</span>
-                  <span className="hidden sm:inline">·</span>
-                  <span>dark mode first</span>
-                </div>
-              </div>
-            </Reveal>
+          <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-4xl flex-col items-center justify-center px-4 pb-20 pt-32 text-center sm:px-6">
+            <Reveal className="flex flex-col items-center">
+              <Link
+                to="/briefs"
+                className="mb-8 inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/70 py-1 pl-1.5 pr-3 text-[11px] text-muted-foreground backdrop-blur transition-colors hover:border-primary/30 hover:text-foreground"
+              >
+                <span className="rounded-full bg-primary/15 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-primary">
+                  new
+                </span>
+                Cited change briefs are live
+                <ArrowRight className="size-3" />
+              </Link>
 
-            <Reveal delay={120}>
-              <IsometricHero className="w-full max-w-[420px] mx-auto" />
+              <Eyebrow>evidence over archaeology</Eyebrow>
+
+              <h1 className="mt-5 max-w-[16ch] text-balance bg-gradient-to-b from-foreground via-foreground to-foreground/60 bg-clip-text text-5xl font-bold leading-[1.05] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+                Every pull request ships with the reasoning behind it.
+              </h1>
+
+              <p className="mt-6 max-w-[62ch] text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+                DevBraid watches your branch, collects the commits, and braids them with the
+                decision notes you capture while you work. The result is a change brief where every
+                claim is cited — and every guess is labelled.
+              </p>
+
+              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                <Link to="/auth/register">
+                  <span className="group relative inline-flex h-11 items-center gap-2 overflow-hidden rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.98]">
+                    Start free
+                    <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+                <Link to="/dashboard">
+                  <span className="inline-flex h-11 items-center rounded-md border border-hairline bg-surface/60 px-6 text-sm font-medium text-foreground transition-colors hover:bg-surface">
+                    Explore the product
+                  </span>
+                </Link>
+              </div>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <span>no card required</span>
+                <span className="hidden sm:inline">·</span>
+                <span>per-repo access</span>
+                <span className="hidden sm:inline">·</span>
+                <span>dark mode first</span>
+              </div>
             </Reveal>
           </div>
         </section>
 
-        {/* Logos strip */}
-        <Reveal className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center gap-8 overflow-hidden border-t border-b border-hairline py-6">
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Built with
-            </span>
-            <div className="flex flex-1 items-center justify-around gap-6 opacity-50 grayscale">
-              {logos.map((name) => (
-                <span
-                  key={name}
-                  className="shrink-0 font-mono text-[11px] uppercase tracking-wider text-muted-foreground"
-                >
-                  {name}
-                </span>
-              ))}
+        {/* Product demo — cited change brief */}
+        <section id="product" className="scroll-mt-20 px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              align="center"
+              eyebrow="see it in action"
+              title="One brief, every claim cited."
+              body="A change brief is readable in ninety seconds and auditable forever. Citations link straight to the commit or file that backs the sentence — and anything the model reasoned rather than observed carries an Inference tag."
+            />
+            <div className="mt-12">
+              <ProductDemo />
             </div>
           </div>
-        </Reveal>
+        </section>
 
-        {/* Features */}
+        {/* Features — alternating split rows */}
         <section
           id="features"
           className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
         >
-          <div className="mx-auto max-w-6xl">
-            <SectionHeading
-              eyebrow="the product"
-              title="Dense, fast, and built for reviewers."
-              body="Six surfaces, one keyboard-first shell. Nothing decorative, nothing that hides evidence behind a click."
-            />
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((f, i) => (
-                <Reveal key={f.title} delay={i * 60} className="h-full">
-                  <div className="group h-full rounded-lg border border-hairline bg-surface/30 p-6 transition-all hover:border-primary/30 hover:bg-surface/60">
-                    <span className="grid size-8 place-items-center rounded-md border border-hairline bg-surface text-primary transition-colors group-hover:border-primary/30 group-hover:bg-primary/10">
-                      <f.icon className="size-4" />
-                    </span>
-                    <h3 className="mt-4 text-sm font-semibold tracking-tight">{f.title}</h3>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                      {f.body}
+          <div className="mx-auto max-w-6xl space-y-24 sm:space-y-32">
+            {featureRows.map((row, i) => {
+              const flip = i % 2 === 1
+              return (
+                <div
+                  key={row.title}
+                  className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center"
+                >
+                  <Reveal className={cn('min-w-0', flip && 'lg:order-2')}>
+                    <Eyebrow>{row.eyebrow}</Eyebrow>
+                    <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+                      {row.title}
+                    </h2>
+                    <p className="mt-4 max-w-[52ch] text-pretty text-base leading-relaxed text-muted-foreground">
+                      {row.body}
                     </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+                  </Reveal>
+
+                  <Reveal
+                    delay={120}
+                    className={cn('grid gap-4 sm:grid-cols-2', flip && 'lg:order-1')}
+                  >
+                    {row.items.map((f) => (
+                      <div
+                        key={f.title}
+                        className="group rounded-lg border border-hairline bg-surface/30 p-5 transition-colors duration-200 hover:border-primary/30 hover:bg-surface/60"
+                      >
+                        <span className="grid size-8 place-items-center rounded-md border border-hairline bg-surface text-primary transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/10">
+                          <f.icon className="size-4" />
+                        </span>
+                        <h3 className="mt-4 text-sm font-semibold tracking-tight">{f.title}</h3>
+                        <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                          {f.body}
+                        </p>
+                      </div>
+                    ))}
+                  </Reveal>
+                </div>
+              )
+            })}
           </div>
         </section>
 
-        {/* Documentation */}
-        <section
-          id="docs"
-          className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
-        >
+        {/* How it works */}
+        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
             <SectionHeading
-              eyebrow="documentation"
-              title="Docs that answer 'why', not just 'what'."
-              body="A change brief is readable in ninety seconds and auditable forever. Citations link straight to the commit or file that backs the sentence, and anything the model reasoned rather than observed carries an Inference tag."
+              align="center"
+              eyebrow="how it works"
+              title="From branch to brief in three steps."
             />
-            <Reveal delay={120} className="mt-8">
-              <div className="rounded-lg border border-hairline bg-surface/50 p-4">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  brief excerpt
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/90">
-                  Session tokens now rotate on refresh
-                  <span className="mx-0.5 inline-flex items-baseline gap-1 rounded border border-hairline bg-surface px-1.5 py-0.5 align-middle font-mono text-[10px] leading-none text-muted-foreground">
-                    <span className="text-primary/80">c:</span>
-                    <span className="text-foreground/90">a91f4c2</span>
-                  </span>
-                  , which invalidates any client caching the old token
-                  <span className="ml-1 inline-flex items-center rounded-full border border-primary/25 bg-primary/10 px-1.5 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-wider text-primary">
-                    Inference
-                  </span>
-                </p>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {['Rollout notes', 'Risk summary', 'Open questions', 'Reviewer checklist'].map(
-                  (t) => (
-                    <span
-                      key={t}
-                      className="rounded border border-hairline bg-surface px-2 py-1 text-[11px] text-muted-foreground"
-                    >
-                      {t}
-                    </span>
-                  ),
-                )}
-              </div>
-              <Link
-                to="/briefs"
-                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                <BookOpen className="size-4" />
-                Read a full change brief
-              </Link>
-            </Reveal>
+            <div className="mt-14">
+              <HowItWorks />
+            </div>
           </div>
         </section>
 
@@ -305,10 +299,9 @@ function HomePage() {
           </div>
         </section>
 
-        {/* CTA banner + newsletter */}
+        {/* CTA */}
         <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
           <CtaBanner />
-          <NewsletterRow />
         </section>
       </main>
 
