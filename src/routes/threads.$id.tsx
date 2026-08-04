@@ -538,7 +538,10 @@ function ThreadDetailPage() {
                 {riskFlagsFromReport.map(
                   (f: any, i: number) =>
                     f.message && (
-                      <p key={`msg-${i}`} className="text-xs text-muted-foreground pl-1">
+                      <p
+                        key={`msg-${i}`}
+                        className="text-xs text-muted-foreground pl-1 break-words [overflow-wrap:anywhere]"
+                      >
                         {f.message}
                       </p>
                     ),
@@ -807,22 +810,22 @@ function ThreadDetailPage() {
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-4 text-xs">
-                        <div>
+                        <div className="min-w-0 break-words [overflow-wrap:anywhere]">
                           <p className="text-muted-foreground mb-0.5">Decision</p>
                           <p className="text-foreground font-medium">{note.decision}</p>
                         </div>
-                        <div>
+                        <div className="min-w-0 break-words [overflow-wrap:anywhere]">
                           <p className="text-muted-foreground mb-0.5">Rationale</p>
                           <p className="text-foreground">{note.rationale}</p>
                         </div>
                         {note.alternatives && (
-                          <div>
+                          <div className="min-w-0 break-words [overflow-wrap:anywhere]">
                             <p className="text-muted-foreground mb-0.5">Alternatives</p>
                             <p className="text-foreground">{note.alternatives}</p>
                           </div>
                         )}
                         {note.impact && (
-                          <div>
+                          <div className="min-w-0 break-words [overflow-wrap:anywhere]">
                             <p className="text-muted-foreground mb-0.5">Impact</p>
                             <p className="text-foreground">{note.impact}</p>
                           </div>
@@ -857,7 +860,7 @@ function ThreadDetailPage() {
                   </span>
                 )}
               </div>
-              <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg border border-hairline">
+              <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg border border-hairline break-words [overflow-wrap:anywhere]">
                 {brief.content}
               </div>
             </section>
