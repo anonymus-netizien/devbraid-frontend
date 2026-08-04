@@ -4,9 +4,9 @@ import { Braces, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const links = [
-  { label: 'How it works', href: '#flow' },
+  { label: 'Product', href: '#product' },
   { label: 'Features', href: '#features' },
-  { label: 'Documentation', href: '#docs' },
+  { label: 'How it works', href: '#flow' },
 ]
 
 export function SiteHeader() {

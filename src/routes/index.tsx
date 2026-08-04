@@ -260,7 +260,10 @@ function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
+        <section
+          id="flow"
+          className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
+        >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
               align="center"
