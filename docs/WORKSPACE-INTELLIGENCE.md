@@ -43,6 +43,6 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Phase exit criteria
 
-- [ ] All six surfaces implemented + tested (build, lint, tests green)
-- [ ] PR raised to `develop`, reviewed, merged
+- [x] All six surfaces implemented + tested (build, lint, tests green)
+- [x] PR raised to `develop` (#15), reviewed, merged
 - [ ] Latest `develop` pulled; `feature/workspace-intelligence` deleted locally + remotely
