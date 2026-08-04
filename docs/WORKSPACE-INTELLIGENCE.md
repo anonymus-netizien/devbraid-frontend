@@ -37,9 +37,9 @@ Six unconsumed backend surfaces from the API gap matrix, in priority order.
 
 ## Ticket 06 — API keys (Settings)
 
-- [ ] Service: `listApiKeys`, `createApiKey`, `revokeApiKey`
-- [ ] Settings → API Keys section: create dialog with show-once key + copy, revoke with confirm
-- [ ] Tests
+- [x] Service: `listApiKeys`, `createApiKey`, `revokeApiKey`
+- [x] Settings → API Keys section: create dialog with show-once key + copy, revoke with confirm
+- [x] Tests
 
 ## Phase exit criteria
 
