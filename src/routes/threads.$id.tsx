@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   Plus,
@@ -18,6 +18,7 @@ import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
 import { EventsTimeline } from '@/components/devbraid/event-timeline'
 import { SnapshotsPanel } from '@/components/devbraid/snapshots-panel'
+import { EditThreadDialog } from '@/components/devbraid/edit-thread-dialog'
 import { threadService } from '../services/thread.service'
 import {
   queryKeys,
@@ -36,6 +37,7 @@ export const Route = createFileRoute('/threads/$id')({
 
 function ThreadDetailPage() {
   const { id } = Route.useParams()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { data: thread, isLoading } = useThreadQuery(id)
   const { data: notes = [] } = useThreadNotesQuery(id)
@@ -44,6 +46,7 @@ function ThreadDetailPage() {
   const { data: snapshots = [] } = useThreadSnapshotsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [generatingBrief, setGeneratingBrief] = useState(false)
   const [publishing, setPublishing] = useState(false)
@@ -133,6 +136,29 @@ function ThreadDetailPage() {
       setMessage({ type: 'error', text: msg })
     } finally {
       setPublishing(false)
+    }
+  }
+
+  const handleThreadSaveEdit = (updated: ChangeThread) => {
+    updateThreadCache(updated)
+    queryClient.invalidateQueries({ queryKey: ['threads'] })
+    setMessage({ type: 'success', text: 'Thread updated successfully.' })
+  }
+
+  const handleDelete = async () => {
+    if (!thread) return
+    if (!window.confirm(`Delete thread "${thread.title}"? This cannot be undone.`)) return
+    setDeleting(true)
+    setMessage(null)
+    try {
+      await threadService.deleteThread(id)
+      queryClient.invalidateQueries({ queryKey: ['threads'] })
+      navigate({ to: '/threads' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete thread'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -345,6 +371,16 @@ function ThreadDetailPage() {
         title={thread.title}
         actions={
           <div className="flex items-center gap-2">
+            {thread && <EditThreadDialog thread={thread} onSaved={handleThreadSaveEdit} />}
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="btn btn-ghost btn-sm text-danger-fg hover:bg-danger-bg/40"
+            >
+              <Trash2 className={`h-3.5 w-3.5 ${deleting ? 'animate-pulse' : ''}`} />
+              <span>Delete</span>
+            </button>
             <button
               type="button"
               onClick={handleRefresh}
