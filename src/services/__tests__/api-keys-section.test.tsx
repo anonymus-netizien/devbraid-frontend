@@ -32,8 +32,24 @@ describe('ApiKeysSection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockKeys = [
-      { id: 'k1', name: 'CI key', prefix: 'db_live_', scopes: ['threads:read'], rateLimitPerMin: 60, active: true, lastUsedAt: '2026-08-01T12:00:00Z', createdAt: '2026-07-15T10:00:00Z' },
-      { id: 'k2', name: 'Revoked', prefix: 'db_test_', scopes: [], active: false, createdAt: '2026-07-10T08:00:00Z' },
+      {
+        id: 'k1',
+        name: 'CI key',
+        prefix: 'db_live_',
+        scopes: ['threads:read'],
+        rateLimitPerMin: 60,
+        active: true,
+        lastUsedAt: '2026-08-01T12:00:00Z',
+        createdAt: '2026-07-15T10:00:00Z',
+      },
+      {
+        id: 'k2',
+        name: 'Revoked',
+        prefix: 'db_test_',
+        scopes: [],
+        active: false,
+        createdAt: '2026-07-10T08:00:00Z',
+      },
     ]
   })
 

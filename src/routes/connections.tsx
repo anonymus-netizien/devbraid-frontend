@@ -53,7 +53,9 @@ function ConnectionsPage() {
         })
       }
     } catch {
-      toast('Token validated (mock check)')
+      toast.error('Token validation failed', {
+        description: 'Could not reach GitHub. Please try again.',
+      })
     }
   }
 
