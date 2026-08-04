@@ -16,14 +16,19 @@ import {
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
+import { EventsTimeline } from '@/components/devbraid/event-timeline'
+import { SnapshotsPanel } from '@/components/devbraid/snapshots-panel'
 import { threadService } from '../services/thread.service'
 import {
   queryKeys,
   useThreadQuery,
   useThreadNotesQuery,
   useThreadBriefQuery,
+  useThreadCommentsQuery,
+  useThreadEventsQuery,
+  useThreadSnapshotsQuery,
 } from '@/hooks/queries'
-import type { ChangeThread, NoteResponse, NoteContext } from '../types/thread'
+import type { ChangeThread, NoteResponse, NoteContext, FileComment } from '../types/thread'
 
 export const Route = createFileRoute('/threads/$id')({
   component: ThreadDetailPage,
@@ -34,6 +39,9 @@ function ThreadDetailPage() {
   const queryClient = useQueryClient()
   const { data: thread, isLoading } = useThreadQuery(id)
   const { data: notes = [] } = useThreadNotesQuery(id)
+  const { data: comments = [] } = useThreadCommentsQuery(id)
+  const { data: events = [] } = useThreadEventsQuery(id)
+  const { data: snapshots = [] } = useThreadSnapshotsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
@@ -209,6 +217,81 @@ function ThreadDetailPage() {
       setMessage({ type: 'error', text: msg })
     } finally {
       setDeletingNoteId(null)
+    }
+  }
+
+  const updateCommentsCache = (next: FileComment[]) =>
+    queryClient.setQueryData(queryKeys.threadComments(id), next)
+
+  const handleAddComment = async (filePath: string, content: string) => {
+    setMessage(null)
+    try {
+      const created = await threadService.createComment(id, { filePath, content })
+      updateCommentsCache([created, ...comments])
+      setMessage({ type: 'success', text: 'Comment added.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to add comment'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const handleResolveComment = async (commentId: string | undefined) => {
+    if (!commentId) return
+    setMessage(null)
+    try {
+      const updated = await threadService.updateComment(id, commentId, { status: 'RESOLVED' })
+      updateCommentsCache(comments.map((c) => (c.id === commentId ? updated : c)))
+      setMessage({ type: 'success', text: 'Comment resolved.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to resolve comment'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const handleDeleteComment = async (commentId: string | undefined) => {
+    if (!commentId) return
+    setMessage(null)
+    try {
+      await threadService.deleteComment(id, commentId)
+      updateCommentsCache(comments.filter((c) => c.id !== commentId))
+      setMessage({ type: 'success', text: 'Comment deleted.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete comment'
+      setMessage({ type: 'error', text: msg })
+    }
+  }
+
+  const [loggingEvent, setLoggingEvent] = useState(false)
+
+  const handleAddEvent = async (summary: string) => {
+    setLoggingEvent(true)
+    setMessage(null)
+    try {
+      const created = await threadService.createEvent(id, summary)
+      queryClient.setQueryData(queryKeys.threadEvents(id), [created, ...events])
+      setMessage({ type: 'success', text: 'Event logged.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to log event'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setLoggingEvent(false)
+    }
+  }
+
+  const [capturing, setCapturing] = useState(false)
+
+  const handleCaptureSnapshot = async (note?: string) => {
+    setCapturing(true)
+    setMessage(null)
+    try {
+      const created = await threadService.createSnapshot(id, note || undefined)
+      queryClient.setQueryData(queryKeys.threadSnapshots(id), [created, ...snapshots])
+      setMessage({ type: 'success', text: 'Snapshot captured.' })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to capture snapshot'
+      setMessage({ type: 'error', text: msg })
+    } finally {
+      setCapturing(false)
     }
   }
 
@@ -747,8 +830,20 @@ function ThreadDetailPage() {
 
         {/* Evidence Panel (Changed Files & Commits) */}
         <aside className="w-80 shrink-0 space-y-6">
-          <FileChangesPanel files={filesList} />
+          <FileChangesPanel
+            files={filesList}
+            comments={comments}
+            onAddComment={handleAddComment}
+            onResolveComment={handleResolveComment}
+            onDeleteComment={handleDeleteComment}
+          />
           <CommitsList commits={commitsList} />
+          <EventsTimeline events={events} onAddEvent={handleAddEvent} busy={loggingEvent} />
+          <SnapshotsPanel
+            snapshots={snapshots}
+            onCapture={handleCaptureSnapshot}
+            busy={capturing}
+          />
         </aside>
       </div>
     </div>

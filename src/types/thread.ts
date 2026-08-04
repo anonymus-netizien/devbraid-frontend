@@ -87,6 +87,22 @@ export type PublishResponse = Schema<'PublishResponse'>
 
 export type NoteResponse = Schema<'NoteResponse'>
 
+export type ThreadEvent = Schema<'ThreadEventResponse'>
+
+export type CreateThreadEventRequest = Schema<'CreateThreadEventRequest'>
+
+export type PaginatedEvents = Page<ThreadEvent>
+
+export type Snapshot = Schema<'SnapshotResponse'>
+
+export type CreateSnapshotRequest = Schema<'CreateSnapshotRequest'>
+
+export type FileComment = Schema<'FileCommentResponse'>
+
+export type CreateFileCommentRequest = Schema<'CreateFileCommentRequest'>
+
+export type UpdateFileCommentRequest = Schema<'UpdateFileCommentRequest'>
+
 export type PaginatedThreads = Page<ChangeThread>
 
 export interface BriefListItem {

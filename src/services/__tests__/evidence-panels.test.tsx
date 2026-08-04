@@ -41,6 +41,77 @@ describe('FileChangesPanel', () => {
     expect(html).toContain('a/')
     expect(html).toContain('b.ts')
   })
+
+  it('renders per-file comment count chip when comments exist', () => {
+    const html = renderToStaticMarkup(
+      <FileChangesPanel
+        files={files}
+        comments={[{ id: 'c1', filePath: 'src/components/foo/bar.tsx', content: 'nit' }]}
+      />,
+    )
+    expect(html).toContain('>1<')
+  })
+
+  it('shows comment thread with content, line anchor, and status when expanded', () => {
+    const html = renderToStaticMarkup(
+      <FileChangesPanel
+        files={[files[0]]}
+        defaultExpanded="src/components/foo/bar.tsx"
+        comments={[
+          {
+            id: 'c1',
+            filePath: 'src/components/foo/bar.tsx',
+            content: 'Extract helper?',
+            lineStart: 37,
+            lineEnd: 42,
+            status: 'ACTIVE',
+            createdAt: '2026-01-01T00:00:00Z',
+          },
+        ]}
+      />,
+    )
+    expect(html).toContain('L37–42')
+    expect(html).toContain('Extract helper?')
+  })
+
+  it('renders composer when onAddComment is provided', () => {
+    const html = renderToStaticMarkup(
+      <FileChangesPanel
+        files={[files[0]]}
+        defaultExpanded="src/components/foo/bar.tsx"
+        onAddComment={() => undefined}
+      />,
+    )
+    expect(html).toContain('Comment on this file…')
+  })
+
+  it('renders resolve and delete actions on an active comment', () => {
+    const html = renderToStaticMarkup(
+      <FileChangesPanel
+        files={[files[0]]}
+        defaultExpanded="src/components/foo/bar.tsx"
+        comments={[{ id: 'c1', filePath: files[0].filename, content: 'nit', status: 'ACTIVE' }]}
+        onResolveComment={() => undefined}
+        onDeleteComment={() => undefined}
+      />,
+    )
+    expect(html).toContain('Resolve comment')
+    expect(html).toContain('Delete comment')
+  })
+
+  it('does not render resolve action on resolved comments', () => {
+    const html = renderToStaticMarkup(
+      <FileChangesPanel
+        files={[files[0]]}
+        defaultExpanded="src/components/foo/bar.tsx"
+        comments={[{ id: 'c1', filePath: files[0].filename, content: 'done', status: 'RESOLVED' }]}
+        onResolveComment={() => undefined}
+        onDeleteComment={() => undefined}
+      />,
+    )
+    expect(html).not.toContain('Resolve comment')
+    expect(html).toContain('resolved')
+  })
 })
 
 describe('CommitsList', () => {
