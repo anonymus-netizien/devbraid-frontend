@@ -26,20 +26,45 @@ export function CtaBanner() {
           }}
         />
 
-        <div className="relative grid place-items-center px-6 py-16 text-center sm:py-24">
-          <div className="relative">
+        <div className="relative grid gap-8 px-6 py-16 sm:grid-cols-[1fr_auto] sm:items-center sm:py-24">
+          <div>
             <h2 className="text-balance text-2xl font-semibold uppercase leading-tight tracking-tight text-primary-foreground drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] sm:text-4xl">
               Start shipping
               <br />
               evidence-backed change briefs
             </h2>
-            <Link
-              to="/auth/register"
-              className="mt-8 inline-flex h-11 items-center gap-2 rounded-full bg-background px-6 text-xs font-semibold uppercase tracking-[0.16em] text-foreground shadow-[var(--elevation-2)] transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Get started
-              <ArrowRight className="size-3.5" />
-            </Link>
+            <div className="mt-6 space-y-2.5">
+              {[
+                'Cited every claim — no guessing',
+                'Risk flags before review starts',
+                'Keyboard-first, no setup friction',
+              ].map((line) => (
+                <div
+                  key={line}
+                  className="flex items-center gap-2.5 text-sm text-primary-foreground/90"
+                >
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary-foreground/20 font-mono text-[10px] text-primary-foreground">
+                    ✓
+                  </span>
+                  {line}
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                to="/auth/register"
+                className="inline-flex h-11 items-center gap-2 rounded-full bg-background px-6 text-sm font-semibold text-foreground shadow-[var(--elevation-2)] transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Get started
+                <ArrowRight className="size-3.5" />
+              </Link>
+              <Link
+                to="/dashboard"
+                className="inline-flex h-11 items-center rounded-full border border-primary-foreground/30 px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+              >
+                Explore the product
+              </Link>
+            </div>
           </div>
         </div>
       </div>
