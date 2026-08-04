@@ -1,13 +1,17 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { ArrowUpRight, FileText, GitPullRequest, Github, Plus, StickyNote } from 'lucide-react'
-import { PageHeader, LoadingRows, EmptyState } from '@/components/devbraid/states'
+import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { useAuth } from '@/context/AuthContext'
-import { queryKeys, useGitHubStatusQuery, useReposQuery } from '@/hooks/queries'
-import { threadService } from '@/services/thread.service'
+import {
+  useGitHubStatusQuery,
+  useReposQuery,
+  useThreadsQuery,
+  useNotesQuery,
+  useBriefsQuery,
+} from '@/hooks/queries'
 import type { ChangeThread } from '@/types/thread'
 
 export const Route = createFileRoute('/dashboard')({
@@ -68,20 +72,15 @@ function DashboardPage() {
   const { data: ghRepos } = useReposQuery(ghConnected === true)
   const repoCount = ghRepos?.length ?? 0
 
-  const { data: threadsData, isLoading: threadsLoading } = useQuery({
-    queryKey: queryKeys.dashboard.threads,
-    queryFn: () => threadService.listThreads(0, 50),
-  })
+  const {
+    data: threadsData,
+    isLoading: threadsLoading,
+    isError: threadsError,
+    refetch: refetchThreads,
+  } = useThreadsQuery()
 
-  const { data: notesData } = useQuery({
-    queryKey: queryKeys.dashboard.notes,
-    queryFn: () => threadService.listNotes(0, 10),
-  })
-
-  const { data: briefsData } = useQuery({
-    queryKey: queryKeys.dashboard.briefs,
-    queryFn: () => threadService.listBriefs(0, 20),
-  })
+  const { data: notesData } = useNotesQuery()
+  const { data: briefsData } = useBriefsQuery()
 
   const threads = threadsData?.content ?? []
   const notes = notesData?.content ?? []
@@ -185,6 +184,14 @@ function DashboardPage() {
           {threadsLoading ? (
             <div className="p-4">
               <LoadingRows rows={4} />
+            </div>
+          ) : threadsError ? (
+            <div className="p-4">
+              <ErrorPanel
+                code="E_DASHBOARD"
+                message="Couldn't load change threads."
+                onRetry={() => refetchThreads()}
+              />
             </div>
           ) : filtered.length === 0 ? (
             <div className="p-4">
