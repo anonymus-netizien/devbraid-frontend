@@ -9,11 +9,18 @@ import {
   ShieldAlert,
   Sparkles,
 } from 'lucide-react'
-import { useState } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@radix-ui/react-accordion'
+import { ChevronDown } from 'lucide-react'
 import { useSmoothScroll } from '@/hooks/use-motion'
 import { Eyebrow, Reveal, SectionHeading } from '@/components/marketing/primitives'
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
 import { CtaBanner } from '@/components/marketing/cta-banner'
+import { NewsletterSection } from '@/components/marketing/newsletter'
 import { ProductDemo } from '@/components/marketing/product-demo'
 import { HowItWorks } from '@/components/marketing/how-it-works'
 import { LiquidChrome } from '@/components/marketing/liquid-chrome'
@@ -129,9 +136,9 @@ function HomePage() {
         <section className="relative isolate min-h-[88vh] overflow-hidden">
           <div className="absolute inset-0 -z-20">
             <LiquidChrome
-              baseColor={[0.047, 0.024, 0.098]}
-              speed={0.3}
-              amplitude={0.5}
+              baseColor={[0.0157, 0.0196, 0.102]}
+              speed={0.25}
+              amplitude={0.35}
               frequencyX={2.5}
               frequencyY={1.5}
               interactive={false}
@@ -212,10 +219,7 @@ function HomePage() {
         </section>
 
         {/* Features — alternating split rows */}
-        <section
-          id="features"
-          className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
-        >
+        <section id="features" className="scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-6xl space-y-24 sm:space-y-32">
             {featureRows.map((row, i) => {
               const flip = i % 2 === 1
@@ -260,10 +264,7 @@ function HomePage() {
         </section>
 
         {/* How it works */}
-        <section
-          id="flow"
-          className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
-        >
+        <section id="flow" className="scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-6xl">
             <SectionHeading
               align="center"
@@ -277,7 +278,7 @@ function HomePage() {
         </section>
 
         {/* Quote */}
-        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-24">
+        <section className="px-4 py-16 sm:px-6 sm:py-20">
           <Reveal className="mx-auto max-w-3xl text-center">
             <Quote className="mx-auto size-5 text-primary" />
             <blockquote className="mt-5 text-balance text-lg font-medium leading-relaxed tracking-tight sm:text-xl">
@@ -291,50 +292,41 @@ function HomePage() {
         </section>
 
         {/* FAQ */}
-        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
+        <section className="px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-3xl">
             <SectionHeading align="center" eyebrow="questions" title="Frequently asked" />
-            <div className="mt-10 space-y-3">
+            <Accordion type="single" collapsible className="mt-10 space-y-3">
               {faqItems.map((item) => (
-                <FaqItem key={item.q} question={item.q} answer={item.a} />
+                <AccordionItem
+                  key={item.q}
+                  value={item.q}
+                  className="rounded-lg border border-hairline bg-surface/30"
+                >
+                  <AccordionTrigger className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-foreground transition-colors hover:text-foreground">
+                    {item.q}
+                    <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </AccordionTrigger>
+                  <AccordionContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden data-[state=closed]:hidden">
+                    <div className="border-t border-hairline px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+                      {item.a}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         </section>
 
         {/* CTA */}
-        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
+        <section className="px-4 py-16 sm:px-6 sm:py-20">
           <CtaBanner />
         </section>
+
+        {/* Newsletter */}
+        <NewsletterSection />
       </main>
 
       <SiteFooter />
-    </div>
-  )
-}
-
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div className="rounded-lg border border-hairline bg-surface/30">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-foreground"
-      >
-        {question}
-        <span
-          className="shrink-0 text-muted-foreground transition-transform duration-200"
-          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}
-        >
-          +
-        </span>
-      </button>
-      {open && (
-        <div className="border-t border-hairline px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-          {answer}
-        </div>
-      )}
     </div>
   )
 }
