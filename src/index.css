@@ -47,36 +47,36 @@
 
 :root {
   --radius: 0.5rem;
-  /* Light: near-white cool — same family as dark, lighter */
-  --background: oklch(0.973 0.003 248);
-  --foreground: oklch(0.21 0.006 286);
-  --surface: oklch(0.98 0 0);
-  --surface-2: oklch(0.95 0 0);
-  --hairline: oklch(0.21 0.006 286 / 12%);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.21 0.006 286);
-  --popover: oklch(0.973 0.003 248);
-  --popover-foreground: oklch(0.21 0.006 286);
+  /* Light: soft warm-cool paper — not pure white (avoids glare), ink softened */
+  --background: oklch(0.955 0.004 248);
+  --foreground: oklch(0.24 0.008 286);
+  --surface: oklch(0.985 0.002 250);
+  --surface-2: oklch(0.93 0.004 250);
+  --hairline: oklch(0.24 0.008 286 / 14%);
+  --card: oklch(0.985 0.002 250);
+  --card-foreground: oklch(0.24 0.008 286);
+  --popover: oklch(0.955 0.004 248);
+  --popover-foreground: oklch(0.24 0.008 286);
   --primary: oklch(0.55 0.16 70);
   --primary-foreground: oklch(0.16 0.02 60);
   --secondary: oklch(0.9 0.006 264);
   --secondary-foreground: oklch(0.32 0.012 264);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.45 0.01 264);
+  --muted: oklch(0.93 0.004 250);
+  --muted-foreground: oklch(0.5 0.012 264);
   --accent: oklch(0.91 0.02 75 / 45%);
   --accent-foreground: oklch(0.4 0.12 70);
   --destructive: oklch(0.55 0.2 22);
   --destructive-foreground: oklch(0.99 0.002 80);
-  --border: oklch(0.2 0.01 264 / 10%);
-  --input: oklch(0.2 0.01 264 / 14%);
+  --border: oklch(0.24 0.008 286 / 12%);
+  --input: oklch(0.24 0.008 286 / 16%);
   --ring: oklch(0.55 0.16 70);
-  --sidebar: oklch(0.975 0.004 264);
-  --sidebar-foreground: oklch(0.22 0.012 264);
+  --sidebar: oklch(0.955 0.004 248);
+  --sidebar-foreground: oklch(0.24 0.008 286);
   --sidebar-primary: oklch(0.55 0.16 70);
   --sidebar-primary-foreground: oklch(0.16 0.02 60);
   --sidebar-accent: oklch(0.91 0.02 75 / 45%);
   --sidebar-accent-foreground: oklch(0.4 0.12 70);
-  --sidebar-border: oklch(0.2 0.01 264 / 10%);
+  --sidebar-border: oklch(0.24 0.008 286 / 12%);
   --sidebar-ring: oklch(0.55 0.16 70);
   /* Semantic severity triplets — fg / bg / border */
   --danger: oklch(0.52 0.19 22);
@@ -108,35 +108,35 @@
 
 .dark {
   --radius: 0.5rem;
-  --background: oklch(0.03 0.002 262);
+  --background: oklch(0.045 0.003 262);
   --foreground: oklch(0.978 0.029 257);
-  --surface: oklch(0.14 0.006 262);
-  --surface-2: oklch(0.21 0.007 262);
-  --hairline: oklch(1 0 0 / 8%);
-  --card: oklch(0.14 0.006 262);
+  --surface: oklch(0.16 0.007 262);
+  --surface-2: oklch(0.24 0.009 262);
+  --hairline: oklch(1 0 0 / 10%);
+  --card: oklch(0.16 0.007 262);
   --card-foreground: oklch(0.978 0.029 257);
-  --popover: oklch(0.14 0.006 262);
+  --popover: oklch(0.16 0.007 262);
   --popover-foreground: oklch(0.978 0.029 257);
   --primary: oklch(0.78 0.15 75);
   --primary-foreground: oklch(0.16 0.005 264);
-  --secondary: oklch(0.18 0.007 262);
+  --secondary: oklch(0.2 0.008 262);
   --secondary-foreground: oklch(0.978 0.029 257);
-  --muted: oklch(0.18 0.007 262);
-  --muted-foreground: oklch(0.72 0.02 260);
-  --accent: oklch(0.18 0.007 262);
+  --muted: oklch(0.2 0.008 262);
+  --muted-foreground: oklch(0.75 0.022 260);
+  --accent: oklch(0.2 0.008 262);
   --accent-foreground: oklch(0.978 0.029 257);
   --destructive: oklch(0.68 0.19 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.78 0.15 75);
-  --sidebar: oklch(0.03 0.002 262);
+  --sidebar: oklch(0.045 0.003 262);
   --sidebar-foreground: oklch(0.978 0.029 257);
   --sidebar-primary: oklch(0.78 0.15 75);
-  --sidebar-primary-foreground: oklch(0.03 0.002 262);
-  --sidebar-accent: oklch(0.22 0.007 264);
+  --sidebar-primary-foreground: oklch(0.045 0.003 262);
+  --sidebar-accent: oklch(0.24 0.009 264);
   --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.78 0.15 75);
   /* Semantic severity triplets — fg / bg / border */
   --danger: oklch(0.74 0.14 18);
@@ -172,6 +172,7 @@
   }
   html,
   body {
+    overflow-x: clip;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);

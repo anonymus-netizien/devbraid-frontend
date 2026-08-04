@@ -34,7 +34,7 @@ function BriefDetailPage() {
         }
       />
       <div className="rounded-xl border border-hairline bg-surface p-6">
-        <div className="prose prose-invert max-w-none text-sm text-foreground whitespace-pre-wrap font-mono bg-surface-2 p-6 rounded-lg border border-hairline">
+        <div className="prose prose-invert max-w-none text-sm text-foreground whitespace-pre-wrap font-mono bg-surface-2 p-6 rounded-lg border border-hairline break-words [overflow-wrap:anywhere]">
           {brief.content}
         </div>
       </div>
