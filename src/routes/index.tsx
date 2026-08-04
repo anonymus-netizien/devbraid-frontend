@@ -16,6 +16,7 @@ import { Eyebrow, Reveal, SectionHeading } from '@/components/marketing/primitiv
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
 import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
 import { IsometricHero } from '@/components/marketing/isometric-hero'
+import { LiquidChrome } from '@/components/marketing/liquid-chrome'
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -104,13 +105,31 @@ function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* Hero — clipped-gradient headline + product mockup */}
-        <section className="relative isolate overflow-hidden px-4 pb-16 pt-28 sm:px-6 sm:pb-24 sm:pt-36">
+        {/* Hero — full-width LiquidChrome background + centered content */}
+        <section className="relative isolate min-h-[85vh] overflow-hidden">
+          {/* LiquidChrome background — full bleed */}
+          <div className="absolute inset-0 -z-20">
+            <LiquidChrome
+              baseColor={[0.047, 0.024, 0.098]}
+              speed={0.3}
+              amplitude={0.5}
+              frequencyX={2.5}
+              frequencyY={1.5}
+              interactive={false}
+            />
+          </div>
+          {/* Fade gradient: blends into page background at the bottom */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-40 -z-10 h-[520px] bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,var(--primary),transparent)] opacity-[0.10]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-background to-transparent"
           />
-          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          {/* Top fade for header readability */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-background/60 to-transparent"
+          />
+
+          <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-36 sm:px-6 sm:pb-24 sm:pt-44 lg:grid-cols-[1.05fr_0.95fr]">
             <Reveal>
               <div className="measure">
                 <Link
