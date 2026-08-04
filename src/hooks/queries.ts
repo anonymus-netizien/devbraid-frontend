@@ -34,16 +34,11 @@ export const queryKeys = {
       ['indexing', 'indexes', id, 'search', pattern] as const,
     graph: (id: string) => ['indexing', 'indexes', id, 'graph'] as const,
   },
-  dashboard: {
-    threads: ['dashboard', 'threads'] as const,
-    notes: ['dashboard', 'notes'] as const,
-    briefs: ['dashboard', 'briefs'] as const,
-  },
   apiKeys: ['api-keys'] as const,
 } as const
 
 export function useThreadsQuery() {
-  return useQuery({ queryKey: queryKeys.threads, queryFn: () => threadService.listThreads(0, 20) })
+  return useQuery({ queryKey: queryKeys.threads, queryFn: () => threadService.listThreads(0, 50) })
 }
 
 export function useThreadsSearchQuery(q: string) {
@@ -176,27 +171,6 @@ export function useBranchesQuery(owner: string, repo: string) {
     queryKey: queryKeys.github.branches(owner, repo),
     queryFn: () => githubService.listBranches(owner, repo),
     enabled: !!owner && !!repo,
-  })
-}
-
-export function useDashboardThreadsQuery() {
-  return useQuery({
-    queryKey: queryKeys.dashboard.threads,
-    queryFn: () => threadService.listThreads(0, 20),
-  })
-}
-
-export function useDashboardNotesQuery() {
-  return useQuery({
-    queryKey: queryKeys.dashboard.notes,
-    queryFn: () => threadService.listNotes(0, 20),
-  })
-}
-
-export function useDashboardBriefsQuery() {
-  return useQuery({
-    queryKey: queryKeys.dashboard.briefs,
-    queryFn: () => threadService.listBriefs(0, 20),
   })
 }
 
