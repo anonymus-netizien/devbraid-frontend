@@ -28,9 +28,7 @@ export function Reveal({
 }
 
 export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{children}</div>
-  )
+  return <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{children}</div>
 }
 
 export function SectionHeading({
@@ -47,13 +45,11 @@ export function SectionHeading({
   return (
     <Reveal className={cn('measure', align === 'center' && 'mx-auto text-center')}>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
         {title}
       </h2>
       {body && (
-        <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-          {body}
-        </p>
+        <p className="mt-4 text-pretty text-base leading-relaxed text-muted-foreground">{body}</p>
       )}
     </Reveal>
   )
