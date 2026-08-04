@@ -455,7 +455,7 @@ function ThreadDetailPage() {
       )}
 
       {/* Overview stats bar */}
-      <div className="stats stats-horizontal shadow border border-hairline bg-surface w-full rounded-xl">
+      <div className="stats stats-horizontal shadow bg-surface w-full rounded-xl">
         <div className="stat py-3">
           <div className="stat-title text-xs text-muted-foreground">Branch Pair</div>
           <div className="stat-value text-sm mt-1">
@@ -497,7 +497,7 @@ function ThreadDetailPage() {
         {/* Main Column */}
         <div className="flex-1 min-w-0 space-y-8">
           {/* Risk Profile */}
-          <section className="rounded-xl border border-hairline bg-surface p-5 space-y-3">
+          <section className="rounded-xl bg-surface p-5 space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
                 Risk Profile · {thread.riskLevel ? 'Deterministic Analysis' : 'Not analyzed'}
@@ -694,11 +694,8 @@ function ThreadDetailPage() {
             ) : (
               <div className="space-y-3">
                 {notes.map((note) => (
-                  <div
-                    key={note.id}
-                    className="rounded-xl border border-hairline bg-surface p-4 space-y-2 group"
-                  >
-                    <div className="flex items-center justify-between pb-2 border-b border-hairline">
+                  <div key={note.id} className="rounded-xl bg-surface p-4 space-y-2 group">
+                    <div className="flex items-center justify-between pb-2">
                       <span className="text-xs font-mono font-medium text-primary">
                         Decision Note
                       </span>
@@ -840,8 +837,8 @@ function ThreadDetailPage() {
 
           {/* Generated Brief */}
           {brief && (
-            <section className="rounded-xl border border-hairline bg-surface p-5 space-y-3">
-              <div className="flex items-center justify-between border-b border-hairline pb-3">
+            <section className="rounded-xl bg-surface p-5 space-y-3">
+              <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-primary" />
                   <p className="text-xs font-mono uppercase tracking-widest text-foreground font-semibold">
@@ -860,7 +857,7 @@ function ThreadDetailPage() {
                   </span>
                 )}
               </div>
-              <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg border border-hairline break-words [overflow-wrap:anywhere]">
+              <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg break-words [overflow-wrap:anywhere] max-h-[32rem] overflow-y-auto">
                 {brief.content}
               </div>
             </section>

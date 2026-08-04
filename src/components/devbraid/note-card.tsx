@@ -38,8 +38,8 @@ export function NoteCard({
   const isDeleting = deletingNoteId === note.id
 
   return (
-    <div className="rounded-xl border border-hairline bg-surface p-5 space-y-3">
-      <div className="flex items-center justify-between border-b border-hairline pb-2">
+    <div className="rounded-xl bg-surface p-5 space-y-3">
+      <div className="flex items-center justify-between pb-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-xs font-mono text-primary font-medium truncate">
             {note.threadTitle}

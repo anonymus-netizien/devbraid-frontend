@@ -86,7 +86,7 @@ export function ApiKeysSection() {
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
+    <section className="space-y-4 rounded-xl bg-surface p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <KeyRound className="size-4 text-primary" />
@@ -109,7 +109,7 @@ export function ApiKeysSection() {
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 z-50 animate-in fade-in bg-black/60 backdrop-blur-xs duration-200" />
             <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 rounded-xl border border-hairline bg-surface p-4 shadow-elevation-3 duration-200 focus:outline-none sm:p-6">
-              <div className="mb-5 flex items-center justify-between border-b border-hairline pb-4">
+              <div className="mb-5 flex items-center justify-between pb-4">
                 <h2 className="text-sm font-semibold text-foreground">Create API Key</h2>
                 <button
                   type="button"

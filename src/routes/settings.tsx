@@ -81,8 +81,8 @@ function SettingsPage() {
       />
       <div className="space-y-8 max-w-2xl">
         {/* Profile Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Save className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">Profile</h2>
           </div>
@@ -133,8 +133,8 @@ function SettingsPage() {
         </section>
 
         {/* Password Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Shield className="h-4 w-4 text-warning-fg" />
             <h2 className="text-sm font-medium text-foreground">Password</h2>
           </div>
@@ -235,8 +235,8 @@ function SettingsPage() {
         </section>
 
         {/* API Keys Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Key className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">API Keys</h2>
           </div>
@@ -254,8 +254,8 @@ function SettingsPage() {
         </section>
 
         {/* Notifications Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Bell className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">Notifications</h2>
           </div>
@@ -271,8 +271,8 @@ function SettingsPage() {
         </section>
 
         {/* Appearance Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Moon className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">Appearance</h2>
           </div>
@@ -289,8 +289,8 @@ function SettingsPage() {
         </section>
 
         {/* Timezone Section */}
-        <section className="rounded-xl border border-hairline bg-surface p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-hairline pb-3">
+        <section className="rounded-xl bg-surface p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-3">
             <Globe className="h-4 w-4 text-primary" />
             <h2 className="text-sm font-medium text-foreground">Timezone</h2>
           </div>

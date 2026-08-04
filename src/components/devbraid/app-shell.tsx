@@ -20,6 +20,7 @@ import { useAuth } from '@/context/AuthContext'
 import authService from '@/services/auth.service'
 import { CommandPalette, useCommandPalette } from './command-palette'
 import { ThemeToggle } from './theme-toggle'
+import { AmbientBackground } from './ambient-background'
 
 const navGroups = [
   {
@@ -98,10 +99,13 @@ export function AppShell({ children }: AppShellProps) {
   const crumbs = crumbsFor(pathname)
 
   return (
-    <div className="flex h-dvh bg-background text-foreground">
+    <div className="relative flex h-dvh text-foreground">
+      {/* Ambient backdrop — liquid in dark, soft gradient in light */}
+      <AmbientBackground />
+
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-hairline bg-background lg:flex">
-        <div className="flex h-14 items-center gap-2.5 border-b border-hairline px-5">
+      <aside className="relative hidden w-64 shrink-0 flex-col bg-background lg:flex">
+        <div className="flex h-14 items-center gap-2.5 px-5">
           <div className="grid size-6 place-items-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
             DB
           </div>
@@ -144,7 +148,7 @@ export function AppShell({ children }: AppShellProps) {
         </nav>
 
         {/* User section */}
-        <div className="border-t border-hairline p-3">
+        <div className="p-3">
           <div className="flex items-center gap-3 rounded-md px-2 py-1.5">
             <div className="grid size-7 place-items-center rounded-full border border-hairline bg-surface text-[10px] font-semibold uppercase">
               {userInitials}
@@ -187,11 +191,11 @@ export function AppShell({ children }: AppShellProps) {
         />
         <aside
           className={cn(
-            'absolute left-0 top-0 flex h-dvh w-72 max-w-[85vw] flex-col border-r border-hairline bg-background shadow-2xl transition-transform',
+            'absolute left-0 top-0 flex h-dvh w-72 max-w-[85vw] flex-col bg-background shadow-2xl transition-transform',
             navOpen ? 'translate-x-0' : '-translate-x-full',
           )}
         >
-          <div className="flex h-14 items-center gap-2.5 border-b border-hairline px-5">
+          <div className="flex h-14 items-center gap-2.5 px-5">
             <div className="grid size-6 place-items-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
               DB
             </div>
@@ -240,7 +244,7 @@ export function AppShell({ children }: AppShellProps) {
       {/* Main content */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hairline bg-background/85 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-3 bg-background/85 px-4 backdrop-blur sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <button
               type="button"
