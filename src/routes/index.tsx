@@ -9,16 +9,13 @@ import {
   Quote,
   ShieldAlert,
   Sparkles,
-  Zap,
 } from 'lucide-react'
+import { useState } from 'react'
 import { useSmoothScroll } from '@/hooks/use-motion'
 import { Eyebrow, Reveal, SectionHeading } from '@/components/marketing/primitives'
 import { SiteFooter, SiteHeader } from '@/components/marketing/site-chrome'
-import { LifecycleFlow } from '@/components/marketing/lifecycle-flow'
 import { CtaBanner, NewsletterRow } from '@/components/marketing/cta-banner'
 import { IsometricHero } from '@/components/marketing/isometric-hero'
-import { IsometricProblem } from '@/components/marketing/isometric-problem'
-import { IsometricDocs } from '@/components/marketing/isometric-docs'
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -78,11 +75,26 @@ const features = [
   },
 ]
 
-const metrics = [
-  { value: 'Cited', label: 'every claim backed by git commit sha' },
-  { value: 'Scoped', label: 'single branch or pull request mode' },
-  { value: 'Audited', label: 'ai risk analysis flags before review' },
+const faqItems = [
+  {
+    q: 'Does DevBraid read my code?',
+    a: 'DevBraid indexes commit messages, file paths, and diff stats — never file contents. Risk flags surface when auth, migration, or public API surfaces are touched.',
+  },
+  {
+    q: 'How do change briefs get cited?',
+    a: 'Every sentence in a brief carries a citation to a specific commit SHA or file path. Anything the model inferred rather than observed carries an explicit Inference tag.',
+  },
+  {
+    q: 'Can I control which repositories DevBraid accesses?',
+    a: 'Yes. Grant access per repository, revoke at any time. No blanket organisation install. Every access event is auditable.',
+  },
+  {
+    q: 'What does the free tier include?',
+    a: 'All core features — change threads, decision notes, cited briefs, and risk flags. No card required to start.',
+  },
 ]
+
+const logos = ['TypeScript', 'React', 'Next.js', 'Tailwind', 'PostgreSQL', 'Vercel']
 
 function HomePage() {
   useSmoothScroll()
@@ -92,7 +104,7 @@ function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* Hero */}
+        {/* Hero — clipped-gradient headline + product mockup */}
         <section className="relative isolate overflow-hidden px-4 pb-16 pt-28 sm:px-6 sm:pb-24 sm:pt-36">
           <div
             aria-hidden
@@ -147,89 +159,26 @@ function HomePage() {
               <IsometricHero className="w-full max-w-[420px] mx-auto" />
             </Reveal>
           </div>
+        </section>
 
-          {/* Metric strip */}
-          <Reveal delay={200} className="mx-auto mt-16 max-w-6xl">
-            <dl className="grid grid-cols-1 divide-y divide-hairline rounded-xl border border-hairline bg-surface/40 backdrop-blur sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {metrics.map((m) => (
-                <div key={m.label} className="px-6 py-5">
-                  <dt className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {m.label}
-                  </dt>
-                  <dd className="mt-1.5 text-2xl font-semibold tracking-tight text-foreground">
-                    {m.value}
-                  </dd>
-                </div>
+        {/* Logos strip */}
+        <Reveal className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="flex items-center gap-8 overflow-hidden border-t border-b border-hairline py-6">
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Built with
+            </span>
+            <div className="flex flex-1 items-center justify-around gap-6 opacity-50 grayscale">
+              {logos.map((name) => (
+                <span
+                  key={name}
+                  className="shrink-0 font-mono text-[11px] uppercase tracking-wider text-muted-foreground"
+                >
+                  {name}
+                </span>
               ))}
-            </dl>
-          </Reveal>
-
-          <Reveal delay={260} className="mx-auto mt-10 max-w-6xl">
-            <div className="flex items-center gap-3">
-              <Zap className="size-3.5 shrink-0 text-primary" />
-              <div className="flex-1 overflow-hidden">
-                <div className="marquee flex gap-8 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                  <span>change threads</span>
-                  <span>decision notes</span>
-                  <span>cited briefs</span>
-                  <span>risk flags</span>
-                  <span>github evidence</span>
-                  <span>keyboard first</span>
-                  <span>audit trail</span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* Problem */}
-        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
-            <Reveal>
-              <IsometricProblem className="w-full max-w-[400px] mx-auto" />
-            </Reveal>
-            <div>
-              <SectionHeading
-                eyebrow="the problem"
-                title="The diff survives. The reasoning doesn't."
-                body="A reviewer opens 40 changed files and a one-line description. The two approaches you tried and abandoned, the migration ordering constraint, the reason that abstraction exists — all of it lived in your head, a Slack thread, and a call nobody recorded."
-              />
-              <Reveal delay={120} className="mt-6 space-y-2.5">
-                {[
-                  'Reviewers reconstruct intent from diffs, badly.',
-                  'The same question gets asked on every PR.',
-                  'Six months later, nobody remembers why.',
-                ].map((line) => (
-                  <div
-                    key={line}
-                    className="flex items-start gap-3 rounded-lg border border-danger-border bg-danger-bg px-4 py-3"
-                  >
-                    <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-danger" />
-                    <p className="text-sm text-foreground/85">{line}</p>
-                  </div>
-                ))}
-              </Reveal>
             </div>
           </div>
-        </section>
-
-        {/* Lifecycle flow */}
-        <section
-          id="flow"
-          className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
-        >
-          <div className="mx-auto max-w-6xl">
-            <SectionHeading
-              align="center"
-              eyebrow="the full cycle"
-              title="Six steps from first commit to confident merge."
-              body="Scroll the loop. DevBraid sits alongside the way your team already works — it only asks for the thirty seconds of reasoning that everyone else needs later."
-            />
-            <div className="mt-16 sm:mt-20">
-              <LifecycleFlow />
-            </div>
-          </div>
-        </section>
+        </Reveal>
 
         {/* Features */}
         <section
@@ -265,53 +214,48 @@ function HomePage() {
           id="docs"
           className="scroll-mt-20 border-t border-hairline px-4 py-20 sm:px-6 sm:py-28"
         >
-          <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
-            <div>
-              <SectionHeading
-                eyebrow="documentation"
-                title="Docs that answer 'why', not just 'what'."
-                body="A change brief is readable in ninety seconds and auditable forever. Citations link straight to the commit or file that backs the sentence, and anything the model reasoned rather than observed carries an Inference tag."
-              />
-              <Reveal delay={120} className="mt-6 space-y-3">
-                <div className="rounded-lg border border-hairline bg-surface/50 p-4">
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    brief excerpt
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/90">
-                    Session tokens now rotate on refresh
-                    <span className="mx-0.5 inline-flex items-baseline gap-1 rounded border border-hairline bg-surface px-1.5 py-0.5 align-middle font-mono text-[10px] leading-none text-muted-foreground">
-                      <span className="text-primary/80">c:</span>
-                      <span className="text-foreground/90">a91f4c2</span>
-                    </span>
-                    , which invalidates any client caching the old token
-                    <span className="ml-1 inline-flex items-center rounded-full border border-primary/25 bg-primary/10 px-1.5 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-wider text-primary">
-                      Inference
-                    </span>
-                  </p>
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="documentation"
+              title="Docs that answer 'why', not just 'what'."
+              body="A change brief is readable in ninety seconds and auditable forever. Citations link straight to the commit or file that backs the sentence, and anything the model reasoned rather than observed carries an Inference tag."
+            />
+            <Reveal delay={120} className="mt-8">
+              <div className="rounded-lg border border-hairline bg-surface/50 p-4">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  brief excerpt
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {['Rollout notes', 'Risk summary', 'Open questions', 'Reviewer checklist'].map(
-                    (t) => (
-                      <span
-                        key={t}
-                        className="rounded border border-hairline bg-surface px-2 py-1 text-[11px] text-muted-foreground"
-                      >
-                        {t}
-                      </span>
-                    ),
-                  )}
-                </div>
-                <Link
-                  to="/briefs"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                >
-                  <BookOpen className="size-4" />
-                  Read a full change brief
-                </Link>
-              </Reveal>
-            </div>
-            <Reveal delay={80}>
-              <IsometricDocs className="w-full max-w-[400px] mx-auto" />
+                <p className="mt-2 text-sm leading-relaxed text-foreground/90">
+                  Session tokens now rotate on refresh
+                  <span className="mx-0.5 inline-flex items-baseline gap-1 rounded border border-hairline bg-surface px-1.5 py-0.5 align-middle font-mono text-[10px] leading-none text-muted-foreground">
+                    <span className="text-primary/80">c:</span>
+                    <span className="text-foreground/90">a91f4c2</span>
+                  </span>
+                  , which invalidates any client caching the old token
+                  <span className="ml-1 inline-flex items-center rounded-full border border-primary/25 bg-primary/10 px-1.5 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-wider text-primary">
+                    Inference
+                  </span>
+                </p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {['Rollout notes', 'Risk summary', 'Open questions', 'Reviewer checklist'].map(
+                  (t) => (
+                    <span
+                      key={t}
+                      className="rounded border border-hairline bg-surface px-2 py-1 text-[11px] text-muted-foreground"
+                    >
+                      {t}
+                    </span>
+                  ),
+                )}
+              </div>
+              <Link
+                to="/briefs"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                <BookOpen className="size-4" />
+                Read a full change brief
+              </Link>
             </Reveal>
           </div>
         </section>
@@ -330,6 +274,18 @@ function HomePage() {
           </Reveal>
         </section>
 
+        {/* FAQ */}
+        <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-3xl">
+            <SectionHeading align="center" eyebrow="questions" title="Frequently asked" />
+            <div className="mt-10 space-y-3">
+              {faqItems.map((item) => (
+                <FaqItem key={item.q} question={item.q} answer={item.a} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* CTA banner + newsletter */}
         <section className="border-t border-hairline px-4 py-20 sm:px-6 sm:py-28">
           <CtaBanner />
@@ -338,6 +294,32 @@ function HomePage() {
       </main>
 
       <SiteFooter />
+    </div>
+  )
+}
+
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="rounded-lg border border-hairline bg-surface/30">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-foreground"
+      >
+        {question}
+        <span
+          className="shrink-0 text-muted-foreground transition-transform duration-200"
+          style={{ transform: open ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
+          +
+        </span>
+      </button>
+      {open && (
+        <div className="border-t border-hairline px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+          {answer}
+        </div>
+      )}
     </div>
   )
 }
