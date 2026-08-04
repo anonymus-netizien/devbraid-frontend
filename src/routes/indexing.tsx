@@ -52,7 +52,7 @@ function IndexStatusBadge({ status }: { status?: string }) {
   )
 }
 
-function StartIndexDialog({ onStarted }: { onStarted: () => void }) {
+export function StartIndexDialog({ onStarted }: { onStarted: () => void }) {
   const [open, setOpen] = useState(false)
   const [repository, setRepository] = useState('')
   const [branch, setBranch] = useState('')
