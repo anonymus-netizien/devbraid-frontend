@@ -52,3 +52,10 @@ pnpm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+# Added by code-review-graph
+.code-review-graph/
+
+# Documentation (keep local, don't version)
+API.md
+docs/ARCHITECTURE.md
+docs/CHANGELOG.md
