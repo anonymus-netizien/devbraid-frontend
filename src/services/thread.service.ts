@@ -18,6 +18,7 @@ import type {
   ThreadEvent,
   PaginatedEvents,
   Snapshot,
+  PrReviewResponse,
 } from '../types/thread'
 
 export const threadService = {
@@ -329,6 +330,34 @@ export const threadService = {
     const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/notes', {
       params: { page, size },
     })
+    return unwrap(response.data)
+  },
+
+  /**
+   * Latest Code-Rabbit-style PR review for a thread (null when none ran yet).
+   */
+  async getReview(threadId: string): Promise<PrReviewResponse | null> {
+    const response = await apiClient.get<ApiResponse<PrReviewResponse | null>>(
+      `/threads/${threadId}/review`,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Manually run (or re-run) a PR review. A COMPLETED review for the same
+   * head SHA is returned unchanged; a FAILED one is retried.
+   */
+  async runReview(
+    threadId: string,
+    prNumber: number,
+    headSha: string,
+    installationId: number,
+  ): Promise<PrReviewResponse> {
+    const response = await apiClient.post<ApiResponse<PrReviewResponse>>(
+      `/threads/${threadId}/review`,
+      null,
+      { params: { prNumber, headSha, installationId } },
+    )
     return unwrap(response.data)
   },
 }

@@ -18,6 +18,7 @@ export const queryKeys = {
   threadEvents: (id: string) => ['threads', id, 'events'] as const,
   threadSnapshots: (id: string) => ['threads', id, 'snapshots'] as const,
   threadBrief: (id: string) => ['threads', id, 'brief'] as const,
+  threadReview: (id: string) => ['threads', id, 'review'] as const,
   briefs: ['briefs'] as const,
   brief: (id: string) => ['briefs', id] as const,
   notes: ['notes'] as const,
@@ -102,6 +103,16 @@ export function useThreadBriefQuery(id: string) {
   return useQuery({
     queryKey: queryKeys.threadBrief(id),
     queryFn: () => threadService.getBrief(id).catch(() => null),
+    enabled: !!id,
+    retry: false,
+  })
+}
+
+/** Latest Code-Rabbit-style PR review for a thread — null when none ran yet. */
+export function useThreadReviewQuery(id: string) {
+  return useQuery({
+    queryKey: queryKeys.threadReview(id),
+    queryFn: () => threadService.getReview(id).catch(() => null),
     enabled: !!id,
     retry: false,
   })
