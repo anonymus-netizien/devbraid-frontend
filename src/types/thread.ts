@@ -97,6 +97,16 @@ export type Snapshot = Schema<'SnapshotResponse'>
 
 export type CreateSnapshotRequest = Schema<'CreateSnapshotRequest'>
 
+export type PrReviewCommentResponse = Schema<'PrReviewCommentResponse'>
+
+export type PrReviewResponse = Schema<'PrReviewResponse'>
+
+export type PrReviewStatus = NonNullable<PrReviewResponse['status']>
+
+export type FindingSeverity = NonNullable<PrReviewCommentResponse['severity']>
+
+export type FindingCategory = NonNullable<PrReviewCommentResponse['category']>
+
 export type FileComment = Schema<'FileCommentResponse'>
 
 export type CreateFileCommentRequest = Schema<'CreateFileCommentRequest'>

@@ -18,6 +18,7 @@ import { StatusDot, BranchPair } from '@/components/devbraid/chips'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
 import { EventsTimeline } from '@/components/devbraid/event-timeline'
 import { SnapshotsPanel } from '@/components/devbraid/snapshots-panel'
+import { ReviewPanel } from '@/components/devbraid/review-panel'
 import { EditThreadDialog } from '@/components/devbraid/edit-thread-dialog'
 import { threadService } from '../services/thread.service'
 import {
@@ -28,6 +29,7 @@ import {
   useThreadCommentsQuery,
   useThreadEventsQuery,
   useThreadSnapshotsQuery,
+  useThreadReviewQuery,
 } from '@/hooks/queries'
 import type { ChangeThread, NoteResponse, NoteContext, FileComment } from '../types/thread'
 
@@ -45,6 +47,7 @@ function ThreadDetailPage() {
   const { data: events = [] } = useThreadEventsQuery(id)
   const { data: snapshots = [] } = useThreadSnapshotsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
+  const { data: review, isLoading: reviewLoading } = useThreadReviewQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
@@ -321,6 +324,13 @@ function ThreadDetailPage() {
     }
   }
 
+  const handleRunReview = async (prNumber: number, headSha: string, installationId: number) => {
+    setMessage(null)
+    const runReview = await threadService.runReview(id, prNumber, headSha, installationId)
+    queryClient.setQueryData(queryKeys.threadReview(id), runReview)
+    setMessage({ type: 'success', text: 'PR review completed.' })
+  }
+
   if (isLoading) {
     return (
       <div className="py-20 text-center space-y-4">
@@ -558,6 +568,15 @@ function ThreadDetailPage() {
               </p>
             )}
           </section>
+
+          {/* Automated PR Review */}
+          <ReviewPanel
+            review={review ?? null}
+            loading={reviewLoading}
+            defaultPrNumber={prNumberInput}
+            defaultHeadSha={thread.commitSha}
+            onRunReview={handleRunReview}
+          />
 
           {/* Decision Notes */}
           <section className="space-y-4">
