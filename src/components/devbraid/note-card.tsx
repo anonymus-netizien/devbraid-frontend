@@ -86,7 +86,7 @@ export function NoteCard({
               type="text"
               value={editDecision}
               onChange={(e) => setEditDecision(e.target.value)}
-              className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground focus:border-primary/40"
+              className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground focus:border-primary/40"
             />
           </div>
           <div className="space-y-1">

@@ -53,18 +53,12 @@ function BriefsPage() {
           <table className="table">
             <thead>
               <tr>
-                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Brief
-                </th>
-                <th className="hidden sm:table-cell text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <th className="text-sm font-semibold text-muted-foreground">Brief</th>
+                <th className="hidden sm:table-cell text-sm font-semibold text-muted-foreground">
                   Thread
                 </th>
-                <th className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Status
-                </th>
-                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Updated
-                </th>
+                <th className="text-sm font-semibold text-muted-foreground">Status</th>
+                <th className="text-right text-sm font-semibold text-muted-foreground">Updated</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">
@@ -74,24 +68,24 @@ function BriefsPage() {
                     <Link
                       to="/briefs/$id"
                       params={{ id: b.id }}
-                      className="block truncate text-[13px] font-medium hover:text-primary"
+                      className="block truncate text-sm font-medium hover:text-primary"
                     >
                       {b.title || b.threadTitle}
                     </Link>
-                    <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                    <div className="mt-0.5 font-mono text-sm text-muted-foreground">
                       {b.sections?.length || 0} sections
                     </div>
                   </td>
-                  <td className="hidden px-4 py-3 font-mono text-[11px] text-muted-foreground sm:table-cell">
+                  <td className="hidden px-4 py-3 font-mono text-sm text-muted-foreground sm:table-cell">
                     {b.repositoryFullName || '\u2014'}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs capitalize text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5 text-sm capitalize text-muted-foreground">
                       <StatusDot status={b.status?.toLowerCase() || 'draft'} />
                       {b.status?.toLowerCase() || 'draft'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono text-[11px] text-muted-foreground">
+                  <td className="px-4 py-3 text-right font-mono text-sm text-muted-foreground">
                     {b.updatedAt
                       ? new Date(b.updatedAt).toLocaleDateString(undefined, {
                           month: 'short',

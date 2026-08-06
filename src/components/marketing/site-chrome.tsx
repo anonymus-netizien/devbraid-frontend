@@ -10,85 +10,94 @@ const links = [
   { label: 'How it works', href: '#flow' },
 ]
 
+/** N5 — Floating pill. Detached frosted glass chip, centred, scroll-frosted. */
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => setScrolled(window.scrollY > 16)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:px-6">
       <div
         className={cn(
-          'border-b transition-colors duration-300',
-          scrolled
-            ? 'border-hairline bg-background/85 backdrop-blur-xl'
-            : 'border-transparent bg-background/40 backdrop-blur-sm',
+          'mx-auto flex h-12 max-w-[720px] items-center justify-between gap-3 rounded-full border border-hairline px-4 backdrop-blur-xl transition-all duration-300 sm:px-5',
+          scrolled || open
+            ? 'bg-background/85 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.4)]'
+            : 'bg-background/55',
         )}
       >
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-6 place-items-center rounded-md bg-primary text-primary-foreground">
-              <Braces className="size-3.5" />
-            </span>
-            <span className="text-sm font-semibold tracking-tight">DevBraid</span>
+        <Link to="/" className="flex shrink-0 items-center gap-2 py-3 -my-3">
+          <span className="grid size-6 place-items-center rounded-md bg-primary text-primary-foreground">
+            <Braces className="size-3.5" />
+          </span>
+          <span className="text-sm font-semibold tracking-tight text-foreground">DevBraid</span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Site">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="rounded-full px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/auth/login"
+            className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+          >
+            Log in
           </Link>
-
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-surface/60 hover:text-foreground"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <Link
-              to="/auth/login"
-              className="hidden rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-surface/60 sm:inline-flex"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/auth/register"
-              className="inline-flex h-8 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
-            >
-              Start free
-            </Link>
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              className="grid size-8 place-items-center rounded-md border border-hairline bg-surface/60 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground md:hidden"
-            >
-              {open ? <X className="size-4" /> : <Menu className="size-4" />}
-            </button>
-          </div>
+          <Link
+            to="/auth/register"
+            className="inline-flex h-11 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover md:h-9"
+          >
+            Start free
+          </Link>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface hover:text-foreground md:hidden"
+          >
+            {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          </button>
         </div>
       </div>
 
       {open && (
-        <nav className="border-b border-hairline bg-background/95 px-4 py-3 backdrop-blur-xl md:hidden">
+        <nav
+          className="mx-auto mt-2 max-w-[720px] rounded-2xl border border-hairline bg-background/95 p-2 shadow-[0_16px_48px_-24px_rgba(0,0,0,0.45)] backdrop-blur-xl md:hidden"
+          aria-label="Site"
+        >
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+              className="block rounded-xl px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
             >
               {l.label}
             </a>
           ))}
+          <Link
+            to="/auth/login"
+            onClick={() => setOpen(false)}
+            className="mt-1 block rounded-xl border-t border-hairline px-4 py-2.5 text-sm text-foreground"
+          >
+            Log in
+          </Link>
         </nav>
       )}
     </header>
@@ -135,6 +144,7 @@ const socialLinks = [
   { icon: <Linkedin size={18} />, label: 'LinkedIn', href: '#' },
 ]
 
+/** Previous footer — brand block, link columns, giant DevBraid wordmark. */
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden rounded-3xl border border-hairline bg-surface/40 lg:m-8 lg:p-0">

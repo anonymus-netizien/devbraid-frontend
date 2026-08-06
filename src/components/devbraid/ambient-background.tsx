@@ -1,7 +1,6 @@
 'use client'
 
 import { useSyncExternalStore } from 'react'
-import { LiquidChrome } from '@/components/marketing/liquid-chrome'
 
 function subscribeIsDark(onChange: () => void) {
   const observer = new MutationObserver(onChange)
@@ -14,42 +13,13 @@ function getIsDark(): boolean {
   return document.documentElement.classList.contains('dark')
 }
 
-function subscribeReducedMotion(onChange: () => void) {
-  const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-  mq.addEventListener('change', onChange)
-  return () => mq.removeEventListener('change', onChange)
-}
-
-function getReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
 /**
  * Full-viewport ambient backdrop for the workbench.
- * Dark theme: subtle LiquidChrome liquid (graphite base, calm drift).
- * Light theme: static soft gradient. Reduced motion: static in both.
+ * Dark theme: graphite base with a soft gold wash (rebrand accent).
+ * Light theme: soft gold radial over background. Static in both.
  */
 export function AmbientBackground() {
   const isDark = useSyncExternalStore(subscribeIsDark, getIsDark, () => true)
-  const reducedMotion = useSyncExternalStore(subscribeReducedMotion, getReducedMotion, () => false)
-
-  if (isDark && !reducedMotion) {
-    return (
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <LiquidChrome
-          baseColor={[0.0157, 0.0196, 0.102]}
-          speed={0.25}
-          amplitude={0.35}
-          frequencyX={2.5}
-          frequencyY={1.5}
-          interactive={false}
-          className="h-full w-full opacity-70"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-transparent to-background/70" />
-      </div>
-    )
-  }
 
   return (
     <div
@@ -57,7 +27,7 @@ export function AmbientBackground() {
       className="pointer-events-none fixed inset-0 -z-10 bg-background"
       style={{
         backgroundImage: isDark
-          ? undefined
+          ? 'radial-gradient(100% 55% at 50% -5%, #FBBF241A 0%, transparent 60%), radial-gradient(70% 45% at 50% 108%, #FBBF240F 0%, transparent 60%)'
           : 'radial-gradient(120% 100% at 50% 0%, #FBBF2414 0%, transparent 60%)',
       }}
     />

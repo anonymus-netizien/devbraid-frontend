@@ -113,7 +113,7 @@ function DashboardPage() {
               Connect your Personal Access Token to inspect repositories and post PR briefs.
             </p>
           </div>
-          <Link to="/connections" search={{}} className="btn btn-soft btn-sm text-background">
+          <Link to="/connections" search={{}} className="btn btn-soft btn-md text-background">
             Connect PAT →
           </Link>
         </div>
@@ -124,7 +124,7 @@ function DashboardPage() {
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
         actions={
-          <Link to="/threads" className="btn btn-primary btn-sm">
+          <Link to="/threads" className="btn btn-primary btn-md">
             <Plus className="size-3.5" /> New thread
           </Link>
         }

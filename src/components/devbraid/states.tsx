@@ -37,7 +37,7 @@ export function LoadingRows({ rows = 5 }: { rows?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} className="h-9 w-full rounded-md" style={{ opacity: 1 - i * 0.12 }} />
+        <Skeleton key={i} className="h-10 w-full rounded-md" style={{ opacity: 1 - i * 0.12 }} />
       ))}
     </div>
   )

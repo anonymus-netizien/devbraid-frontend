@@ -15,6 +15,8 @@ import {
 } from 'lucide-react'
 import { PageHeader, EmptyState } from '@/components/devbraid/states'
 import { StatusDot, BranchPair } from '@/components/devbraid/chips'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Markdown } from '@/components/devbraid/markdown'
 import { FileChangesPanel, CommitsList } from '@/components/devbraid/evidence-panels'
 import { EventsTimeline } from '@/components/devbraid/event-timeline'
 import { SnapshotsPanel } from '@/components/devbraid/snapshots-panel'
@@ -39,11 +41,11 @@ function ThreadDetailPage() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { data: thread, isLoading } = useThreadQuery(id)
-  const { data: notes = [] } = useThreadNotesQuery(id)
-  const { data: comments = [] } = useThreadCommentsQuery(id)
-  const { data: events = [] } = useThreadEventsQuery(id)
-  const { data: snapshots = [] } = useThreadSnapshotsQuery(id)
+  const { data: thread, isLoading: threadLoading } = useThreadQuery(id)
+  const { data: notes = [], isLoading: notesLoading } = useThreadNotesQuery(id)
+  const { data: comments = [], isLoading: commentsLoading } = useThreadCommentsQuery(id)
+  const { data: events = [], isLoading: eventsLoading } = useThreadEventsQuery(id)
+  const { data: snapshots = [], isLoading: snapshotsLoading } = useThreadSnapshotsQuery(id)
   const { data: brief } = useThreadBriefQuery(id)
   const [refreshing, setRefreshing] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -321,11 +323,33 @@ function ThreadDetailPage() {
     }
   }
 
+  const isLoading =
+    threadLoading || notesLoading || commentsLoading || eventsLoading || snapshotsLoading
+
   if (isLoading) {
     return (
-      <div className="py-20 text-center space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-        <p className="text-sm text-muted-foreground">Loading Change Thread...</p>
+      <div className="space-y-6">
+        <div className="mb-8 space-y-2">
+          <Skeleton className="h-3 w-32" />
+          <Skeleton className="h-7 w-2/3 max-w-md" />
+        </div>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 rounded-xl" />
+          ))}
+        </div>
+        <div className="flex gap-8">
+          <div className="min-w-0 flex-1 space-y-8">
+            <Skeleton className="h-40 rounded-xl" />
+            <Skeleton className="h-28 rounded-xl" />
+            <Skeleton className="h-40 rounded-xl" />
+          </div>
+          <div className="hidden w-80 shrink-0 space-y-6 md:block">
+            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-40 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+          </div>
+        </div>
       </div>
     )
   }
@@ -857,9 +881,10 @@ function ThreadDetailPage() {
                   </span>
                 )}
               </div>
-              <div className="prose prose-invert max-w-none text-xs text-foreground space-y-2 whitespace-pre-line font-mono bg-surface-2 p-4 rounded-lg break-words [overflow-wrap:anywhere] max-h-[32rem] overflow-y-auto">
-                {brief.content}
-              </div>
+              <Markdown
+                content={brief.content ?? ''}
+                className="max-h-[32rem] overflow-y-auto bg-surface-2 p-4 rounded-lg"
+              />
             </section>
           )}
         </div>

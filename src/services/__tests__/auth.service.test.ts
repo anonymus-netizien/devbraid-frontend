@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { clearTokens } from '../../api/token'
+import { clearTokens, setAccessToken } from '../../api/token'
 
 const { mockAxiosInstance } = vi.hoisted(() => ({
   mockAxiosInstance: {
@@ -18,7 +18,7 @@ vi.mock('../../api/axios', () => ({
 }))
 
 import authService from '../auth.service'
-import { getAccessToken, getRefreshToken, setRefreshToken } from '../../api/token'
+import { getAccessToken } from '../../api/token'
 
 describe('authService', () => {
   beforeEach(() => {
@@ -27,14 +27,14 @@ describe('authService', () => {
   })
 
   describe('login()', () => {
-    it('stores accessToken and refreshToken in the token store on login', async () => {
+    it('stores the access token on login (refresh token arrives as httpOnly cookie)', async () => {
       const mockLoginResponse = {
         data: {
           success: true,
           message: 'Login successful',
           data: {
             accessToken: 'mock_access_token_123',
-            refreshToken: 'mock_refresh_token_456',
+            refreshToken: null,
             fullName: 'Alex Vane',
             email: 'alex@acme.com',
           },
@@ -49,7 +49,6 @@ describe('authService', () => {
         password: 'password123',
       })
       expect(getAccessToken()).toBe('mock_access_token_123')
-      expect(getRefreshToken()).toBe('mock_refresh_token_456')
       expect(result.accessToken).toBe('mock_access_token_123')
     })
   })
@@ -93,34 +92,33 @@ describe('authService', () => {
   })
 
   describe('refresh()', () => {
-    it('sends refreshToken and updates the token store', async () => {
-      setRefreshToken('old_refresh_token')
+    it('calls /auth/refresh with an empty body (refresh token is in the httpOnly cookie) and updates the access token', async () => {
+      setAccessToken('old_access_token')
 
       ;(mockAxiosInstance.post as any).mockResolvedValue({
         data: {
           success: true,
           message: 'Refreshed',
-          data: { accessToken: 'new_access_token', refreshToken: 'new_refresh_token' },
+          data: { accessToken: 'new_access_token', refreshToken: null },
         },
       })
 
       await authService.refresh()
 
-      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh', {
-        refreshToken: 'old_refresh_token',
-      })
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh', {})
       expect(getAccessToken()).toBe('new_access_token')
-      expect(getRefreshToken()).toBe('new_refresh_token')
     })
 
-    it('throws when no refresh token is available', async () => {
-      await expect(authService.refresh()).rejects.toThrow('No refresh token available')
+    it('throws when the refresh request fails', async () => {
+      ;(mockAxiosInstance.post as any).mockRejectedValue(new Error('401 Unauthorized'))
+
+      await expect(authService.refresh()).rejects.toThrow('401 Unauthorized')
     })
   })
 
   describe('logout()', () => {
-    it('clears tokens from the store', async () => {
-      setRefreshToken('test_refresh')
+    it('posts to /auth/logout and clears tokens from the store', async () => {
+      setAccessToken('test_access')
 
       ;(mockAxiosInstance.post as any).mockResolvedValue({
         data: { success: true, message: 'Logged out' },
@@ -128,17 +126,17 @@ describe('authService', () => {
 
       await authService.logout()
 
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/logout', {})
       expect(getAccessToken()).toBeNull()
-      expect(getRefreshToken()).toBeNull()
     })
 
     it('clears tokens even if the logout request fails', async () => {
+      setAccessToken('test_access')
       ;(mockAxiosInstance.post as any).mockRejectedValue(new Error('network down'))
 
       await authService.logout()
 
       expect(getAccessToken()).toBeNull()
-      expect(getRefreshToken()).toBeNull()
     })
   })
 })

@@ -91,11 +91,11 @@ function ThreadsPage() {
               type="button"
               onClick={() => refetch()}
               disabled={isLoading}
-              className="btn btn-ghost btn-sm"
+              className="btn btn-ghost btn-md"
             >
               Refresh
             </button>
-            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-md">
               <Plus className="size-3.5" /> New thread
             </button>
           </div>
@@ -123,7 +123,7 @@ function ThreadsPage() {
             <select
               value={repoFilter}
               onChange={(e) => setRepoFilter(e.target.value)}
-              className="input input-sm w-auto max-w-40 text-xs text-foreground border border-hairline bg-surface/60 pr-7"
+              className="input input-md w-auto max-w-40 text-xs text-foreground border border-hairline bg-surface/60 pr-7"
               title="Filter by repository"
             >
               <option value="all">All repos</option>
@@ -141,7 +141,7 @@ function ThreadsPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={isSearching ? 'Searching\u2026' : 'Search threads\u2026'}
-              className="input input-sm w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
+              className="input input-md w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
             />
           </div>
         </div>
@@ -160,7 +160,7 @@ function ThreadsPage() {
           title="No change threads match"
           description="Adjust your filters, or start a new thread."
           action={
-            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-md">
               New thread
             </button>
           }

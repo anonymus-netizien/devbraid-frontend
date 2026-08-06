@@ -1,11 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import {
-  getAccessToken,
-  setAccessToken,
-  getRefreshToken,
-  setRefreshToken,
-  clearTokens,
-} from './token'
+import { getAccessToken, setAccessToken, clearTokens } from './token'
 import type { LoginResponseData } from '../types/auth'
 import type { ApiResponse } from '../types/api'
 
@@ -16,6 +10,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 })
 
 // Request interceptor: attach access token
@@ -51,28 +46,21 @@ apiClient.interceptors.response.use(
     ) {
       originalRequest._retry = true
 
-      const refreshToken = getRefreshToken()
-      if (!refreshToken) {
-        clearTokens()
-        window.location.href = '/auth/login?expired=true'
-        return Promise.reject(error)
-      }
-
       try {
         const response = await axios.post<ApiResponse<LoginResponseData>>(
           `${API_BASE_URL}/auth/refresh`,
-          { refreshToken },
+          {},
+          { withCredentials: true },
         )
 
         const apiData = response.data
         if (apiData.success && apiData.data?.accessToken) {
-          setAccessToken(apiData.data.accessToken ?? null)
-          setRefreshToken(apiData.data.refreshToken ?? null)
+          setAccessToken(apiData.data.accessToken)
 
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${apiData.data.accessToken}`
           }
-          return apiClient(originalRequest)
+          return apiClient.request(originalRequest)
         }
       } catch (refreshError) {
         clearTokens()

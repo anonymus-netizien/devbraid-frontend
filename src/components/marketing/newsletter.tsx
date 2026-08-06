@@ -13,16 +13,11 @@ export function NewsletterSection() {
     <section className="relative isolate overflow-hidden bg-background px-4 py-16 sm:px-6 sm:py-24">
       <div
         aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            'linear-gradient(135deg, color-mix(in oklab, var(--info) 20%, transparent), color-mix(in oklab, var(--neutral-accent) 12%, transparent) 60%, color-mix(in oklab, var(--primary) 8%, transparent) 100%)',
-        }}
+        className="absolute inset-0 -z-10 bg-gradient-to-br from-info/10 via-neutral-accent/5 to-primary/5"
       />
       <div
         aria-hidden
-        className="absolute -top-40 right-0 -z-10 h-[28rem] w-[28rem] rounded-full blur-3xl"
-        style={{ background: 'color-mix(in oklab, var(--info) 18%, transparent)' }}
+        className="absolute -top-40 right-0 -z-10 h-[28rem] w-[28rem] rounded-full bg-info/10 blur-3xl"
       />
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal className="flex flex-col items-start">
@@ -30,8 +25,8 @@ export function NewsletterSection() {
             Be the first to know when we launch
           </h2>
           <p className="mt-4 max-w-[46ch] text-pretty text-base leading-relaxed text-muted-foreground md:mt-6 md:text-lg">
-            We&apos;re still building. Subscribe for updates and 20% off when we launch. No spam, we
-            promise!
+            We&apos;re still building. Subscribe for updates and 20% off when we launch — one email
+            per milestone, no noise.
           </p>
 
           <form
@@ -52,11 +47,11 @@ export function NewsletterSection() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               aria-label="Email address"
-              className="h-11 border-hairline bg-surface px-3.5 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-primary/30"
+              className="h-11 border-hairline bg-surface px-3.5 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-primary/30 sm:h-10"
             />
             <Button
               type="submit"
-              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-[var(--elevation-2)] transition-colors duration-150 hover:bg-primary-hover active:scale-[0.98]"
+              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors duration-150 hover:bg-primary-hover active:scale-[0.98] sm:h-10"
             >
               Subscribe
               <ArrowRight className="size-3.5" />
@@ -72,60 +67,56 @@ export function NewsletterSection() {
           </p>
         </Reveal>
 
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-          <div className="relative mx-auto aspect-[9/19] max-w-[280px] rounded-[2.4rem] border-4 border-hairline bg-surface p-3 shadow-[0_40px_80px_-24px_rgba(0,0,0,0.5)]">
-            <div className="mx-auto mb-3 h-1.5 w-20 rounded-full bg-hairline" />
-            <div className="space-y-3">
-              <div className="rounded-lg border border-hairline bg-surface p-3">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-                    <GitPullRequest className="size-3 text-primary" />
-                    change thread
-                  </span>
-                  <span className="flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-primary">
-                    <Sparkles className="size-2.5" />
-                    Inference
-                  </span>
-                </div>
-                <p className="mt-2 text-[11px] font-medium leading-snug text-foreground">
-                  Session tokens now rotate on refresh
-                </p>
-                <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
-                  Replaced the long-lived cookie with a rotating pair&hellip;
-                </p>
-                <div className="mt-2 font-mono text-[9px] text-muted-foreground">
-                  <span className="text-primary">c:</span> a1b2c3d
-                </div>
+        <Reveal delay={120} className="mx-auto w-full max-w-sm lg:max-w-none">
+          <div className="space-y-3">
+            <div className="rounded-lg border border-hairline bg-surface p-4">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <GitPullRequest className="size-3 text-primary" />
+                  change thread
+                </span>
+                <span className="flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
+                  <Sparkles className="size-2.5" />
+                  Inference
+                </span>
               </div>
-
-              <div className="rounded-lg border border-hairline bg-surface p-3">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-                    <FileText className="size-3 text-primary" />
-                    decision note
-                  </span>
-                  <span className="rounded-full border border-hairline bg-background px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    cited
-                  </span>
-                </div>
-                <p className="mt-2 text-[11px] font-medium leading-snug text-foreground">
-                  Why not refresh tokens? Reuse requires a server-side store we can&apos;t audit
-                  yet.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-danger-border bg-danger-bg p-3">
-                <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-danger">
-                  <ShieldAlert className="size-3" />
-                  risk flag · auth
-                </div>
-                <p className="mt-1 text-[10px] leading-snug text-foreground/90">
-                  Token issuance path touched &mdash; verify rotation invalidation.
-                </p>
+              <p className="mt-2.5 text-sm font-medium leading-snug text-foreground">
+                Session tokens now rotate on refresh
+              </p>
+              <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+                Replaced the long-lived cookie with a rotating pair&hellip;
+              </p>
+              <div className="mt-2.5 font-mono text-[11px] text-muted-foreground">
+                <span className="text-primary">c:</span> a1b2c3d
               </div>
             </div>
+
+            <div className="rounded-lg border border-hairline bg-surface p-4">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <FileText className="size-3 text-primary" />
+                  decision note
+                </span>
+                <span className="rounded-full border border-hairline bg-background px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  cited
+                </span>
+              </div>
+              <p className="mt-2.5 text-sm font-medium leading-snug text-foreground">
+                Why not refresh tokens? Reuse requires a server-side store we can&apos;t audit yet.
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-danger-border bg-danger-bg p-4">
+              <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-danger">
+                <ShieldAlert className="size-3" />
+                risk flag · auth
+              </div>
+              <p className="mt-1.5 text-[13px] leading-snug text-foreground/90">
+                Token issuance path touched &mdash; verify rotation invalidation.
+              </p>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   )

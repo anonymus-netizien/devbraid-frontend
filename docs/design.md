@@ -1,87 +1,177 @@
 # Design — DevBraid
 
-Locked design system. Future Hallmark runs read this file first; pages defer
-to it. Amend intentionally — the file is the rule.
+Canonical design system: **DevBraid Design System v1.0** (locked 2026-08-05).
 
-Primary DNA extracted from https://www.launchuicomponents.com/ (public
-reference for DevBraid's own brand, 2026-08-04) via `hallmark study` URL
-mode. Secondary axes from https://blink.daisyui.com/ (motion, micro-label
-discipline, marquee hero option). Tokens exact; fonts exact; rhythm unknown
-(URL mode).
+Future Hallmark runs and design work read this file first; pages and components
+defer to it. Amend intentionally — the file is the rule.
 
-## System
-- Genre · modern-minimal (developer tool, B2B)
-- Macrostructure · Centered-Screenshot Hero: badge → clipped-gradient H1 →
-  CTAs → product screenshot (light/dark) → logos strip → features/bento →
-  FAQ → CTA panel → footer newsletter join
-- Theme · studied-DNA (primary: launchuicomponents.com; secondary:
-  blink.daisyui.com)
-- Axes · dark near-black (L 3 %) + light cool variant / single grotesque
-  display (Inter) / ember-amber accent
+---
 
-## Tokens (canonical · `tokens.css` is the source of truth)
-```css
-:root {
-  /* dark (data-theme="dark" is the cinematic identity; light follows) */
-  --color-paper:      oklch(3% .002 262);        /* #09090b, near-black */
-  --color-paper-2:    oklch(14% .006 262);       /* card elevation */
-  --color-paper-3:    oklch(20% .008 262);       /* raised / hover */
-  --color-ink:        oklch(96% .01 260);        /* primary text */
-  --color-ink-2:      oklch(72% .02 260);        /* muted body */
-  --color-rule:       oklch(26% .015 260);       /* hairline borders, line-width 0 */
-  --color-accent:     #fb923c;                   /* ember-foreground: amber-400 */
-  --color-accent-ink: #e9680c;                   /* light-mode ember; dark uses lighter #fdba72 */
-  --color-secondary:  oklch(60% .126 221.723);   /* cyan-blue — rare, tech accents (Blink axis) */
-  --color-focus:      #fb923c;
+# Design System v1.0
 
-  --font-display: "Inter", "Geist", system-ui, sans-serif;
-  --font-body:    "Inter", "Geist", system-ui, sans-serif;
-  --font-mono:    "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+## Design Philosophy
 
-  /* 4-pt spacing scale, named: --space-3xs … --space-4xl. See tokens.css. */
-  /* Type scale, 1.25 (major-third) ratio: --text-xs … --text-display.    */
+DevBraid is not another AI chatbot. It is an engineering workspace.
 
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-fast: 180ms;  --dur-base: 240ms;  --dur-slow: 320ms;
+Every design decision should reinforce:
 
-  --radius-card: .5rem;  --radius-large: 1rem;  --radius-input: .25rem;
-}
-```
+- Trust
+- Clarity
+- Evidence
+- Documentation
+- Engineering quality
+
+The UI should feel closer to reading an engineering design document than
+browsing a marketing website.
+
+Primary inspirations: ASCII Magic, Raycast, Linear, Vercel, GitHub, Cursor,
+OpenCode.
+
+## Design Principles
+
+- **Calm Interface** — no unnecessary visual noise; the interface disappears behind the work.
+- **Evidence First** — evidence is the product; it always receives stronger visual hierarchy than AI-generated text.
+- **Readability Over Decoration** — typography is the primary visual language; whitespace over borders; hierarchy over colors.
+- **Engineering Feel** — the product resembles an IDE mixed with GitHub documentation; never a generic AI SaaS dashboard.
+
+## Typography
+
+### Fonts
+- **Primary:** Inter Variable (400/500/600/700/800/900) — body, navigation, cards, forms, buttons, documentation.
+- **Code:** JetBrains Mono (14px/500) — commit IDs, branch names, file paths, evidence IDs, stack traces, JSON, API payloads. Never use monospace for paragraphs.
+
+### Scale
+| Token | Size | Weight | Notes |
+|-------|------|--------|-------|
+| Hero | 72px | 900 | letter-spacing -0.06em |
+| Page Heading | 48px | 800 | |
+| Section | 36px | 700 | |
+| Card Title | 24px | 700 | |
+| Subheading | 20px | 600 | |
+| Body | 16px | 400 | line-height 1.65 |
+| Caption | 13px | 400 | |
+| Mono | 14px | 500 | |
+
+### Hierarchy
+Hero → Page → Section → Card → Paragraph → Evidence → Metadata
+
+## Layout
+
+- Content width: 1280px max (`--max-content: 80rem`)
+- Documentation: 68ch max (`--measure: 68ch`)
+- Spacing scale: 4/8/12/16/24/32/48/64/96
+- Corner radius: controls 6px, cards 8px, panels 10px
+- Borders: 1px hairline only. Avoid heavy shadows.
+
+## Color
+
+Dark-first. Minimal. One primary accent. No rainbow dashboards. Color
+communicates meaning, never decoration.
+
+### Dark Theme
+| Token | Value |
+|-------|-------|
+| Background | `#09090B` |
+| Surface | `#111113` |
+| Secondary Surface | `#18181B` |
+| Elevated Surface | `#1F1F23` |
+| Border | `rgba(255,255,255,0.08)` |
+| Primary Text | `#FAFAFA` |
+| Secondary Text | `#A1A1AA` |
+| Muted | `#71717A` |
+| Primary Accent | `#A68B3A` |
+| Hover Accent | `#C9A84C` |
+| Focus Ring | `#D4AF37` |
+
+### Light Theme
+| Token | Value |
+|-------|-------|
+| Background | `#FAFAFA` |
+| Surface | `#F4F4F5` |
+| Secondary Surface | `#FFFFFF` |
+| Border | `#E4E4E7` |
+| Primary Text | `#18181B` |
+| Secondary Text | `#52525B` |
+| Muted | `#71717A` |
+| Primary Accent | `#C9A84C` |
+| Hover Accent | `#D9B75D` |
+| Focus Ring | `#B58B22` |
+
+### Semantic Colors
+Success `#22C55E` · Info `#3B82F6` · Warning `#F59E0B` · Error `#EF4444`
+
+### DevBraid-Specific
+- Evidence — Gold `#C9A84C`
+- Inference — Muted Violet `#8B5CF6`
+- Commit — Blue `#3B82F6`
+- Branch — Slate `#64748B`
+- Decision Notes — Emerald `#10B981`
+- Thread — Gold `#A68B3A`
+
+### Risk Levels
+| Level | Background | Border | Text |
+|-------|-----------|--------|------|
+| Critical | `#450A0A` | `#B91C1C` | `#FCA5A5` |
+| High | `#4C1D06` | `#EA580C` | `#FDBA74` |
+| Medium | `#422006` | `#F59E0B` | `#FCD34D` |
+| Low | `#052E16` | `#22C55E` | `#BBF7D0` |
+| Safe | `#022C22` | `#10B981` | `#A7F3D0` |
+
+## Components
+
+### Buttons
+Height 40px · radius 6px · variants: primary (gold), secondary (surface), ghost (transparent), danger (red)
+
+### Cards
+Padding 24px · hairline border · no elevation
+
+### Inputs
+Height 40px · radius 6px · gold focus ring
+
+### Tables
+Header 14px semibold · body 14px regular · mono for IDs
+
+### Navigation
+Sidebar 15px medium · topbar 14px medium
+
+### Markdown
+GitHub-style: H1 40px, H2 32px, H3 24px, paragraph 16px, line-height 1.8, code in JetBrains Mono
+
+## Motion
+
+Minimal. Duration 150–250ms. Use: hover, focus, page transitions, expand/collapse.
+Avoid: bounce, elastic, overshoot, large entrance animations.
+
+## Accessibility
+
+- Minimum WCAG AA contrast
+- Visible keyboard focus
+- 44px touch targets
+- Never rely on color alone
+
+## Things to Avoid
+
+❌ Multiple accent colors · ❌ Large gradients · ❌ Glassmorphism · ❌ Heavy
+shadows · ❌ Rounded pills everywhere · ❌ Neon colors · ❌ Excessive
+animations · ❌ Marketing-style UI
+
+---
+
+## Token Implementation
+
+`src/index.css` is the source of truth. Tailwind v4 `@theme inline` maps tokens
+to utilities. Component markup consumes `bg-surface`, `text-muted-foreground`,
+`border-hairline`, `bg-primary`, `ring-ring`, `text-hero`, `text-page`, etc.
+
+Semantic + risk tokens are registered as `--color-*` utilities: `evidence`,
+`inference`, `commit`, `branch`, `decision-notes`, `thread`,
+`risk-critical/high/medium/low/safe-{bg,border,text}`.
 
 ## Provenance
-- Source mode · URL. Sources · https://www.launchuicomponents.com/ (primary),
-  https://blink.daisyui.com/ (secondary axes).
-- Extracted · 2026-08-04. Attestation · (b) public references for own brand
-  (disclosed during phase planning; carried forward).
-- Confidence · tokens exact, fonts exact, rhythm unknown (URL mode).
-- Note · supersedes the earlier Folio + Blink-only extractions; primary moved
-  from Blink to Launch UI by explicit user choice.
 
-## CTA voice
-- Primary · #fb923c fill, near-black text, .5rem radius, px-5 py-2.5, arrow
-  icon on hover (translate-x)
-- Secondary · outline, hairline rule, same radius, ghost fill
-
-## Motion stance
-- Primitives · mount-reveal gated by `.mounted` class (appear / appear-slide /
-  appear-zoom; animations paused until hydration) · hover/hover-reverse
-  micro-interactions · optional marquee strip · optional orbit ornament ·
-  accordion for FAQ
-- Reduced-motion fallback · ≤150 ms opacity crossfade, no transform, no
-  marquee.
-
-## Notes
-- Do NOT carry over: nothing flagged — both sources are clean (no
-  transition-all, no hover-scale, no bouncy hovers).
-- Carry forward: hairline rules with line-width 0, small .5rem radii with a
-  single 1rem large radius for callout panels, uppercase micro-labels with
-  tracking, badge chips with icon+text, clipped-gradient H1 on dark with
-  drop-shadow, logo strip with greyed monochrome marks.
-- Token regeneration is allowed: per Provenance, values may be re-tuned to
-  DevBraid's brand identity (charcoal-blue + amber) — amber is already the
-  primary accent here; charcoal blue folds into paper/blue-secondary roles.
-
-## Exports
-`tokens.css` (in this project) is the source of truth. For Tailwind v4
-`@theme`, DTCG `tokens.json`, or shadcn/ui CSS variables, ask *"extend
-design.md with Tailwind exports"* — Hallmark will append them.
+- v1.0 authored by the team (2026-08-05) as the single canonical design rule.
+- Supersedes the earlier Launch UI / Blink DNA extraction (URL-mode study of
+  launchuicomponents.com + blink.daisyui.com, 2026-08-04). Launch UI remains a
+  reference for marketing-page structure; v1.0 governs all tokens, type,
+  spacing, motion, and component sizing.
+- Token regeneration allowed only by explicit amendment of this file.

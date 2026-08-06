@@ -124,7 +124,7 @@ export function StartIndexDialog({ onStarted }: { onStarted: () => void }) {
                 value={repository}
                 onChange={(e) => setRepository(e.target.value)}
                 placeholder="owner/repo (e.g. acme/api)"
-                className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
               />
             </div>
             <div className="space-y-1.5">
@@ -134,7 +134,7 @@ export function StartIndexDialog({ onStarted }: { onStarted: () => void }) {
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
                 placeholder="main"
-                className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
               />
             </div>
             <div className="space-y-1.5">
@@ -267,7 +267,7 @@ function IndexDetail({ index }: { index: CodebaseIndex }) {
               value={pattern}
               onChange={(e) => setPattern(e.target.value)}
               placeholder="Search files…"
-              className="input input-sm w-full border border-hairline bg-surface-2/40 py-1 pl-7 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+              className="input input-md w-full border border-hairline bg-surface-2/40 py-1 pl-7 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 import apiClient from '../api/axios'
 import { unwrap } from '../api/envelope'
-import { setAccessToken, setRefreshToken, getRefreshToken, clearTokens } from '../api/token'
+import { setAccessToken, clearTokens } from '../api/token'
 import type {
   LoginRequest,
   LoginResponseData,
@@ -46,7 +46,6 @@ export const authService = {
     const apiData = response.data
     const data = apiData.data
     setAccessToken(data.accessToken ?? null)
-    setRefreshToken(data.refreshToken ?? null)
     return data
   },
 
@@ -72,26 +71,16 @@ export const authService = {
   },
 
   async refresh(): Promise<LoginResponseData> {
-    const refreshToken = getRefreshToken()
-    if (!refreshToken) throw new Error('No refresh token available')
-    const response = await apiClient.post<ApiResponse<LoginResponseData>>('/auth/refresh', {
-      refreshToken,
-    })
+    const response = await apiClient.post<ApiResponse<LoginResponseData>>('/auth/refresh', {})
     const apiData = response.data
     const data = apiData.data
     setAccessToken(data.accessToken ?? null)
-    setRefreshToken(data.refreshToken ?? null)
     return data
   },
 
   async logout(): Promise<void> {
-    const refreshToken = getRefreshToken()
-    if (!refreshToken) {
-      clearTokens()
-      return
-    }
     try {
-      await apiClient.post('/auth/logout', { refreshToken })
+      await apiClient.post('/auth/logout', {})
     } catch {
       // Ignore logout backend errors
     } finally {

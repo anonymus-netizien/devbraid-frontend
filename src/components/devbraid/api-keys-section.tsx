@@ -161,7 +161,7 @@ export function ApiKeysSection() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="CI pipeline"
-                      className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                      className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -173,7 +173,7 @@ export function ApiKeysSection() {
                       value={scopes}
                       onChange={(e) => setScopes(e.target.value)}
                       placeholder="threads:read, briefs:write"
-                      className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                      className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -186,7 +186,7 @@ export function ApiKeysSection() {
                       onChange={(e) => setRateLimit(e.target.value)}
                       placeholder="60"
                       min={1}
-                      className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                      className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
                     />
                   </div>
                   {error && <p className="text-xs text-danger-fg">{error}</p>}

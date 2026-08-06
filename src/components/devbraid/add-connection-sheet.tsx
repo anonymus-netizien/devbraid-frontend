@@ -70,7 +70,7 @@ export function AddConnectionSheet({
               onChange={(e) => setToken(e.target.value)}
               placeholder="ghp_••••••••••••••••••••••••••••••"
               aria-describedby="github-token-hint"
-              className="h-9 w-full rounded-md border border-hairline bg-background px-3 font-mono text-sm outline-none placeholder:text-muted-foreground focus:border-primary/40 focus:ring-1 focus:ring-primary/40"
+              className="h-10 w-full rounded-md border border-hairline bg-background px-3 font-mono text-sm outline-none placeholder:text-muted-foreground focus:border-primary/40 focus:ring-1 focus:ring-primary/40"
               disabled={submitting}
             />
             <p id="github-token-hint" className="text-[11px] text-muted-foreground">

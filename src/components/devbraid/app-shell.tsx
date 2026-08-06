@@ -132,7 +132,7 @@ export function AppShell({ children }: AppShellProps) {
                     key={item.to}
                     to={item.to}
                     className={cn(
-                      'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] transition-colors',
+                      'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[15px] font-medium transition-colors',
                       active
                         ? 'bg-surface text-foreground'
                         : 'text-muted-foreground hover:bg-surface/60 hover:text-foreground',
@@ -224,7 +224,7 @@ export function AppShell({ children }: AppShellProps) {
                       to={item.to}
                       onClick={() => setNavOpen(false)}
                       className={cn(
-                        'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13px] transition-colors',
+                        'flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[15px] font-medium transition-colors',
                         active
                           ? 'bg-surface text-foreground'
                           : 'text-muted-foreground hover:bg-surface/60 hover:text-foreground',
@@ -250,18 +250,18 @@ export function AppShell({ children }: AppShellProps) {
               type="button"
               onClick={() => setNavOpen(true)}
               aria-label="Open navigation"
-              className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface hover:text-foreground lg:hidden"
+              className="grid size-10 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-surface hover:text-foreground lg:hidden"
             >
               <Menu className="size-4" />
             </button>
-            <div className="flex min-w-0 items-center gap-2 text-xs">
+            <div className="flex min-w-0 items-center gap-2 text-sm">
               {crumbs.map((c, i) => (
                 <span key={i} className="flex min-w-0 items-center gap-2">
                   {i > 0 && <span className="text-muted-foreground/60">/</span>}
                   {c.to && i < crumbs.length - 1 ? (
                     <Link
                       to={c.to}
-                      className="truncate text-muted-foreground hover:text-foreground"
+                      className="truncate font-medium text-muted-foreground hover:text-foreground"
                     >
                       {c.label}
                     </Link>
@@ -279,7 +279,7 @@ export function AppShell({ children }: AppShellProps) {
               type="button"
               onClick={() => setPaletteOpen(true)}
               aria-label="Search"
-              className="hidden h-8 items-center gap-2 rounded-md border border-hairline bg-surface/60 px-2.5 text-xs text-muted-foreground transition-colors hover:border-hairline/80 hover:bg-surface sm:inline-flex"
+              className="hidden h-10 items-center gap-2 rounded-md border border-hairline bg-surface/60 px-2.5 text-sm text-muted-foreground transition-colors hover:border-hairline/80 hover:bg-surface sm:inline-flex"
             >
               <Search className="size-3.5" />
               <span>Search or jump to</span>
@@ -291,7 +291,7 @@ export function AppShell({ children }: AppShellProps) {
               type="button"
               onClick={() => setPaletteOpen(true)}
               aria-label="Search"
-              className="grid size-8 place-items-center rounded-md border border-hairline bg-surface/60 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground sm:hidden"
+              className="grid size-10 place-items-center rounded-md border border-hairline bg-surface/60 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground sm:hidden"
             >
               <Search className="size-3.5" />
             </button>

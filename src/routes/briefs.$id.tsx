@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { RefreshCw } from 'lucide-react'
 import { PageHeader } from '@/components/devbraid/states'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Markdown } from '@/components/devbraid/markdown'
 import { useBriefQuery } from '@/hooks/queries'
 
 export const Route = createFileRoute('/briefs/$id')({
@@ -13,9 +14,12 @@ function BriefDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="py-20 text-center space-y-4">
-        <RefreshCw className="h-8 w-8 animate-spin mx-auto text-primary" />
-        <p className="text-sm text-muted-foreground">Loading Brief...</p>
+      <div className="space-y-6">
+        <div className="mb-8 space-y-2">
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-7 w-1/3" />
+        </div>
+        <Skeleton className="h-96 rounded-xl" />
       </div>
     )
   }
@@ -34,9 +38,7 @@ function BriefDetailPage() {
         }
       />
       <div className="rounded-xl bg-surface p-6">
-        <div className="prose prose-invert max-w-none text-sm text-foreground whitespace-pre-wrap font-mono bg-surface-2 p-6 rounded-lg break-words [overflow-wrap:anywhere]">
-          {brief.content}
-        </div>
+        <Markdown content={brief.content ?? ''} className="measure" />
       </div>
     </div>
   )

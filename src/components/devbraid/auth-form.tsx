@@ -34,7 +34,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     <input
       ref={ref}
       className={cn(
-        'h-11 w-full rounded-xl border bg-surface/60 px-4 text-base text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200',
+        'h-10 w-full rounded-md border bg-surface/60 px-4 text-base text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200',
         'focus:border-primary/80 focus:bg-surface focus:ring-2 focus:ring-primary/30',
         invalid
           ? 'border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/20'
@@ -89,7 +89,7 @@ export function SubmitButton({
       {...rest}
       disabled={loading || rest.disabled}
       className={cn(
-        'inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-200',
+        'inline-flex h-10 w-full items-center justify-center gap-2.5 rounded-md bg-primary text-base font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all duration-200',
         'hover:bg-primary/90 hover:shadow-primary/30 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none',
       )}
     >

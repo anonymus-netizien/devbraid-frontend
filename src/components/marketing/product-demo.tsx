@@ -16,7 +16,7 @@ export function ProductDemo() {
   return (
     <Reveal delay={120} className="w-full">
       <GlowPlate className="mx-auto max-w-[560px]">
-        <div className="rounded-2xl border border-hairline bg-surface/70 shadow-[var(--elevation-3)] backdrop-blur-sm">
+        <div className="rounded-2xl border border-hairline bg-surface/70 backdrop-blur-sm">
           {/* Card chrome — header row only, no fake browser frame */}
           <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">

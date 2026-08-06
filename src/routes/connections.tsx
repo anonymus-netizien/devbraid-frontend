@@ -82,7 +82,7 @@ function ConnectionsPage() {
             </p>
           </div>
           {connection && (
-            <Link to="/dashboard" className="btn btn-primary btn-sm shrink-0">
+            <Link to="/dashboard" className="btn btn-primary btn-md shrink-0">
               Continue to Dashboard →
             </Link>
           )}
@@ -95,11 +95,11 @@ function ConnectionsPage() {
         actions={
           <div className="flex items-center gap-2">
             {connection && (
-              <Link to="/dashboard" className="btn btn-ghost btn-sm">
+              <Link to="/dashboard" className="btn btn-ghost btn-md">
                 Go to Dashboard →
               </Link>
             )}
-            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-md">
               + Add connection
             </button>
           </div>
@@ -188,7 +188,7 @@ function ConnectionsPage() {
             <p className="mt-1 text-xs text-muted-foreground">
               Add a Personal Access Token to start creating Change Threads.
             </p>
-            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-sm">
+            <button type="button" onClick={() => setOpen(true)} className="btn btn-primary btn-md">
               Add connection
             </button>
           </div>

@@ -37,15 +37,20 @@ export function SectionHeading({
   body,
   align = 'left',
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   body?: string
   align?: 'left' | 'center'
 }) {
   return (
     <Reveal className={cn('measure', align === 'center' && 'mx-auto text-center')}>
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+      <h2
+        className={cn(
+          'text-balance text-3xl font-bold tracking-tight md:text-4xl',
+          eyebrow && 'mt-3',
+        )}
+      >
         {title}
       </h2>
       {body && (

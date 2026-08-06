@@ -120,7 +120,7 @@ function SettingsPage() {
                 type="button"
                 onClick={handleSaveProfile}
                 disabled={saving || !displayName.trim()}
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary btn-md"
               >
                 {saving && <RefreshCw className="h-3.5 w-3.5 animate-spin" />}
                 <Save className="h-3.5 w-3.5" />
@@ -142,7 +142,7 @@ function SettingsPage() {
             <button
               type="button"
               onClick={() => setShowPasswordForm(true)}
-              className="btn btn-ghost btn-sm"
+              className="btn btn-ghost btn-md"
             >
               Change password
             </button>
