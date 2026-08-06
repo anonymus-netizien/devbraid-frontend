@@ -10,7 +10,7 @@ function RootLayout() {
 
   if (isBare) {
     return (
-      <div className="dark min-h-dvh bg-background text-foreground">
+      <div className="min-h-dvh bg-background text-foreground">
         <AnimatePresence mode="wait">
           <PageTransition key={pathname}>
             <Outlet />

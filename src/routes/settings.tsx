@@ -277,15 +277,15 @@ function SettingsPage() {
             <h2 className="text-sm font-medium text-foreground">Appearance</h2>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-foreground">Dark mode</span>
+            <span className="text-xs text-foreground">Theme</span>
             <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-success-bg text-success-fg">
-              Active
+              Dark
             </span>
           </div>
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xs text-muted-foreground">Light mode</span>
-            <span className="text-[10px] text-muted-foreground">Coming soon</span>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            DevBraid is dark-only — obsidian canvas, bronze accents. One theme to design, build,
+            and maintain.
+          </p>
         </section>
 
         {/* Timezone Section */}

@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
 import authService from '@/services/auth.service'
 import { CommandPalette, useCommandPalette } from './command-palette'
-import { ThemeToggle } from './theme-toggle'
 import { AmbientBackground } from './ambient-background'
 
 const navGroups = [
@@ -161,7 +160,6 @@ export function AppShell({ children }: AppShellProps) {
                 {user?.email || 'Not signed in'}
               </p>
             </div>
-            <ThemeToggle />
             <button
               type="button"
               onClick={handleSignOut}
@@ -274,7 +272,6 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <ThemeToggle />
             <button
               type="button"
               onClick={() => setPaletteOpen(true)}

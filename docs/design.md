@@ -1,13 +1,16 @@
 # Design — DevBraid
 
-Canonical design system: **DevBraid Design System v1.0** (locked 2026-08-05).
+Canonical design system: **DevBraid Design System v2.0 — Bronze Obsidian** (locked 2026-08-06).
 
-Future Hallmark runs and design work read this file first; pages and components
-defer to it. Amend intentionally — the file is the rule.
+Future design work reads this file first; pages and components defer to it. Amend
+intentionally — the file is the rule.
+
+Source: `stitch_devbraid_design_system/bronze_obsidian/DESIGN.md` + the 7 page
+mockups in `stitch_devbraid_design_system/devbraid_*`.
 
 ---
 
-# Design System v1.0
+# Design System v2.0 — Bronze Obsidian
 
 ## Design Philosophy
 
@@ -22,10 +25,8 @@ Every design decision should reinforce:
 - Engineering quality
 
 The UI should feel closer to reading an engineering design document than
-browsing a marketing website.
-
-Primary inspirations: ASCII Magic, Raycast, Linear, Vercel, GitHub, Cursor,
-OpenCode.
+browsing a marketing website — "multi-million-dollar" prestige: authoritative,
+understated, deep obsidian canvas, muted metallic bronze accents.
 
 ## Design Principles
 
@@ -33,114 +34,120 @@ OpenCode.
 - **Evidence First** — evidence is the product; it always receives stronger visual hierarchy than AI-generated text.
 - **Readability Over Decoration** — typography is the primary visual language; whitespace over borders; hierarchy over colors.
 - **Engineering Feel** — the product resembles an IDE mixed with GitHub documentation; never a generic AI SaaS dashboard.
+- **Dark-only** — no light theme is built or planned. One theme to design, build, and maintain.
 
 ## Typography
 
 ### Fonts
-- **Primary:** Inter Variable (400/500/600/700/800/900) — body, navigation, cards, forms, buttons, documentation.
-- **Code:** JetBrains Mono (14px/500) — commit IDs, branch names, file paths, evidence IDs, stack traces, JSON, API payloads. Never use monospace for paragraphs.
+- **Primary:** Inter (400/500/600/700/800/900) — body, navigation, cards, forms, buttons, documentation.
+- **Code:** JetBrains Mono (12–14px/500) — labels, commit hashes, evidence IDs, code blocks, API payloads, file paths. Never use monospace for paragraphs.
 
 ### Scale
 | Token | Size | Weight | Notes |
 |-------|------|--------|-------|
-| Hero | 72px | 900 | letter-spacing -0.06em |
-| Page Heading | 48px | 800 | |
-| Section | 36px | 700 | |
-| Card Title | 24px | 700 | |
-| Subheading | 20px | 600 | |
-| Body | 16px | 400 | line-height 1.65 |
-| Caption | 13px | 400 | |
-| Mono | 14px | 500 | |
+| Display (hero) | 56px | 600 | leading 64px, letter-spacing -0.02em |
+| Display mobile | 36px | 600 | leading 44px |
+| Page Heading | 32px | 500 | leading 40px, letter-spacing -0.01em |
+| Card Title | 18–20px | 600 | |
+| Body | 16px | 400 | leading 24px |
+| Body large | 18px | 400 | leading 28px |
+| Mono label | 12px | 500 | uppercase, letter-spacing 0.05em |
+| Code | 14px | 400 | leading 20px |
 
 ### Hierarchy
-Hero → Page → Section → Card → Paragraph → Evidence → Metadata
+Display → Page Heading → Card Title → Body → Mono label / Code
 
-## Layout
+## Layout & Spacing
 
-- Content width: 1280px max (`--max-content: 80rem`)
-- Documentation: 68ch max (`--measure: 68ch`)
-- Spacing scale: 4/8/12/16/24/32/48/64/96
-- Corner radius: controls 6px, cards 8px, panels 10px
-- Borders: 1px hairline only. Avoid heavy shadows.
+- Content container: 1280px max, 24px gutters, 64px desktop margins / 20px mobile
+- Spacing unit: 8px (8/16/24/32/40/48/64)
+- Corner radius: 8px default (cards, buttons, inputs); 12px on thread/brief cards; 4px on small chips
+- Borders: 1px hairline only — **bronze at 15% opacity** (`rgba(166,141,91,0.15)`), never a heavy border
+- Depth via tonal layering (canvas → surface → elevated), not shadows; outer glow (soft bronze) only for active states / primary buttons
+- Glassmorphism: top bars and floating modals use `backdrop-blur` (24px) over a semi-transparent dark fill
 
-## Color
+## Color — Dark Only
 
-Dark-first. Minimal. One primary accent. No rainbow dashboards. Color
-communicates meaning, never decoration.
+### Surfaces
+| Token | Value | Role |
+|-------|-------|------|
+| Canvas / Background | `#131313` | Page background |
+| Surface (cards) | `#1c1b1b` | Cards, panels, sidebar |
+| Surface-2 | `#201f1f` | Hover fills, active nav bg |
+| Elevated / Popover | `#2a2a2a` | Menus, popovers, chips |
+| Hairline | `rgba(166,141,91,0.15)` | 1px borders only |
 
-### Dark Theme
-| Token | Value |
-|-------|-------|
-| Background | `#09090B` |
-| Surface | `#111113` |
-| Secondary Surface | `#18181B` |
-| Elevated Surface | `#1F1F23` |
-| Border | `rgba(255,255,255,0.08)` |
-| Primary Text | `#FAFAFA` |
-| Secondary Text | `#A1A1AA` |
-| Muted | `#71717A` |
-| Primary Accent | `#A68B3A` |
-| Hover Accent | `#C9A84C` |
-| Focus Ring | `#D4AF37` |
+### Text
+| Token | Value | Role |
+|-------|-------|------|
+| Primary Text (on-surface) | `#e5e2e1` | Headings, primary content |
+| Secondary Text (on-surface-variant) | `#cfc5b6` | Body, secondary content |
+| Muted | `#989082` | Captions, timestamps |
 
-### Light Theme
-| Token | Value |
-|-------|-------|
-| Background | `#FAFAFA` |
-| Surface | `#F4F4F5` |
-| Secondary Surface | `#FFFFFF` |
-| Border | `#E4E4E7` |
-| Primary Text | `#18181B` |
-| Secondary Text | `#52525B` |
-| Muted | `#71717A` |
-| Primary Accent | `#C9A84C` |
-| Hover Accent | `#D9B75D` |
-| Focus Ring | `#B58B22` |
+### Accents
+| Token | Value | Meaning | Use |
+|-------|-------|---------|-----|
+| Primary Bronze (surface-tint) | `#dfc38c` | Brand, verified fact | Primary CTA, links, active nav, evidence chips |
+| Primary hover (primary-fixed) | `#fddfa6` | Hover brightening | Button hover, link hover |
+| Primary container | `#a78d5b` | Muted bronze | Tertiary accents, chip text, secondary borders |
+| On-primary | `#3f2e04` | Text on gold | Button labels on `--primary` fills |
+| AI Inference | `#a39db3` | Model-inferred (not cited) | Inference chips, AI confidence — the only violet in the system |
+| Error / Risk Red | `#ffb4ab` | Danger, critical risk | Risk flags, destructive actions, error states |
+| Confirm Green | `#34d399` | Success, approved | Published/approved states, success dots |
+| Info Blue | `#60a5fa` | Neutral information | Informational callouts, commit accents |
 
-### Semantic Colors
-Success `#22C55E` · Info `#3B82F6` · Warning `#F59E0B` · Error `#EF4444`
+Gold (`#dfc38c`) and violet (`#a39db3`) carry the actual product meaning —
+cited evidence vs. AI inference. Every other element stays restrained so those
+two read as signal, not decoration.
 
-### DevBraid-Specific
-- Evidence — Gold `#C9A84C`
-- Inference — Muted Violet `#8B5CF6`
-- Commit — Blue `#3B82F6`
-- Branch — Slate `#64748B`
-- Decision Notes — Emerald `#10B981`
-- Thread — Gold `#A68B3A`
-
-### Risk Levels
+### Risk Levels (desaturated bronze tints — information, not alarm)
 | Level | Background | Border | Text |
 |-------|-----------|--------|------|
-| Critical | `#450A0A` | `#B91C1C` | `#FCA5A5` |
-| High | `#4C1D06` | `#EA580C` | `#FDBA74` |
-| Medium | `#422006` | `#F59E0B` | `#FCD34D` |
-| Low | `#052E16` | `#22C55E` | `#BBF7D0` |
-| Safe | `#022C22` | `#10B981` | `#A7F3D0` |
+| Critical | `#ffb4ab14` | `#ffb4ab4d` | `#ffb4ab` |
+| High | `#dfc38c14` | `#dfc38c4d` | `#dfc38c` |
+| Medium | `#c8c6c514` | `#c8c6c54d` | `#c8c6c5` |
+| Low | `#a78d5b14` | `#a78d5b4d` | `#a78d5b` |
+| Safe | `#34d39914` | `#34d3994d` | `#34d399` |
+
+### DevBraid-Specific
+Evidence `#dfc38c` · Inference `#a39db3` · Commit `#60a5fa` · Branch `#989082` ·
+Decision Notes `#34d399` · Thread `#a78d5b`
 
 ## Components
 
 ### Buttons
-Height 40px · radius 6px · variants: primary (gold), secondary (surface), ghost (transparent), danger (red)
+Height 40px · radius 8px · variants:
+- **Primary:** solid bronze (`--primary`) fill, dark text (`--primary-foreground`), soft bronze glow on hover
+- **Secondary:** ghost with 1px bronze hairline border, 10% bronze fill on hover
+- **Danger:** red (`#ffb4ab`) text on transparent, destructive only
+- One primary button per view — never two gold buttons competing
 
 ### Cards
-Padding 24px · hairline border · no elevation
+Surface background, 8px radius (12px on thread/brief/decision cards), hairline bronze border, no shadow at rest; hover = brightened surface + soft lift, or bronze border tint.
+
+### Evidence / Inference chips
+Small muted-tint pills, mono or 12px label: gold tint (`#dfc38c`) for cited evidence, violet tint (`#a39db3`) for inference. Never bright/saturated fills.
+
+### Risk badges
+Small, text-forward, severity-colored (`--risk-*` tokens), uppercase mono labels. Information, not warning banners.
 
 ### Inputs
-Height 40px · radius 6px · gold focus ring
+Height 40px, radius 8px, darker than container, bronze border that brightens on focus (gold ring).
 
-### Tables
-Header 14px semibold · body 14px regular · mono for IDs
+### Code blocks
+Deepest inset surface (`#0e0e0e`-family), 8px radius, hairline border, JetBrains Mono 14px. Terminal-style: header bar with language label + copy button.
 
 ### Navigation
-Sidebar 15px medium · topbar 14px medium
+App sidebar w-64, surface bg, mono label-caps group headers, active item = gold left rail (`border-l-2 border-primary`) or filled elevated surface. Marketing top nav: fixed, `backdrop-blur`, hairline bottom border, gold active link underline.
 
 ### Markdown
-GitHub-style: H1 40px, H2 32px, H3 24px, paragraph 16px, line-height 1.8, code in JetBrains Mono
+GitHub-style: H1 40px, H2 32px, H3 24px, paragraph 16px, line-height 1.8, code in JetBrains Mono on inset surface.
 
 ## Motion
 
 Minimal. Duration 150–250ms. Use: hover, focus, page transitions, expand/collapse.
-Avoid: bounce, elastic, overshoot, large entrance animations.
+Avoid: bounce, elastic, overshoot, large entrance animations. Respect
+`prefers-reduced-motion`.
 
 ## Accessibility
 
@@ -151,9 +158,10 @@ Avoid: bounce, elastic, overshoot, large entrance animations.
 
 ## Things to Avoid
 
-❌ Multiple accent colors · ❌ Large gradients · ❌ Glassmorphism · ❌ Heavy
-shadows · ❌ Rounded pills everywhere · ❌ Neon colors · ❌ Excessive
-animations · ❌ Marketing-style UI
+❌ Light theme · ❌ Multiple accent colors competing · ❌ Large saturated
+gradients (gradients only in marketing hero, dark-to-darker) · ❌ Heavy shadows
+· ❌ Thick borders · ❌ Neon colors · ❌ Excessive animations · ❌ Stock
+photography / illustrated people
 
 ---
 
@@ -169,9 +177,8 @@ Semantic + risk tokens are registered as `--color-*` utilities: `evidence`,
 
 ## Provenance
 
-- v1.0 authored by the team (2026-08-05) as the single canonical design rule.
-- Supersedes the earlier Launch UI / Blink DNA extraction (URL-mode study of
-  launchuicomponents.com + blink.daisyui.com, 2026-08-04). Launch UI remains a
-  reference for marketing-page structure; v1.0 governs all tokens, type,
-  spacing, motion, and component sizing.
+- v2.0 authored 2026-08-06: bronze obsidian tokens (dark-only) adopted from
+  `stitch_devbraid_design_system` (bronze_obsidian/DESIGN.md + page mockups).
+- Supersedes v1.0 (amber-on-near-black, 2026-08-05) and the earlier Launch UI /
+  Blink DNA extraction.
 - Token regeneration allowed only by explicit amendment of this file.
