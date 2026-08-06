@@ -129,7 +129,7 @@ function NotesPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 pb-20">
           {notes.map((note) => (
             <NoteCard
               key={note.id}

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageHeader } from '@/components/devbraid/states'
 import { SectionLabel } from '@/components/devbraid/chips'
 import { ApiKeysSection } from '@/components/devbraid/api-keys-section'
@@ -13,11 +13,16 @@ export const Route = createFileRoute('/settings')({
 
 function SettingsPage() {
   const { user } = useAuth()
-  const [displayName, setDisplayName] = useState(user?.fullName || '')
+  const [displayName, setDisplayName] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [tz, setTz] = useState('UTC')
+
+  // AuthProvider bootstraps the user asynchronously — sync the field once it loads.
+  useEffect(() => {
+    if (user?.fullName) setDisplayName(user.fullName)
+  }, [user?.fullName])
 
   // Password state
   const [showPasswordForm, setShowPasswordForm] = useState(false)

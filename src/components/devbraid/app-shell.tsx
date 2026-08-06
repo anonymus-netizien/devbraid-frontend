@@ -63,8 +63,7 @@ function crumbsFor(pathname: string): { label: string; to?: string }[] {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const { location } = useRouterState()
-  const pathname = location.pathname
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = useState(false)
   const { user, logout } = useAuth()

@@ -6,13 +6,16 @@ import { PageTransition } from '../components/ui/page-transition'
 
 function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const routeId = useRouterState({
+    select: (s) => s.matches[s.matches.length - 1]?.routeId ?? s.location.pathname,
+  })
   const isBare = pathname === '/' || pathname.startsWith('/auth')
 
   if (isBare) {
     return (
       <div className="min-h-dvh bg-background text-foreground">
         <AnimatePresence mode="wait">
-          <PageTransition key={pathname}>
+          <PageTransition key={routeId}>
             <Outlet />
           </PageTransition>
         </AnimatePresence>
@@ -24,7 +27,7 @@ function RootLayout() {
   return (
     <AppShell>
       <AnimatePresence mode="wait">
-        <PageTransition key={pathname}>
+        <PageTransition key={routeId}>
           <Outlet />
         </PageTransition>
       </AnimatePresence>
