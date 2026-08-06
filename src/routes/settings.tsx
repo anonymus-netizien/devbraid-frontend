@@ -288,8 +288,8 @@ function SettingsPage() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground">
-            DevBraid is dark-only — obsidian canvas, bronze accents. One theme to design, build,
-            and maintain.
+            DevBraid is dark-only — obsidian canvas, bronze accents. One theme to design, build, and
+            maintain.
           </p>
         </section>
 

@@ -9,7 +9,14 @@ function RootLayout() {
   const routeId = useRouterState({
     select: (s) => s.matches[s.matches.length - 1]?.routeId ?? s.location.pathname,
   })
-  const isBare = pathname === '/' || pathname.startsWith('/auth')
+  const isBare =
+    pathname === '/' ||
+    pathname.startsWith('/auth') ||
+    pathname === '/features' ||
+    pathname === '/how-it-works' ||
+    pathname === '/docs' ||
+    pathname === '/pricing' ||
+    pathname === '/about'
 
   if (isBare) {
     return (

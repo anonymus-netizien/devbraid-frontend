@@ -5,9 +5,10 @@ import { cn } from '@/lib/utils'
 import { FooterBackgroundGradient, TextHoverEffect } from '@/components/ui/hover-footer'
 
 const links = [
-  { label: 'Product', href: '#product' },
-  { label: 'Features', href: '#features' },
-  { label: 'How it works', href: '#flow' },
+  { label: 'How it works', to: '/how-it-works' as const },
+  { label: 'Features', to: '/features' as const },
+  { label: 'Docs', to: '/docs' as const },
+  { label: 'Pricing', to: '/pricing' as const },
 ]
 
 /** N5 — Floating pill. Detached frosted glass chip, centred, scroll-frosted. */
@@ -41,13 +42,13 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Site">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
+            <Link
+              key={l.to}
+              to={l.to}
               className="rounded-full px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -82,14 +83,14 @@ export function SiteHeader() {
           aria-label="Site"
         >
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
+            <Link
+              key={l.to}
+              to={l.to}
               onClick={() => setOpen(false)}
               className="block rounded-xl px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
           <Link
             to="/auth/login"
@@ -106,7 +107,16 @@ export function SiteHeader() {
 
 const footerLinkGroups = [
   {
-    title: 'Products',
+    title: 'Product',
+    links: [
+      { label: 'How it works', to: '/how-it-works' as const },
+      { label: 'Features', to: '/features' as const },
+      { label: 'Documentation', to: '/docs' as const },
+      { label: 'Pricing', to: '/pricing' as const },
+    ],
+  },
+  {
+    title: 'Workspace',
     links: [
       { label: 'Change Threads', to: '/threads' as const },
       { label: 'Decision Notes', to: '/notes' as const },
@@ -117,6 +127,7 @@ const footerLinkGroups = [
   {
     title: 'Company',
     links: [
+      { label: 'About', to: '/about' as const },
       { label: 'Dashboard', to: '/dashboard' as const },
       { label: 'GitHub Connections', to: '/connections' as const },
       { label: 'Settings', to: '/settings' as const },
