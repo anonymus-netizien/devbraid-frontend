@@ -1,11 +1,43 @@
-// TODO: Implement centralized Axios instance
-// - Configure baseURL from VITE_API_BASE_URL
-// - Set default headers (Content-Type: application/json)
-// - Add request/response interceptors
-// - Handle auth token injection and error normalization
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { getSessionToken, clearTokens } from './token'
 
-import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1'
 
-const apiClient = axios.create();
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
-export default apiClient;
+// Client-side sign-in redirect on 401. Registered from main.tsx (which owns the
+// router) so an expired session navigates in-SPA instead of hard-reloading the
+// page and re-running the whole app.
+let onUnauthorized: (() => void) | null = null
+export const setUnauthorizedHandler = (handler: (() => void) | null): void => {
+  onUnauthorized = handler
+}
+
+// Request interceptor: attach the Clerk session token
+apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  const token = await getSessionToken()
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Response interceptor: stateless backend — no refresh flow; on 401 clear
+// tokens and let the registered handler bounce to sign-in without a reload.
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      clearTokens()
+      onUnauthorized?.()
+    }
+    return Promise.reject(error)
+  },
+)
+
+export default apiClient
