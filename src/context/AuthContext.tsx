@@ -1,103 +1,75 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react'
-import type { User, LoginRequest, RegisterRequest, UserProfileResponseData } from '../types/auth'
+import React, { useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react'
+import type { User, UserProfileResponseData } from '../types/auth'
 import authService from '../services/auth.service'
-
-interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (credentials: LoginRequest) => Promise<void>
-  register: (data: RegisterRequest) => Promise<void>
-  sendOtp: (email: string) => Promise<void>
-  verifyOtp: (email: string, otp: string) => Promise<void>
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+import { setTokenProvider } from '../api/token'
+import { AuthContext, type AuthContextType } from './auth-context'
 
 function mapProfileToUser(profile: UserProfileResponseData): User {
   return {
     id: profile.id ?? '',
     fullName: profile.fullName ?? '',
     email: profile.email ?? '',
-    role: (profile.role as User['role']) ?? 'ROLE_USER',
+    role: (profile.role as User['role']) ?? 'ROLE_DEVELOPER',
     createdAt: profile.createdAt,
   }
 }
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { isLoaded, isSignedIn, getToken, signOut } = useClerkAuth()
+  const { user: clerkUser } = useUser()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
+  // Feed the Clerk session token to axios.
   useEffect(() => {
-    const bootstrapSession = async () => {
-      try {
-        const profile = await authService.me()
-        setUser(mapProfileToUser(profile))
-      } catch {
-        try {
-          await authService.refresh()
-          const profile = await authService.me()
-          setUser(mapProfileToUser(profile))
-        } catch {
-          await authService.logout()
-          setUser(null)
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    bootstrapSession()
-  }, [])
+    setTokenProvider(() => getToken())
+    return () => setTokenProvider(null)
+  }, [getToken])
 
-  const login = useCallback(async (credentials: LoginRequest) => {
-    setIsLoading(true)
-    try {
-      await authService.login(credentials)
-      const profile = await authService.me()
-      setUser(mapProfileToUser(profile))
-    } finally {
+  // Mirror the Clerk user into local state; fall back to Clerk profile until
+  // the backend /user/profile confirms the mirror.
+  useEffect(() => {
+    if (!isLoaded) return
+    if (!isSignedIn) {
+      setUser(null)
       setIsLoading(false)
+      return
     }
-  }, [])
-
-  const sendOtp = useCallback(async (email: string) => {
-    await authService.sendOtp(email)
-  }, [])
-
-  const verifyOtp = useCallback(async (email: string, otp: string) => {
-    await authService.verifyOtp(email, otp)
-  }, [])
-
-  const register = useCallback(async (data: RegisterRequest) => {
-    await authService.register(data)
-  }, [])
+    setIsLoading(true)
+    authService
+      .me()
+      .then((profile) => setUser(mapProfileToUser(profile)))
+      .catch(() => {
+        if (clerkUser) {
+          setUser({
+            id: clerkUser.id,
+            fullName: clerkUser.fullName ?? clerkUser.username ?? '',
+            email: clerkUser.primaryEmailAddress?.emailAddress ?? '',
+            role: 'ROLE_DEVELOPER',
+            createdAt: undefined,
+          })
+        }
+      })
+      .finally(() => setIsLoading(false))
+  }, [isLoaded, isSignedIn, clerkUser])
 
   const logout = useCallback(async () => {
-    await authService.logout()
-    setUser(null)
-  }, [])
+    try {
+      await signOut()
+    } finally {
+      setUser(null)
+    }
+  }, [signOut])
 
   const contextValue = useMemo(
     () => ({
       user,
       isAuthenticated: !!user,
       isLoading,
-      login,
-      register,
-      sendOtp,
-      verifyOtp,
       logout,
     }),
-    [user, isLoading, login, register, sendOtp, verifyOtp, logout],
+    [user, isLoading, logout],
   )
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -139,7 +139,8 @@ export function LiquidChrome({
 
     if (interactive) {
       container.addEventListener('mousemove', handleMouseMove)
-      container.addEventListener('touchmove', handleTouchMove)
+      // handleTouchMove never calls preventDefault, so passive is safe
+      container.addEventListener('touchmove', handleTouchMove, { passive: true })
     }
 
     let animationId: number

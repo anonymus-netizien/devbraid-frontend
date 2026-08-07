@@ -1,5 +1,6 @@
 import { Pencil, Trash2, Check, X, Loader2 } from 'lucide-react'
 import type { NoteListItem } from '../../types/thread'
+import { formatDate } from '../../lib/time'
 
 interface NoteCardProps {
   note: NoteListItem
@@ -47,7 +48,7 @@ export function NoteCard({
         </div>
         <div className="flex items-center gap-1">
           <span className="text-[10px] text-muted-foreground font-mono shrink-0">
-            {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : ''}
+            {note.createdAt ? formatDate(note.createdAt) : ''}
           </span>
           {!isEditing && (
             <>
@@ -81,8 +82,14 @@ export function NoteCard({
       {isEditing ? (
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-foreground">Decision</label>
+            <label
+              htmlFor={`nc-decision-${note.id}`}
+              className="text-xs font-medium text-foreground"
+            >
+              Decision
+            </label>
             <input
+              id={`nc-decision-${note.id}`}
               type="text"
               value={editDecision}
               onChange={(e) => setEditDecision(e.target.value)}
@@ -90,8 +97,14 @@ export function NoteCard({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-foreground">Rationale</label>
+            <label
+              htmlFor={`nc-rationale-${note.id}`}
+              className="text-xs font-medium text-foreground"
+            >
+              Rationale
+            </label>
             <textarea
+              id={`nc-rationale-${note.id}`}
               value={editRationale}
               onChange={(e) => setEditRationale(e.target.value)}
               rows={3}
@@ -99,8 +112,11 @@ export function NoteCard({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-foreground">Alternatives</label>
+            <label htmlFor={`nc-alt-${note.id}`} className="text-xs font-medium text-foreground">
+              Alternatives
+            </label>
             <textarea
+              id={`nc-alt-${note.id}`}
               value={editAlternatives}
               onChange={(e) => setEditAlternatives(e.target.value)}
               rows={2}
@@ -108,8 +124,11 @@ export function NoteCard({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-foreground">Impact</label>
+            <label htmlFor={`nc-impact-${note.id}`} className="text-xs font-medium text-foreground">
+              Impact
+            </label>
             <textarea
+              id={`nc-impact-${note.id}`}
               value={editImpact}
               onChange={(e) => setEditImpact(e.target.value)}
               rows={2}

@@ -1,7 +1,19 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { Braces, Github, Mail, Menu, MessageSquare, Twitter, Linkedin, X } from 'lucide-react'
+import { AnimatePresence, LazyMotion, domAnimation, m } from 'framer-motion'
+import {
+  Braces,
+  ChevronDown,
+  Github,
+  LayoutDashboard,
+  Linkedin,
+  LogOut,
+  Menu,
+  User,
+  X,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/context/AuthContext'
 import { FooterBackgroundGradient, TextHoverEffect } from '@/components/ui/hover-footer'
 
 const links = [
@@ -11,29 +23,68 @@ const links = [
   { label: 'Pricing', to: '/pricing' as const },
 ]
 
-/** N5 — Floating pill. Detached frosted glass chip, centred, scroll-frosted. */
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+/** N5 — Floating pill. Detached frosted glass chip; hides on scroll-down, returns on scroll-up. */
 export function SiteHeader() {
-  const [scrolled, setScrolled] = useState(false)
+  const [visible, setVisible] = useState(true)
   const [open, setOpen] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
+    let lastY = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setVisible(y <= lastY || y < 80)
+      lastY = y
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const userInitials = user?.fullName
+    ? user.fullName
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+    : user?.email
+      ? user.email.substring(0, 2).toUpperCase()
+      : 'DB'
+
+  const handleSignOut = async () => {
+    setAccountOpen(false)
+    await logout()
+  }
+
+  const avatar = (
+    <button
+      type="button"
+      onClick={() => setAccountOpen((v) => !v)}
+      aria-label="Account menu"
+      aria-expanded={accountOpen}
+      className="flex items-center gap-2 rounded-full border border-hairline bg-surface/60 py-1 pl-1 pr-2 transition-colors hover:bg-surface"
+    >
+      <span className="grid size-7 place-items-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+        {userInitials}
+      </span>
+      <ChevronDown className="size-3 text-muted-foreground" />
+    </button>
+  )
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:px-6">
-      <div
-        className={cn(
-          'mx-auto flex h-12 max-w-[720px] items-center justify-between gap-3 rounded-full border border-hairline px-4 backdrop-blur-xl transition-all duration-300 sm:px-5',
-          scrolled || open
-            ? 'bg-background/85 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.4)]'
-            : 'bg-background/55',
-        )}
-      >
-        <Link to="/" className="flex shrink-0 items-center gap-2 py-3 -my-3">
+    <header
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 px-4 pt-3 transition-transform duration-300 sm:px-6',
+        visible ? 'translate-y-0' : '-translate-y-[calc(100%+0.75rem)]',
+      )}
+    >
+      <div className="mx-auto flex h-12 max-w-[720px] items-center justify-between gap-3 rounded-full border border-hairline bg-background/75 px-4 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:px-5">
+        <Link to="/" onClick={scrollToTop} className="flex shrink-0 items-center gap-2 py-3 -my-3">
           <span className="grid size-6 place-items-center rounded-md bg-primary text-primary-foreground">
             <Braces className="size-3.5" />
           </span>
@@ -53,18 +104,80 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link
-            to="/auth/login"
-            className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
-          >
-            Log in
-          </Link>
-          <Link
-            to="/auth/register"
-            className="inline-flex h-11 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover md:h-9"
-          >
-            Start free
-          </Link>
+          <div className="relative hidden items-center sm:flex">
+            {isAuthenticated && avatar}
+            {/* ponytail: backdrop has no exit animation, so it lives outside AnimatePresence,
+                which stays mounted to observe the menu's exit */}
+            {isAuthenticated && accountOpen && (
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={() => setAccountOpen(false)}
+                className="fixed inset-0 z-40 cursor-default focus:outline-none"
+              />
+            )}
+            <LazyMotion features={domAnimation}>
+              <AnimatePresence>
+                {isAuthenticated && accountOpen && (
+                  <m.div
+                    key="account-menu"
+                    initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-xl border border-hairline bg-background/95 p-1.5 shadow-[0_16px_48px_-24px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+                  >
+                    <div className="border-b border-hairline px-3 py-2">
+                      <p className="truncate text-xs font-medium text-foreground">
+                        {user?.fullName || 'Developer'}
+                      </p>
+                      <p className="truncate text-[10px] text-muted-foreground">
+                        {user?.email || 'Not signed in'}
+                      </p>
+                    </div>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setAccountOpen(false)}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                    >
+                      <LayoutDashboard className="size-3.5" /> Dashboard
+                    </Link>
+                    <Link
+                      to="/settings"
+                      onClick={() => setAccountOpen(false)}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                    >
+                      <User className="size-3.5" /> Profile
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                    >
+                      <LogOut className="size-3.5" /> Sign out
+                    </button>
+                  </m.div>
+                )}
+              </AnimatePresence>
+            </LazyMotion>
+          </div>
+          {!isAuthenticated && (
+            <>
+              <Link
+                to="/auth/login"
+                search={{ redirect: undefined }}
+                className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/auth/register"
+                className="inline-flex h-11 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover md:h-9"
+              >
+                Start free
+              </Link>
+            </>
+          )}
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -92,13 +205,33 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          <Link
-            to="/auth/login"
-            onClick={() => setOpen(false)}
-            className="mt-1 block rounded-xl border-t border-hairline px-4 py-2.5 text-sm text-foreground"
-          >
-            Log in
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/dashboard"
+                onClick={() => setOpen(false)}
+                className="mt-1 block rounded-xl border-t border-hairline px-4 py-2.5 text-sm text-foreground"
+              >
+                Dashboard
+              </Link>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="block w-full rounded-xl px-4 py-2.5 text-left text-sm text-muted-foreground"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth/login"
+              search={{ redirect: undefined }}
+              onClick={() => setOpen(false)}
+              className="mt-1 block rounded-xl border-t border-hairline px-4 py-2.5 text-sm text-foreground"
+            >
+              Log in
+            </Link>
+          )}
         </nav>
       )}
     </header>
@@ -121,7 +254,7 @@ const footerLinkGroups = [
       { label: 'Change Threads', to: '/threads' as const },
       { label: 'Decision Notes', to: '/notes' as const },
       { label: 'Change Briefs', to: '/briefs' as const },
-      { label: 'Code Index', to: '/indexing' as const },
+      { label: 'GitHub Connections', to: '/connections' as const },
     ],
   },
   {
@@ -135,30 +268,19 @@ const footerLinkGroups = [
   },
 ]
 
-const contactInfo = [
-  {
-    icon: <Mail size={18} className="text-primary" />,
-    text: 'hello@devbraid.dev',
-    href: 'mailto:hello@devbraid.dev',
-  },
-  {
-    icon: <MessageSquare size={18} className="text-primary" />,
-    text: 'GitHub Discussions',
-    href: 'https://github.com/anonymus-netizien',
-  },
-  { icon: <Braces size={18} className="text-primary" />, text: 'Built for reviewers' },
-]
-
 const socialLinks = [
   { icon: <Github size={18} />, label: 'GitHub', href: 'https://github.com/anonymus-netizien' },
-  { icon: <Twitter size={18} />, label: 'Twitter', href: '#' },
-  { icon: <Linkedin size={18} />, label: 'LinkedIn', href: '#' },
+  {
+    icon: <Linkedin size={18} />,
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/vishweshwarraokolluru/',
+  },
 ]
 
-/** Previous footer — brand block, link columns, giant DevBraid wordmark. */
+/** Footer — link columns, concise contact bar, full-bleed DevBraid wordmark. */
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden rounded-3xl border border-hairline bg-surface/40 lg:m-8 lg:p-0">
+    <footer className="relative overflow-hidden rounded-3xl border border-hairline bg-surface/40 lg:m-8">
       <div className="relative z-10 mx-auto max-w-7xl p-10 md:p-14">
         <div className="grid grid-cols-1 gap-10 pb-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-16">
           <div className="flex flex-col space-y-4">
@@ -192,32 +314,16 @@ export function SiteFooter() {
               </ul>
             </div>
           ))}
-
-          <div>
-            <h4 className="mb-5 font-mono text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Contact Us
-            </h4>
-            <ul className="space-y-3">
-              {contactInfo.map((item, i) => (
-                <li key={i} className="flex items-center space-x-3 text-sm text-muted-foreground">
-                  {item.icon}
-                  {item.href ? (
-                    <a href={item.href} className="transition-colors hover:text-primary">
-                      {item.text}
-                    </a>
-                  ) : (
-                    <span>{item.text}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
-        <hr className="my-8 border-hairline" />
-
-        <div className="flex flex-col items-center justify-between space-y-4 text-sm md:flex-row md:space-y-0">
-          <div className="flex space-x-6 text-muted-foreground">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-hairline pt-8 sm:flex-row">
+          <a
+            href="mailto:devbraid@proton.me"
+            className="text-sm text-muted-foreground transition-colors hover:text-primary"
+          >
+            devbraid@proton.me
+          </a>
+          <div className="flex items-center gap-5 text-muted-foreground">
             {socialLinks.map(({ icon, label, href }) => (
               <a
                 key={label}
@@ -231,14 +337,14 @@ export function SiteFooter() {
               </a>
             ))}
           </div>
-          <p className="text-center text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} DevBraid. All rights reserved.
           </p>
         </div>
       </div>
 
-      <div className="hidden h-[30rem] -mt-52 -mb-36 lg:block">
-        <TextHoverEffect text="DevBraid" className="z-50" />
+      <div className="relative z-10 hidden h-[22vw] w-full lg:block">
+        <TextHoverEffect text="DevBraid" />
       </div>
 
       <FooterBackgroundGradient />

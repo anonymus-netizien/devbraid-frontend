@@ -48,7 +48,7 @@ function BriefCard({ b }: { b: any }) {
     <Link
       to="/briefs/$id"
       params={{ id: b.id }}
-      className="group relative block overflow-hidden rounded-xl bg-surface p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-surface-2 hover:shadow-md"
+      className="group relative block overflow-hidden rounded-xl bg-surface p-6 shadow-sm transition-[transform,background-color,box-shadow] hover:-translate-y-0.5 hover:bg-surface-2 hover:shadow-md"
     >
       <span className={cn('absolute inset-x-0 top-0 h-px', s.strip)} />
       <div className="flex items-center justify-between gap-3">

@@ -80,10 +80,10 @@ function PricingPage() {
           <p className="text-sm text-muted-foreground">
             Questions about what comes after?{' '}
             <a
-              href="mailto:hello@devbraid.dev"
+              href="mailto:devbraid@proton.me"
               className="text-primary underline-offset-2 hover:underline"
             >
-              hello@devbraid.dev
+              devbraid@proton.me
             </a>
           </p>
         </Reveal>

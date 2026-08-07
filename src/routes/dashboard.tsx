@@ -6,6 +6,7 @@ import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/de
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { useAuth } from '@/context/AuthContext'
+import { formatDate } from '@/lib/time'
 import {
   useGitHubStatusQuery,
   useReposQuery,
@@ -49,7 +50,7 @@ function StatCard({
   return (
     <Link
       to={to}
-      className="group block rounded-lg bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface"
+      className="group block rounded-lg bg-surface/50 p-5 transition-[border-color,background-color] duration-200 hover:border-primary/30 hover:bg-surface"
     >
       <div className="flex items-start justify-between">
         <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -277,7 +278,7 @@ function DashboardPage() {
                   >
                     <p className="line-clamp-2 font-medium">{n.decision || n.content}</p>
                     <p className="mt-1 text-[10px] text-muted-foreground">
-                      {n.authorName} · {new Date(n.createdAt).toLocaleDateString()}
+                      {n.authorName} · {formatDate(n.createdAt)}
                     </p>
                   </Link>
                 ))}

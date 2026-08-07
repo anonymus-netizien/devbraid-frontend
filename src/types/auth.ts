@@ -5,7 +5,7 @@ export interface User {
   id: string
   fullName: string
   email: string
-  role: 'ROLE_USER' | 'ROLE_ADMIN'
+  role: 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_DEVELOPER'
   createdAt?: string
 }
 

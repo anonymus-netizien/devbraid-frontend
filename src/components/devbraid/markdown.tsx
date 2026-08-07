@@ -2,7 +2,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { FileText, GitCommitHorizontal, Link2, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { Element, Text as HastText } from 'hast'
+import type { Element } from 'hast'
 import type { ReactNode } from 'react'
 
 const CITE_START = '\u0000'
@@ -16,6 +16,7 @@ interface ParsedSegment {
   type?: 'file' | 'commit' | 'source'
   ref?: string
   text: string
+  id: number
 }
 
 function parseSegments(content: string): ParsedSegment[] {
@@ -23,21 +24,31 @@ function parseSegments(content: string): ParsedSegment[] {
     .replace(citationPattern, (_, type, ref) => `${CITE_START}cite:${type}:${ref}${CITE_END}`)
     .replace(inferencePattern, `${CITE_START}inference${CITE_END}`)
 
+  let segId = 0
+  const seg = (s: Omit<ParsedSegment, 'id'>): ParsedSegment => ({ ...s, id: segId++ })
+
   const segments: ParsedSegment[] = []
   while (encoded.length > 0) {
     const start = encoded.indexOf(CITE_START)
     if (start === -1) {
-      segments.push({ kind: 'text', text: encoded })
+      segments.push(seg({ kind: 'text', text: encoded }))
       break
     }
-    if (start > 0) segments.push({ kind: 'text', text: encoded.slice(0, start) })
+    if (start > 0) segments.push(seg({ kind: 'text', text: encoded.slice(0, start) }))
     const end = encoded.indexOf(CITE_END, start)
     const token = encoded.slice(start + 1, end === -1 ? undefined : end)
     if (token.startsWith('cite:')) {
-      const [, type, ref] = token.split(':')
-      segments.push({ kind: 'cited', type: type as 'file' | 'commit' | 'source', ref })
+      const [, type, ...rest] = token.split(':')
+      segments.push(
+        seg({
+          kind: 'cited',
+          type: type as 'file' | 'commit' | 'source',
+          ref: rest.join(':'),
+          text: '',
+        }),
+      )
     } else {
-      segments.push({ kind: 'inference' })
+      segments.push(seg({ kind: 'inference', text: '' }))
     }
     encoded = end === -1 ? '' : encoded.slice(end + 1)
   }
@@ -53,12 +64,12 @@ const citeIcons = {
 function InlineChips({ text }: { text: string }) {
   return (
     <>
-      {parseSegments(text).map((seg, i) => {
-        if (seg.kind === 'text') return <span key={i}>{seg.text}</span>
+      {parseSegments(text).map((seg) => {
+        if (seg.kind === 'text') return <span key={seg.id}>{seg.text}</span>
         if (seg.kind === 'inference') {
           return (
             <span
-              key={i}
+              key={seg.id}
               className="mx-0.5 inline-flex items-center gap-1 rounded-full border border-inference/25 bg-inference/10 px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-inference align-middle select-none"
             >
               <Sparkles className="size-2.5" />
@@ -69,7 +80,7 @@ function InlineChips({ text }: { text: string }) {
         const Icon = citeIcons[seg.type ?? 'source']
         return (
           <span
-            key={i}
+            key={seg.id}
             className="mx-0.5 inline-flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-primary align-middle select-none"
             title={`Cited: ${seg.ref}`}
           >
