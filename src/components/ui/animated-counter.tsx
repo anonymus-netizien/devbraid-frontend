@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react'
-import { motion, useMotionValue, useMotionValueEvent, useSpring } from 'framer-motion'
+import {
+  LazyMotion,
+  domAnimation,
+  m,
+  useMotionValue,
+  useMotionValueEvent,
+  useSpring,
+} from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface AnimatedCounterProps {
@@ -61,15 +68,17 @@ export function AnimatedCounter({
   }
 
   return (
-    <motion.span
-      className={cn('tabular-nums', className)}
-      aria-live="polite"
-      aria-atomic="true"
-      aria-label={`${prefix}${formatNumber(to)}${suffix}`}
-    >
-      {prefix}
-      {formatNumber(displayValue)}
-      {suffix}
-    </motion.span>
+    <LazyMotion features={domAnimation}>
+      <m.span
+        className={cn('tabular-nums', className)}
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={`${prefix}${formatNumber(to)}${suffix}`}
+      >
+        {prefix}
+        {formatNumber(displayValue)}
+        {suffix}
+      </m.span>
+    </LazyMotion>
   )
 }

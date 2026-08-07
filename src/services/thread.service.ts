@@ -12,12 +12,7 @@ import type {
   PaginatedNotes,
   DecisionNote,
   NoteResponse,
-  FileComment,
-  CreateFileCommentRequest,
-  UpdateFileCommentRequest,
-  ThreadEvent,
-  PaginatedEvents,
-  Snapshot,
+  PrReviewResponse,
 } from '../types/thread'
 
 export const threadService = {
@@ -44,36 +39,6 @@ export const threadService = {
    */
   async getThread(id: string): Promise<ChangeThread> {
     const response = await apiClient.get<ApiResponse<ChangeThread>>(`/threads/${id}`)
-    return unwrap(response.data)
-  },
-
-  /**
-   * Server-side keyword search over thread title + description.
-   */
-  async searchThreads(q: string, page = 0, size = 20): Promise<PaginatedThreads> {
-    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search', {
-      params: { q, page, size },
-    })
-    return unwrap(response.data)
-  },
-
-  /**
-   * Paginated threads for one repository (owner/name).
-   */
-  async searchByRepo(repositoryFullName: string, page = 0, size = 20): Promise<PaginatedThreads> {
-    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search/repo', {
-      params: { repositoryFullName, page, size },
-    })
-    return unwrap(response.data)
-  },
-
-  /**
-   * Paginated threads filtered by lifecycle status (DRAFT | ANALYZING | READY | PUBLISHED).
-   */
-  async searchByStatus(status: string, page = 0, size = 20): Promise<PaginatedThreads> {
-    const response = await apiClient.get<ApiResponse<PaginatedThreads>>('/threads/search/status', {
-      params: { status, page, size },
-    })
     return unwrap(response.data)
   },
 
@@ -183,128 +148,6 @@ export const threadService = {
   },
 
   /**
-   * List all file comments on a thread.
-   */
-  async listComments(threadId: string): Promise<FileComment[]> {
-    const response = await apiClient.get<ApiResponse<FileComment[]>>(
-      `/threads/${threadId}/comments`,
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * List comments anchored to a single file path.
-   */
-  async listCommentsByFile(threadId: string, filePath: string): Promise<FileComment[]> {
-    const response = await apiClient.get<ApiResponse<FileComment[]>>(
-      `/threads/${threadId}/comments/by-file`,
-      { params: { filePath } },
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * Add a comment anchored to a file path (and optional line range).
-   */
-  async createComment(threadId: string, comment: CreateFileCommentRequest): Promise<FileComment> {
-    const response = await apiClient.post<ApiResponse<FileComment>>(
-      `/threads/${threadId}/comments`,
-      comment,
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * Update a comment's body, line range, or resolution status.
-   */
-  async updateComment(
-    threadId: string,
-    commentId: string,
-    comment: UpdateFileCommentRequest,
-  ): Promise<FileComment> {
-    const response = await apiClient.put<ApiResponse<FileComment>>(
-      `/threads/${threadId}/comments/${commentId}`,
-      comment,
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * All snapshots captured for a thread, newest first.
-   */
-  async listSnapshots(threadId: string): Promise<Snapshot[]> {
-    const response = await apiClient.get<ApiResponse<Snapshot[]>>(`/threads/${threadId}/snapshots`)
-    return unwrap(response.data)
-  },
-
-  /**
-   * Capture a manual snapshot of the thread at its current state.
-   */
-  async createSnapshot(threadId: string, note?: string): Promise<Snapshot> {
-    const response = await apiClient.post<ApiResponse<Snapshot>>(`/threads/${threadId}/snapshots`, {
-      note,
-    })
-    return unwrap(response.data)
-  },
-
-  /**
-   * Single snapshot by ID.
-   */
-  async getSnapshot(threadId: string, snapshotId: string): Promise<Snapshot> {
-    const response = await apiClient.get<ApiResponse<Snapshot>>(
-      `/threads/${threadId}/snapshots/${snapshotId}`,
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * The most recent snapshot for a thread.
-   */
-  async getLatestSnapshot(threadId: string): Promise<Snapshot> {
-    const response = await apiClient.get<ApiResponse<Snapshot>>(
-      `/threads/${threadId}/snapshots/latest`,
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * Permanently delete a file comment.
-   */
-  async deleteComment(threadId: string, commentId: string): Promise<void> {
-    await apiClient.delete<ApiResponse<null>>(`/threads/${threadId}/comments/${commentId}`)
-  },
-
-  /**
-   * Full event timeline for a thread.
-   */
-  async listEvents(threadId: string): Promise<ThreadEvent[]> {
-    const response = await apiClient.get<ApiResponse<ThreadEvent[]>>(`/threads/${threadId}/events`)
-    return unwrap(response.data)
-  },
-
-  /**
-   * Paginated event timeline for a thread.
-   */
-  async listEventsPaged(threadId: string, page = 0, size = 20): Promise<PaginatedEvents> {
-    const response = await apiClient.get<ApiResponse<PaginatedEvents>>(
-      `/threads/${threadId}/events/paged`,
-      { params: { page, size } },
-    )
-    return unwrap(response.data)
-  },
-
-  /**
-   * Add a manual event to the thread timeline.
-   */
-  async createEvent(threadId: string, summary: string, metadata?: string): Promise<ThreadEvent> {
-    const response = await apiClient.post<ApiResponse<ThreadEvent>>(`/threads/${threadId}/events`, {
-      summary,
-      metadata,
-    })
-    return unwrap(response.data)
-  },
-
-  /**
    * Get paginated list of all briefs.
    */
   async listBriefs(page = 0, size = 20): Promise<PaginatedBriefs> {
@@ -329,6 +172,34 @@ export const threadService = {
     const response = await apiClient.get<ApiResponse<PaginatedNotes>>('/notes', {
       params: { page, size },
     })
+    return unwrap(response.data)
+  },
+
+  /**
+   * Latest Code-Rabbit-style PR review for a thread (null when none ran yet).
+   */
+  async getReview(threadId: string): Promise<PrReviewResponse | null> {
+    const response = await apiClient.get<ApiResponse<PrReviewResponse | null>>(
+      `/threads/${threadId}/review`,
+    )
+    return unwrap(response.data)
+  },
+
+  /**
+   * Manually run (or re-run) a PR review. A COMPLETED review for the same
+   * head SHA is returned unchanged; a FAILED one is retried.
+   */
+  async runReview(
+    threadId: string,
+    prNumber: number,
+    headSha: string,
+    installationId: number,
+  ): Promise<PrReviewResponse> {
+    const response = await apiClient.post<ApiResponse<PrReviewResponse>>(
+      `/threads/${threadId}/review`,
+      null,
+      { params: { prNumber, headSha, installationId } },
+    )
     return unwrap(response.data)
   },
 }

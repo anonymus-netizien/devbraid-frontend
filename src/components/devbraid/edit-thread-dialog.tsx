@@ -61,8 +61,8 @@ export function EditThreadDialog({ thread, onSaved }: EditThreadDialogProps) {
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 animate-in fade-in bg-black/60 backdrop-blur-xs duration-200" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 animate-in zoom-in-95 rounded-xl border border-hairline bg-surface p-4 shadow-elevation-3 duration-200 focus:outline-none sm:p-6">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-xl border border-hairline bg-surface p-4 shadow-elevation-3 focus:outline-none sm:p-6">
           <div className="mb-5 flex items-center justify-between border-b border-hairline pb-4">
             <div className="flex items-center gap-2">
               <Pencil className="size-4 text-primary" />
@@ -72,6 +72,7 @@ export function EditThreadDialog({ thread, onSaved }: EditThreadDialogProps) {
               <button
                 type="button"
                 className="grid size-7 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-surface-2 hover:text-foreground"
+                aria-label="Close"
               >
                 <X className="size-4" />
               </button>
@@ -80,18 +81,24 @@ export function EditThreadDialog({ thread, onSaved }: EditThreadDialogProps) {
 
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Title</label>
+              <label htmlFor="etd-title" className="text-xs font-medium text-foreground">
+                Title
+              </label>
               <input
+                id="etd-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Short description of the change"
-                className="input input-sm w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
+                className="input input-md w-full border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Description (optional)</label>
+              <label htmlFor="etd-desc" className="text-xs font-medium text-foreground">
+                Description (optional)
+              </label>
               <textarea
+                id="etd-desc"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Context, motivation, or links for this change"
@@ -113,14 +120,14 @@ export function EditThreadDialog({ thread, onSaved }: EditThreadDialogProps) {
             )}
             <div className="flex items-center justify-end gap-2 pt-1">
               <Dialog.Close asChild>
-                <button type="button" className="btn btn-ghost btn-sm">
+                <button type="button" className="btn btn-ghost btn-md">
                   Cancel
                 </button>
               </Dialog.Close>
               <button
                 type="submit"
                 disabled={saving || !title.trim()}
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary btn-md"
               >
                 {saving ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Plus, X, GitBranch, FolderGit2, Loader2, Sparkles } from 'lucide-react'
+import { X, GitBranch, FolderGit2, Loader2, Sparkles } from 'lucide-react'
 import { useBranchesQuery } from '@/hooks/queries'
 import { githubService } from '../../services/github.service'
 import { threadService } from '../../services/thread.service'
@@ -110,19 +110,9 @@ export function CreateThreadDialog({
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <button
-          type="button"
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all shadow-sm active:scale-98"
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          <span>New thread</span>
-        </button>
-      </Dialog.Trigger>
-
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 animate-in fade-in duration-200" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-lg bg-surface border border-hairline rounded-xl shadow-elevation-3 p-4 sm:p-6 z-50 focus:outline-none animate-in zoom-in-95 duration-200">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-xl border border-hairline bg-surface p-4 shadow-elevation-3 focus:outline-none sm:p-6">
           <div className="flex items-center justify-between pb-4 border-b border-hairline mb-5">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-lg bg-primary/10 text-primary">
@@ -157,7 +147,10 @@ export function CreateThreadDialog({
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Repository Select */}
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+              <label
+                htmlFor="ctd-repo"
+                className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5"
+              >
                 <FolderGit2 className="h-3.5 w-3.5 text-muted-foreground" />
                 Repository <span className="text-danger">*</span>
               </label>
@@ -168,6 +161,7 @@ export function CreateThreadDialog({
                 </div>
               ) : (
                 <select
+                  id="ctd-repo"
                   value={selectedRepo}
                   onChange={(e) => setSelectedRepo(e.target.value)}
                   required
@@ -190,11 +184,15 @@ export function CreateThreadDialog({
             <div className="space-y-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+                  <label
+                    htmlFor="ctd-head"
+                    className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5"
+                  >
                     <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />
                     Head Branch (Feature) <span className="text-danger">*</span>
                   </label>
                   <select
+                    id="ctd-head"
                     value={headBranch}
                     onChange={(e) => setHeadBranch(e.target.value)}
                     disabled={loadingBranches || branches.length === 0}
@@ -210,11 +208,15 @@ export function CreateThreadDialog({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+                  <label
+                    htmlFor="ctd-base"
+                    className="block text-xs font-medium text-foreground mb-1.5 flex items-center gap-1.5"
+                  >
                     <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />
                     Base Branch (Target) <span className="text-danger">*</span>
                   </label>
                   <select
+                    id="ctd-base"
                     value={baseBranch}
                     onChange={(e) => setBaseBranch(e.target.value)}
                     disabled={loadingBranches || branches.length === 0}
@@ -244,10 +246,14 @@ export function CreateThreadDialog({
 
             {/* Thread Title */}
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">
+              <label
+                htmlFor="ctd-title"
+                className="block text-xs font-medium text-foreground mb-1.5"
+              >
                 Thread Title <span className="text-danger">*</span>
               </label>
               <input
+                id="ctd-title"
                 type="text"
                 placeholder="e.g. Refactor Auth Middleware to JWT rotation"
                 value={title}
@@ -259,10 +265,14 @@ export function CreateThreadDialog({
 
             {/* Description / Rationale */}
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1.5">
+              <label
+                htmlFor="ctd-desc"
+                className="block text-xs font-medium text-foreground mb-1.5"
+              >
                 Initial Description & Context
               </label>
               <textarea
+                id="ctd-desc"
                 rows={3}
                 placeholder="Describe what changes are being made and why..."
                 value={description}

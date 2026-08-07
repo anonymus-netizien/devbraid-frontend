@@ -22,6 +22,7 @@ import {
   ArrowRight,
   History,
 } from 'lucide-react'
+import { shortcutLabel } from '@/lib/platform'
 
 const RECENTS_KEY = 'devbraid:cmdk:recents'
 const MAX_RECENTS = 5
@@ -156,27 +157,18 @@ export function CommandPalette({
       </CommandList>
 
       <div className="flex items-center justify-between border-t border-hairline px-3 py-2 text-[10px] text-muted-foreground">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-hairline bg-background px-1.5 py-0.5 font-mono">
-              \u2191\u2193
-            </kbd>
-            navigate
-          </span>
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-hairline bg-background px-1.5 py-0.5 font-mono">
-              \u23CE
-            </kbd>
-            select
-          </span>
-          <span className="flex items-center gap-1">
-            <kbd className="rounded border border-hairline bg-background px-1.5 py-0.5 font-mono">
-              esc
-            </kbd>
-            close
-          </span>
-        </div>
-        <span className="font-mono uppercase tracking-widest">devbraid \u2318K</span>
+        <span className="flex items-center gap-1">
+          <kbd className="rounded border border-hairline bg-background px-1.5 py-0.5 font-mono">
+            esc
+          </kbd>
+          close
+        </span>
+        <span className="flex items-center gap-1 font-mono uppercase tracking-widest">
+          <kbd className="rounded border border-hairline bg-background px-1.5 py-0.5 font-mono">
+            {shortcutLabel()}
+          </kbd>
+          devbraid
+        </span>
       </div>
     </CommandDialog>
   )

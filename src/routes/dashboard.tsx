@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ArrowUpRight, FileText, GitPullRequest, Github, Plus, StickyNote } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { PageHeader, LoadingRows, EmptyState, ErrorPanel } from '@/components/devbraid/states'
 import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { useAuth } from '@/context/AuthContext'
+import { formatDate } from '@/lib/time'
 import {
   useGitHubStatusQuery,
   useReposQuery,
@@ -48,7 +50,7 @@ function StatCard({
   return (
     <Link
       to={to}
-      className="group block rounded-lg border border-hairline bg-surface/50 p-5 transition-all duration-200 hover:border-primary/30 hover:bg-surface"
+      className="group block rounded-lg bg-surface/50 p-5 transition-[border-color,background-color] duration-200 hover:border-primary/30 hover:bg-surface"
     >
       <div className="flex items-start justify-between">
         <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -113,7 +115,7 @@ function DashboardPage() {
               Connect your Personal Access Token to inspect repositories and post PR briefs.
             </p>
           </div>
-          <Link to="/connections" search={{}} className="btn btn-soft btn-sm text-background">
+          <Link to="/connections" search={{}} className="btn btn-soft btn-md text-background">
             Connect PAT →
           </Link>
         </div>
@@ -124,9 +126,37 @@ function DashboardPage() {
         title={`${greeting}, ${firstName}.`}
         description={`${activeThreads.length} change thread${activeThreads.length !== 1 ? 's' : ''} in flight.`}
         actions={
-          <Link to="/threads" className="btn btn-primary btn-sm">
-            <Plus className="size-3.5" /> New thread
-          </Link>
+          <div className="flex items-center gap-3">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground"
+              title={
+                ghConnected
+                  ? 'GitHub connection valid'
+                  : ghConnected === false
+                    ? 'No GitHub connection'
+                    : 'Checking GitHub connection\u2026'
+              }
+            >
+              <span
+                className={cn(
+                  'size-1.5 rounded-full',
+                  ghConnected
+                    ? 'bg-success'
+                    : ghConnected === false
+                      ? 'bg-danger'
+                      : 'bg-warning animate-pulse',
+                )}
+              />
+              {ghConnected
+                ? 'System healthy'
+                : ghConnected === false
+                  ? 'Action needed'
+                  : 'Checking\u2026'}
+            </span>
+            <Link to="/threads" className="btn btn-primary btn-md">
+              <Plus className="size-3.5" /> New thread
+            </Link>
+          </div>
         }
       />
 
@@ -163,8 +193,8 @@ function DashboardPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
         {/* Threads table */}
-        <div className="rounded-lg border border-hairline bg-surface/30">
-          <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+        <div className="rounded-lg bg-surface/30">
+          <div className="flex items-center justify-between px-4 py-3">
             <h2 className="text-sm font-semibold">Recent change threads</h2>
             <div className="flex items-center gap-2">
               {['all', 'draft', 'analyzing', 'ready', 'published'].map((s) => (
@@ -198,7 +228,7 @@ function DashboardPage() {
               <EmptyState title="No threads yet" description="Create one to get started." />
             </div>
           ) : (
-            <div className="divide-y divide-hairline">
+            <div>
               {filtered.slice(0, 8).map((t: ChangeThread) => (
                 <Link
                   key={t.id}
@@ -232,7 +262,7 @@ function DashboardPage() {
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+          <div className="rounded-lg bg-surface/30 p-4">
             <h3 className="text-sm font-semibold">Latest notes</h3>
             <p className="text-xs text-muted-foreground mb-3">Always human-written.</p>
             {notes.length === 0 ? (
@@ -248,7 +278,7 @@ function DashboardPage() {
                   >
                     <p className="line-clamp-2 font-medium">{n.decision || n.content}</p>
                     <p className="mt-1 text-[10px] text-muted-foreground">
-                      {n.authorName} · {new Date(n.createdAt).toLocaleDateString()}
+                      {n.authorName} · {formatDate(n.createdAt)}
                     </p>
                   </Link>
                 ))}
@@ -256,7 +286,7 @@ function DashboardPage() {
             )}
           </div>
 
-          <div className="rounded-lg border border-hairline bg-surface/30 p-4">
+          <div className="rounded-lg bg-surface/30 p-4">
             <h3 className="text-sm font-semibold mb-3">Briefs to review</h3>
             {briefs.length === 0 ? (
               <p className="text-xs text-muted-foreground">No briefs yet.</p>

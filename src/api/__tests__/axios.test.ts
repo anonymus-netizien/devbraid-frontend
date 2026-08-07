@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { apiClient } from '../axios'
-import { setAccessToken, clearTokens } from '../token'
+import { apiClient, setUnauthorizedHandler } from '../axios'
+import { setTokenProvider, clearTokens } from '../token'
 
 type Handler = (value: any) => any
 
@@ -15,6 +15,7 @@ function responseHandlers(): Array<{ fulfilled: Handler; rejected?: Handler }> {
 describe('apiClient', () => {
   beforeEach(() => {
     clearTokens()
+    setUnauthorizedHandler(null)
   })
 
   afterEach(() => {
@@ -40,17 +41,17 @@ describe('apiClient', () => {
   })
 
   describe('request interceptor', () => {
-    it('attaches the Bearer token from the token store when present', async () => {
-      setAccessToken('test_token_abc')
+    it('attaches the Clerk session token as Bearer when the provider resolves', async () => {
+      setTokenProvider(() => Promise.resolve('clerk_token_xyz'))
 
       const handler = requestHandlers()[0].fulfilled
       const mockConfig: any = { headers: {} }
       const result = await handler(mockConfig)
 
-      expect(result.headers.Authorization).toBe('Bearer test_token_abc')
+      expect(result.headers.Authorization).toBe('Bearer clerk_token_xyz')
     })
 
-    it('does not attach Authorization header when no token exists', async () => {
+    it('does not attach Authorization header when no provider is registered', async () => {
       const handler = requestHandlers()[0].fulfilled
       const mockConfig: any = { headers: {} }
       const result = await handler(mockConfig)
@@ -71,23 +72,29 @@ describe('apiClient', () => {
   })
 
   describe('response interceptor error handler', () => {
-    it('rejects non-401 errors without attempting refresh', async () => {
+    it('rejects non-401 errors without touching tokens', async () => {
       const handler = responseHandlers()[0].rejected!
-      const error = { response: { status: 403 }, config: { url: '/some-endpoint' } }
+      const error = { response: { status: 500 }, config: { url: '/some-endpoint' } }
 
       await expect(handler(error)).rejects.toBe(error)
     })
 
-    it('rejects 401 errors on auth endpoints (login/register)', async () => {
+    it('clears tokens and calls the registered sign-in handler on 401', async () => {
+      setTokenProvider(() => Promise.resolve('stale_token'))
       const handler = responseHandlers()[0].rejected!
-      const error = { response: { status: 401 }, config: { url: '/auth/login' } }
+      const onUnauthorized = vi.fn()
+      setUnauthorizedHandler(onUnauthorized)
 
-      await expect(handler(error)).rejects.toBe(error)
+      await expect(
+        handler({ response: { status: 401 }, config: { url: '/github/status' } }),
+      ).rejects.toMatchObject({ response: { status: 401 } })
+
+      expect(onUnauthorized).toHaveBeenCalledTimes(1)
     })
 
-    it('rejects 401 errors on auth refresh endpoint', async () => {
+    it('does nothing extra when no sign-in handler is registered', async () => {
       const handler = responseHandlers()[0].rejected!
-      const error = { response: { status: 401 }, config: { url: '/auth/refresh' } }
+      const error = { response: { status: 401 }, config: { url: '/github/status' } }
 
       await expect(handler(error)).rejects.toBe(error)
     })

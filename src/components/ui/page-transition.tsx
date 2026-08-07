@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { LazyMotion, domAnimation, m } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 interface PageTransitionProps {
@@ -18,15 +18,17 @@ const variants = {
  */
 export function PageTransition({ children, className }: PageTransitionProps) {
   return (
-    <motion.div
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <LazyMotion features={domAnimation}>
+      <m.div
+        variants={variants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.32, ease: [0.05, 0.7, 0.1, 1] }}
+        className={className}
+      >
+        {children}
+      </m.div>
+    </LazyMotion>
   )
 }
