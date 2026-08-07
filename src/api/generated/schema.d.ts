@@ -192,6 +192,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/threads/{threadId}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the latest review for a thread
+         * @description Returns the most recent automated review of the thread's pull request, or null if none has run yet.
+         */
+        get: operations["getLatestReview"];
+        put?: never;
+        /**
+         * Run a review now
+         * @description Triggers an asynchronous review of the thread's pull request. Returns 202; the review is created in the background and can be polled via the GET endpoint.
+         */
+        post: operations["runReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/threads/{threadId}/notes": {
         parameters: {
             query?: never;
@@ -592,6 +616,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/threads/{threadId}/review/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the latest review's findings
+         * @description Returns the findings (inline + file-level) of the thread's most recent review.
+         */
+        get: operations["getLatestReviewComments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/threads/{threadId}/events/paged": {
         parameters: {
             query?: never;
@@ -684,6 +728,26 @@ export interface paths {
          * @description Paginated threads for one repository, e.g. `owner/name`.
          */
         get: operations["searchByRepo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List reviews (paginated)
+         * @description Paginated list of the authenticated user's automated reviews across all threads.
+         */
+        get: operations["listReviews"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1162,6 +1226,7 @@ export interface components {
             additions?: number;
             /** Format: int32 */
             deletions?: number;
+            patch?: string;
         };
         CommitSummaryDto: {
             sha?: string;
@@ -1272,6 +1337,11 @@ export interface components {
             note?: string;
             /** Format: date-time */
             createdAt?: string;
+        };
+        ApiResponseVoid: {
+            success?: boolean;
+            message?: string;
+            data?: unknown;
         };
         /** @description Create a decision note on a thread. `contextRef` is required when `context` is `COMMIT` (commit sha) or `FILE` (file path). */
         CreateNoteRequest: {
@@ -1575,34 +1645,72 @@ export interface components {
             totalElements?: number;
             /** Format: int32 */
             totalPages?: number;
+            pageable?: components["schemas"]["PageableObject"];
+            sort?: components["schemas"]["SortObject"];
+            /** Format: int32 */
+            numberOfElements?: number;
+            first?: boolean;
+            last?: boolean;
             /** Format: int32 */
             size?: number;
             content?: unknown[];
             /** Format: int32 */
             number?: number;
-            sort?: components["schemas"]["SortObject"];
-            pageable?: components["schemas"]["PageableObject"];
-            first?: boolean;
-            last?: boolean;
-            /** Format: int32 */
-            numberOfElements?: number;
             empty?: boolean;
         };
         PageableObject: {
-            /** Format: int64 */
-            offset?: number;
-            sort?: components["schemas"]["SortObject"];
             paged?: boolean;
             /** Format: int32 */
             pageNumber?: number;
             /** Format: int32 */
             pageSize?: number;
+            sort?: components["schemas"]["SortObject"];
             unpaged?: boolean;
+            /** Format: int64 */
+            offset?: number;
         };
         SortObject: {
-            empty?: boolean;
             sorted?: boolean;
             unsorted?: boolean;
+            empty?: boolean;
+        };
+        PrReviewCommentResponse: {
+            /** Format: uuid */
+            id?: string;
+            filePath?: string;
+            /** Format: int32 */
+            lineNumber?: number;
+            /** @enum {string} */
+            severity?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "INFO";
+            /** @enum {string} */
+            category?: "BUG" | "SECURITY" | "PERFORMANCE" | "CORRECTNESS" | "TESTING" | "STYLE" | "MAINTAINABILITY" | "DOCUMENTATION" | "OTHER";
+            title?: string;
+            body?: string;
+            /** Format: int64 */
+            githubCommentId?: number;
+        };
+        PrReviewResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            threadId?: string;
+            /** Format: int32 */
+            prNumber?: number;
+            headSha?: string;
+            /** @enum {string} */
+            status?: "RUNNING" | "COMPLETED" | "FAILED";
+            summary?: string;
+            severityCounts?: {
+                [key: string]: number;
+            };
+            published?: boolean;
+            githubReviewUrl?: string;
+            error?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            completedAt?: string;
+            comments?: components["schemas"]["PrReviewCommentResponse"][];
         };
         FileIndex: {
             /** Format: uuid */
@@ -2581,6 +2689,127 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["SnapshotResponse"];
+                };
+            };
+            /** @description Validation failed or malformed request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Resource not found or not owned by the user */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Unexpected internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+        };
+    };
+    getLatestReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Thread ID */
+                threadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrReviewResponse"];
+                };
+            };
+            /** @description Validation failed or malformed request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Resource not found or not owned by the user */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Unexpected internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+        };
+    };
+    runReview: {
+        parameters: {
+            query: {
+                /** @description GitHub PR number to review */
+                prNumber: number;
+            };
+            header?: never;
+            path: {
+                /** @description Thread ID */
+                threadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review started */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
                 };
             };
             /** @description Validation failed or malformed request */
@@ -4060,6 +4289,65 @@ export interface operations {
             };
         };
     };
+    getLatestReviewComments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Thread ID */
+                threadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Findings retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrReviewCommentResponse"][];
+                };
+            };
+            /** @description Validation failed or malformed request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Resource not found or not owned by the user */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Unexpected internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+        };
+    };
     listEventsPaged: {
         parameters: {
             query: {
@@ -4326,6 +4614,64 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Search results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Page"];
+                };
+            };
+            /** @description Validation failed or malformed request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Resource not found or not owned by the user */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+            /** @description Unexpected internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponse"];
+                };
+            };
+        };
+    };
+    listReviews: {
+        parameters: {
+            query: {
+                pageable: components["schemas"]["Pageable"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews retrieved */
             200: {
                 headers: {
                     [name: string]: unknown;

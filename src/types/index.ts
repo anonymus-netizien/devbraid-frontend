@@ -25,5 +25,10 @@ export type {
   DecisionNote,
   ChangedFile,
   Commit,
+  PrReviewResponse,
+  PrReviewCommentResponse,
+  PrReviewStatus,
+  FindingSeverity,
+  FindingCategory,
 } from './thread'
 export type { BriefStatus, Citation, BriefClaim, BriefSection, ChangeBrief } from './brief'
