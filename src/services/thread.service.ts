@@ -12,6 +12,7 @@ import type {
   PaginatedNotes,
   DecisionNote,
   NoteResponse,
+  PrReviewResponse,
 } from '../types/thread'
 
 export const threadService = {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Bot, ExternalLink, Loader2, RefreshCw, RotateCcw } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { formatDate } from '@/lib/time'
 import { StatusDot } from '@/components/devbraid/chips'
 import type { FindingCategory, PrReviewCommentResponse, PrReviewResponse } from '@/types/thread'
 
@@ -23,6 +24,12 @@ const categoryOrder: FindingCategory[] = [
   'DOCUMENTATION',
   'OTHER',
 ]
+
+/** Guards a number-input value: NaN or below-min values are ignored. */
+const parsePositiveInt = (value: string): number | null => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 1 ? parsed : null
+}
 
 export function ReviewPanel({
   review,
@@ -57,7 +64,7 @@ export function ReviewPanel({
   }
 
   const comments = review?.comments ?? []
-  const ordered = [...comments].sort(
+  const ordered = [...comments].toSorted(
     (a, b) =>
       (categoryOrder.indexOf((a.category ?? 'OTHER') as FindingCategory) ?? 0) -
       (categoryOrder.indexOf((b.category ?? 'OTHER') as FindingCategory) ?? 0),
@@ -91,7 +98,7 @@ export function ReviewPanel({
             </span>
             {review.completedAt && (
               <span className="text-[10px] font-mono text-muted-foreground">
-                {new Date(review.completedAt).toLocaleString()}
+                {formatDate(review.completedAt)}
               </span>
             )}
           </div>
@@ -113,9 +120,12 @@ export function ReviewPanel({
               type="number"
               min={1}
               value={prNumber}
-              onChange={(e) => setPrNumber(Number(e.target.value))}
+              onChange={(e) => {
+                const next = parsePositiveInt(e.target.value)
+                if (next !== null) setPrNumber(next)
+              }}
               className="w-16 px-2 py-1 text-xs text-center bg-surface-2 border border-hairline rounded text-foreground font-mono"
-              placeholder="#"
+              aria-label="GitHub pull request number"
               title="GitHub pull request number"
             />
             <input
@@ -124,15 +134,19 @@ export function ReviewPanel({
               onChange={(e) => setHeadSha(e.target.value)}
               className="flex-1 px-2 py-1 text-xs bg-surface-2 border border-hairline rounded text-foreground font-mono placeholder:text-muted-foreground min-w-0"
               placeholder="head SHA"
+              aria-label="Head commit SHA of the PR"
               title="Head commit SHA of the PR"
             />
             <input
               type="number"
               min={1}
               value={installationId}
-              onChange={(e) => setInstallationId(Number(e.target.value))}
+              onChange={(e) => {
+                const parsed = parsePositiveInt(e.target.value)
+                if (parsed !== null) setInstallationId(parsed)
+              }}
               className="w-14 px-2 py-1 text-xs text-center bg-surface-2 border border-hairline rounded text-foreground font-mono"
-              placeholder="app"
+              aria-label="GitHub App installation ID"
               title="GitHub App installation ID"
             />
             <button
@@ -168,9 +182,8 @@ export function ReviewPanel({
           )}
           {review.severityCounts && (
             <div className="flex flex-wrap gap-1.5">
-              {Object.entries(review.severityCounts)
-                .filter(([, count]) => (count ?? 0) > 0)
-                .map(([severity, count]) => (
+              {Object.entries(review.severityCounts).map(([severity, count]) =>
+                (count ?? 0) > 0 ? (
                   <span
                     key={severity}
                     className={cn(
@@ -181,14 +194,15 @@ export function ReviewPanel({
                   >
                     {severity} · {count}
                   </span>
-                ))}
+                ) : null,
+              )}
             </div>
           )}
           {ordered.length > 0 ? (
             <ul className="space-y-2 pt-1">
-              {ordered.map((comment: PrReviewCommentResponse, i: number) => (
+              {ordered.map((comment: PrReviewCommentResponse) => (
                 <li
-                  key={comment.id ?? i}
+                  key={comment.id ?? `${comment.filePath ?? 'file'}:${comment.lineNumber ?? 0}`}
                   className="rounded-lg border border-hairline bg-surface-2 p-3 space-y-1.5"
                 >
                   <div className="flex items-center gap-2 flex-wrap">
