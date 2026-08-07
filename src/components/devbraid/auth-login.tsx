@@ -2,7 +2,7 @@ import { SignIn } from '@clerk/clerk-react'
 import { AuthShell } from './auth-shell'
 
 export function AuthLoginView({ redirect }: { redirect?: string }) {
-  const afterSignInUrl = redirect && redirect !== '/' ? redirect : '/dashboard'
+  const fallbackRedirectUrl = redirect && redirect !== '/' ? redirect : '/dashboard'
   return (
     <AuthShell variant="login">
       {import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ? (
@@ -10,8 +10,7 @@ export function AuthLoginView({ redirect }: { redirect?: string }) {
           routing="path"
           path="/auth/login"
           signUpUrl="/auth/register"
-          afterSignInUrl={afterSignInUrl}
-          fallbackRedirectUrl="/dashboard"
+          fallbackRedirectUrl={fallbackRedirectUrl}
         />
       ) : (
         <div className="rounded-lg border border-hairline bg-surface p-5">

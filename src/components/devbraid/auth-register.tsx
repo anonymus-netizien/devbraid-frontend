@@ -9,7 +9,6 @@ export function AuthSignUpView() {
           routing="path"
           path="/auth/register"
           signInUrl="/auth/login"
-          afterSignUpUrl="/dashboard"
           fallbackRedirectUrl="/dashboard"
         />
       ) : (
