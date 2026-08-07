@@ -4,7 +4,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   LayoutDashboard,
   GitPullRequest,
-  Library,
   FileText,
   BookOpen,
   Github,
@@ -17,10 +16,9 @@ import {
 import { Toaster } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
-import authService from '@/services/auth.service'
 import { CommandPalette, useCommandPalette } from './command-palette'
-import { ThemeToggle } from './theme-toggle'
 import { AmbientBackground } from './ambient-background'
+import { shortcutLabel } from '@/lib/platform'
 
 const navGroups = [
   {
@@ -28,7 +26,6 @@ const navGroups = [
     items: [
       { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/threads', label: 'Change Threads', icon: GitPullRequest },
-      { to: '/indexing', label: 'Code Index', icon: Library },
       { to: '/notes', label: 'Decision Notes', icon: FileText },
       { to: '/briefs', label: 'Change Briefs', icon: BookOpen },
     ],
@@ -64,8 +61,7 @@ function crumbsFor(pathname: string): { label: string; to?: string }[] {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const { location } = useRouterState()
-  const pathname = location.pathname
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = useState(false)
   const { user, logout } = useAuth()
@@ -78,12 +74,8 @@ export function AppShell({ children }: AppShellProps) {
   const handleSignOut = async () => {
     await queryClient.cancelQueries()
     queryClient.clear()
-    try {
-      await authService.logout()
-    } finally {
-      logout()
-      navigate({ to: '/auth/login', replace: true })
-    }
+    await logout()
+    navigate({ to: '/auth/login', search: { redirect: undefined }, replace: true })
   }
 
   const userInitials = user?.fullName
@@ -161,7 +153,6 @@ export function AppShell({ children }: AppShellProps) {
                 {user?.email || 'Not signed in'}
               </p>
             </div>
-            <ThemeToggle />
             <button
               type="button"
               onClick={handleSignOut}
@@ -182,10 +173,12 @@ export function AppShell({ children }: AppShellProps) {
         )}
         aria-hidden={!navOpen}
       >
-        <div
+        <button
+          type="button"
+          aria-label="Close menu"
           onClick={() => setNavOpen(false)}
           className={cn(
-            'absolute inset-0 bg-background/70 backdrop-blur-sm transition-opacity',
+            'absolute inset-0 cursor-default bg-background/70 backdrop-blur-sm transition-opacity focus:outline-none',
             navOpen ? 'opacity-100' : 'opacity-0',
           )}
         />
@@ -256,7 +249,7 @@ export function AppShell({ children }: AppShellProps) {
             </button>
             <div className="flex min-w-0 items-center gap-2 text-sm">
               {crumbs.map((c, i) => (
-                <span key={i} className="flex min-w-0 items-center gap-2">
+                <span key={c.label} className="flex min-w-0 items-center gap-2">
                   {i > 0 && <span className="text-muted-foreground/60">/</span>}
                   {c.to && i < crumbs.length - 1 ? (
                     <Link
@@ -274,7 +267,6 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <ThemeToggle />
             <button
               type="button"
               onClick={() => setPaletteOpen(true)}
@@ -284,7 +276,7 @@ export function AppShell({ children }: AppShellProps) {
               <Search className="size-3.5" />
               <span>Search or jump to</span>
               <kbd className="ml-4 rounded border border-hairline bg-background px-1.5 py-0.5 font-mono text-[10px]">
-                \u2318K
+                {shortcutLabel()}
               </kbd>
             </button>
             <button

@@ -22,7 +22,7 @@ import { CtaBanner } from '@/components/marketing/cta-banner'
 import { NewsletterSection } from '@/components/marketing/newsletter'
 import { ProductDemo } from '@/components/marketing/product-demo'
 import { HowItWorks } from '@/components/marketing/how-it-works'
-import { LiquidChrome } from '@/components/marketing/liquid-chrome'
+import { LineWaves } from '@/components/marketing/line-waves'
 import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/')({
@@ -122,16 +122,23 @@ function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* Hero — centered, full-bleed LiquidChrome */}
+        {/* Hero — centered, full-bleed LineWaves */}
         <section className="relative isolate min-h-[88vh] overflow-hidden">
-          <div className="absolute inset-0 -z-20">
-            <LiquidChrome
-              baseColor={[0.0157, 0.0196, 0.102]}
-              speed={0.25}
-              amplitude={0.35}
-              frequencyX={2.5}
-              frequencyY={1.5}
-              interactive={false}
+          <div aria-hidden className="absolute inset-0 -z-20">
+            <LineWaves
+              speed={0.3}
+              innerLineCount={32}
+              outerLineCount={36}
+              warpIntensity={1.0}
+              rotation={-45}
+              edgeFadeWidth={0.05}
+              colorCycleSpeed={1.0}
+              brightness={0.3}
+              color1="#A68D5B"
+              color2="#1A1A1A"
+              color3="#262626"
+              enableMouseInteraction={true}
+              mouseInfluence={0.4}
             />
           </div>
           <div

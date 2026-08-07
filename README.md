@@ -1,140 +1,135 @@
 # DevBraid Frontend
 
-React 19 + TypeScript SPA for the DevBraid platform — capturing **why** code changes happen.
+React 19 + TypeScript SPA for the DevBraid platform — capturing **why** code changes happen along a
+five-step flow:
 
-## Prerequisites
+**Connect → Capture → Analyze → Reason → Publish**
 
-- **Node.js 22+** and npm
-- **Docker** (optional, for containerized deployment)
-- Backend running on `http://localhost:8080`
+A developer connects a GitHub repo (PAT), creates a Change Thread to capture commits/diffs + decision
+notes, runs risk analysis, generates an AI change brief, and publishes it to a GitHub PR after human
+approval. Identity and auth are handled by **Clerk**; the app consumes the Spring Boot backend at
+[`/api/v1`](https://localhost:8080).
+
+## Tech Stack
+
+| Component        | Technology                                                        |
+|------------------|-------------------------------------------------------------------|
+| UI Library       | React 19 + TypeScript 5.8                                          |
+| Build Tool       | Vite 8 (TanStack Start entry, `tsc -b && vite build`)             |
+| Routing          | TanStack Router 1.170 (file-based, type-safe route tree)          |
+| Server State     | TanStack React Query 5.101 (queries, mutations, optimistic updates) |
+| HTTP Client      | Axios 1.7 (interceptors, Bearer injection, envelope unwrapping)   |
+| Styling          | Tailwind CSS 4.2 + DaisyUI 5.7 (dark-only, custom tokens)         |
+| Components       | shadcn/ui 4.16 + Radix UI primitives + Vaul + CMK                  |
+| Forms            | React Hook Form 7.71 + Zod 3.25                                  |
+| Motion           | Framer Motion 12.43 + Lenis 1.3 (smooth scroll)                   |
+| Hero FX          | ogl (WebGL — `LineWaves` hero background)                        |
+| Charts           | Recharts 2.15                                                      |
+| Icons            | Lucide React 0.575                                                 |
+| Notifications    | Sonner 2.0                                                         |
+| Auth             | Clerk (`@clerk/react` + `@clerk/themes`, dark theme)             |
+| API Types        | openapi-typescript (`src/api/generated/schema.d.ts`)               |
+| Testing          | Vitest 4 + jsdom (unit/integration)                                |
 
 ## Quick Start
 
 ```bash
-# Install dependencies
+# Prereqs: Node.js 22+, npm, backend running on http://localhost:8080
+
 npm install
+cp .env.example .env   # set VITE_CLERK_PUBLISHABLE_KEY (and VITE_API_BASE_URL if non-default)
 
-# Start dev server (Vite HMR on port 5173)
-npm run dev
-
-# Build for production
-npm run build
-
-# Lint
-npm run lint
+npm run dev            # Vite dev server (HMR) on http://localhost:5173
 ```
 
-## Tech Stack
+**Frontend:** `http://localhost:5173` · Backend: `http://localhost:8080` · pgAdmin: `http://localhost:5050`
 
-| Component     | Technology                             |
-| ------------- | -------------------------------------- |
-| UI Library    | React 19.2                             |
-| Language      | TypeScript 5.8                         |
-| Build Tool    | Vite 8                                 |
-| Routing       | TanStack Router 1.170 (file-based)     |
-| Server State  | TanStack React Query 5.101             |
-| HTTP Client   | Axios 1.7 (interceptors, auto-refresh) |
-| Styling       | Tailwind CSS 4.2 + DaisyUI 5.7         |
-| Components    | shadcn/ui 4.16 + Radix UI primitives   |
-| Forms         | React Hook Form 7.71 + Zod 3.25        |
-| Animations    | Framer Motion 12.43                    |
-| Charts        | Recharts 2.15                          |
-| Icons         | Lucide React 0.575                     |
-| Notifications | Sonner 2.0                             |
+> No Clerk account? Create a free instance at dashboard.clerk.com and put its publishable key in
+> `VITE_CLERK_PUBLISHABLE_KEY`. Signup, sign-in and email OTP live in Clerk — the frontend gets the
+> session token, the backend verifies it.
+
+## Scripts
+
+| Command             | Description                          |
+| ------------------- | ------------------------------------ |
+| `npm run dev`       | Vite dev server (HMR)                |
+| `npm run build`     | `tsc -b` + production build          |
+| `npm run preview`   | Preview production build             |
+| `npm run lint`      | ESLint                               |
+| `npm run format`    | Prettier                             |
+| `npm run test`      | Vitest (unit/integration)            |
+| `npm run api:types` | Regenerate `src/api/generated/schema.d.ts` from OpenAPI |
 
 ## Project Structure
 
 ```
 src/
-├── api/
-│   ├── axios.ts          # Axios instance + request/response interceptors
-│   └── token.ts          # In-memory token storage (XSS-safe)
-├── services/
-│   ├── auth.service.ts   # Auth API (login, register, OTP, profile, password)
-│   ├── github.service.ts # GitHub API (connect, repos, branches)
-│   └── thread.service.ts # Threads + Notes + Briefs API
-├── context/
-│   └── AuthContext.tsx    # Auth state provider (bootstrap, login, logout)
-├── hooks/
-│   └── useAuth.ts        # Auth hook
-├── types/
-│   ├── api.ts            # ApiResponse<T>
-│   ├── auth.ts           # User, LoginRequest, RegisterRequest
-│   ├── github.ts         # GitHubStatusResponse, GitRepository, Branch
-│   ├── thread.ts         # ChangeThread, DecisionNote, ThreadStatus
-│   └── brief.ts          # Brief types
+├── main.tsx             # App root: providers, ClerkGate, router bootstrap
+├── api/                 # Axios client, interceptors, envelope helpers
+│   └── generated/       # TypeScript types from backend OpenAPI spec
+├── services/            # Domain services (auth, github, thread) → backend endpoints
+├── context/             # Auth context (Clerk) + NoopAuthProvider fallback
+├── hooks/               # Custom hooks (useAuth, useMotion) + query hooks
+├── store/               # Global state (client-side)
+├── routes/              # File-based TanStack Router routes
+│   ├── __root.tsx       # Root layout (auth guards, page shells)
+│   ├── index.tsx        # Marketing homepage
+│   ├── auth.login*.tsx  # Sign-in (incl. splat for Clerk step paths)
+│   └── *.tsx            # Marketing + app-shell pages (threads, briefs, notes…)
 ├── components/
-│   ├── ui/               # shadcn/ui primitives (Button, Card, Dialog, etc.)
-│   └── devbraid/         # App components (AppShell, AuthShell, etc.)
-├── routes/
-│   ├── __root.tsx        # Root layout
-│   ├── auth.login.tsx    # Login
-│   ├── auth.register.tsx # Register
-│   ├── auth.verify.tsx   # OTP verification
-│   ├── dashboard.tsx     # Dashboard (stats, recent threads)
-│   ├── threads.tsx       # Threads layout
-│   ├── threads.$id.tsx   # Thread detail + actions + notes
-│   ├── briefs.tsx        # Briefs layout
-│   ├── briefs.$id.tsx    # Brief detail
-│   ├── notes.tsx         # All decision notes
-│   ├── connections.tsx   # GitHub connection management
-│   └── settings.tsx      # Profile, password, preferences
-├── lib/utils.ts          # cn() class utility
-└── routeTree.gen.ts      # Auto-generated route tree
+│   ├── ui/              # Design-system primitives
+│   ├── devbraid/        # Feature components (app shell, thread panels, note cards…)
+│   └── marketing/       # Landing page blocks (hero, features, docs, pricing…)
+├── lib/                 # cn(), formatting, platform helpers
+├── types/               # Runtime-shape DTO types (mirror of API DTOs)
+└── routeTree.gen.ts     # Auto-generated route tree
 ```
 
 ## Routes
 
-| Route            | Description                                                  |
-| ---------------- | ------------------------------------------------------------ |
-| `/`              | Marketing homepage → redirect to `/dashboard`                |
-| `/auth/login`    | Login form                                                   |
-| `/auth/register` | Registration form                                            |
-| `/auth/verify`   | OTP verification (auto-submit at 6 digits)                   |
-| `/dashboard`     | Stats cards, recent threads, quick actions                   |
-| `/threads`       | Thread list with search + status filter                      |
-| `/threads/$id`   | Thread detail with Refresh, Analyze, Generate Brief, Publish |
-| `/briefs`        | Brief list                                                   |
-| `/briefs/$id`    | Brief detail (markdown render)                               |
-| `/notes`         | All decision notes                                           |
-| `/connections`   | GitHub PAT connect/disconnect/validate                       |
-| `/settings`      | Profile update, password change                              |
+| Route                | Purpose                                                        |
+| -------------------- | -------------------------------------------------------------- |
+| `/`                  | Marketing landing page                                          |
+| `/features`, `/pricing`, `/how-it-works`, `/docs`, `/about` | Marketing sections |
+| `/auth/login`        | Clerk sign-in (email OTP)                                      |
+| `/auth/register`     | Clerk sign-up                                                  |
+| `/dashboard`         | Stats, recent threads, quick actions                           |
+| `/threads`           | Change Thread list (search + status filters)                   |
+| `/threads/:id`       | Thread detail — Refresh, Analyze, Generate Brief, Publish     |
+| `/notes`             | Decision notes across threads                                  |
+| `/briefs`            | Change Brief list                                              |
+| `/briefs/:id`        | Brief detail (Markdown render)                                 |
+| `/connections`       | GitHub PAT connect/disconnect                                  |
+| `/settings`          | Profile update                                                 |
 
 ## Auth Flow
 
+Clerk owns identity end-to-end (social/email OTP sign-in, sign-up, session).
+
 ```
-Register → OTP Send → OTP Verify → Login → JWT pair
-                                          ↓
-                              Auto-refresh on 401
-                              Redirect to /auth/login?expired=true on failure
+ClerkProvider (isLoaded) → ClerkGate mounts router → queries fire with Bearer session token
+        │
+        └─ 401 (expired/bounced) → in-SPA redirect to /auth/login?redirect=<current> (no reload)
 ```
 
-Tokens stored in-memory (not localStorage) to prevent XSS exfiltration.
+The session token is fetched at request time from Clerk and attached by the Axios request interceptor.
+It is never persisted to `localStorage` — nothing sensitive to XSS-exfiltrate.
 
 ## Environment Variables
 
-| Variable            | Default                        | Description          |
-| ------------------- | ------------------------------ | -------------------- |
-| `VITE_API_BASE_URL` | `http://localhost:8080/api/v1` | Backend API base URL |
+| Variable                     | Default                           | Description                           |
+| ---------------------------- | --------------------------------- | ------------------------------------- |
+| `VITE_API_BASE_URL`          | `http://localhost:3000/api`       | Backend base URL                        |
+| `VITE_APP_ENV`               | `development`                     | App environment flag                    |
+| `VITE_CLERK_PUBLISHABLE_KEY` | —                                | Clerk publishable key (matches backend) |
 
 ## Docker
 
 ```bash
-docker compose up --build -d    # Runs on http://localhost:3000
+docker compose up --build -d   # nginx-served production build on :3000
 ```
-
-## Scripts
-
-| Command             | Description              |
-| ------------------- | ------------------------ |
-| `npm run dev`       | Vite dev server (HMR)    |
-| `npm run build`     | Production build         |
-| `npm run build:dev` | Development build        |
-| `npm run preview`   | Preview production build |
-| `npm run lint`      | ESLint                   |
-| `npm run format`    | Prettier                 |
 
 ## Project Docs
 
-- `docs/PROJECT_DOCUMENTATION.md` — Complete consolidated documentation
-- `docs/reports/2026-07-29-e2e-test-report.md` — E2E test report
+- [`API.md`](API.md) — Detailed implementation: architecture, routing, auth plumbing, API client,
+  state, components, design system, deployment.

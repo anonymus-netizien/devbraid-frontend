@@ -18,35 +18,39 @@ function NotesPage() {
   const notes: NoteListItem[] = data?.content ?? []
 
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
-  const [editDecision, setEditDecision] = useState('')
-  const [editRationale, setEditRationale] = useState('')
-  const [editAlternatives, setEditAlternatives] = useState('')
-  const [editImpact, setEditImpact] = useState('')
+  // ponytail: the four edit fields always change together — one slice keeps them consistent
+  const [edit, setEdit] = useState({ decision: '', rationale: '', alternatives: '', impact: '' })
+  const setEditDecision = (v: string) => setEdit((prev) => ({ ...prev, decision: v }))
+  const setEditRationale = (v: string) => setEdit((prev) => ({ ...prev, rationale: v }))
+  const setEditAlternatives = (v: string) => setEdit((prev) => ({ ...prev, alternatives: v }))
+  const setEditImpact = (v: string) => setEdit((prev) => ({ ...prev, impact: v }))
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handleEdit = (note: NoteListItem) => {
     if (!note.id) return
     setEditingNoteId(note.id)
-    setEditDecision(note.decision ?? '')
-    setEditRationale(note.rationale ?? '')
-    setEditAlternatives(note.alternatives || '')
-    setEditImpact(note.impact || '')
+    setEdit({
+      decision: note.decision ?? '',
+      rationale: note.rationale ?? '',
+      alternatives: note.alternatives || '',
+      impact: note.impact || '',
+    })
     setMessage(null)
   }
 
   const handleSaveEdit = async (noteId: string) => {
-    if (!noteId || !editDecision.trim() || !editRationale.trim()) return
+    if (!noteId || !edit.decision.trim() || !edit.rationale.trim()) return
     const note = notes.find((n) => n.id === noteId)
     if (!note) return
 
     setMessage(null)
     try {
       const updated = await threadService.updateNote(note.threadId, noteId, {
-        decision: editDecision.trim(),
-        rationale: editRationale.trim(),
-        alternatives: editAlternatives.trim() || undefined,
-        impact: editImpact.trim() || undefined,
+        decision: edit.decision.trim(),
+        rationale: edit.rationale.trim(),
+        alternatives: edit.alternatives.trim() || undefined,
+        impact: edit.impact.trim() || undefined,
       })
       queryClient.setQueryData(queryKeys.notes, (old: typeof data) => {
         if (!old) return old
@@ -129,7 +133,7 @@ function NotesPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 pb-20">
           {notes.map((note) => (
             <NoteCard
               key={note.id}
@@ -138,10 +142,10 @@ function NotesPage() {
               onSaveEdit={handleSaveEdit}
               onDelete={handleDelete}
               editingNoteId={editingNoteId}
-              editDecision={editDecision}
-              editRationale={editRationale}
-              editAlternatives={editAlternatives}
-              editImpact={editImpact}
+              editDecision={edit.decision}
+              editRationale={edit.rationale}
+              editAlternatives={edit.alternatives}
+              editImpact={edit.impact}
               setEditDecision={setEditDecision}
               setEditRationale={setEditRationale}
               setEditAlternatives={setEditAlternatives}

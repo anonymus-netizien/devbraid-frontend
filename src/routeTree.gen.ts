@@ -10,24 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as BriefsRouteImport } from './routes/briefs'
 import { Route as ConnectionsRouteImport } from './routes/connections'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as IndexingRouteImport } from './routes/indexing'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ThreadsRouteImport } from './routes/threads'
-import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
-import { Route as AuthOtpRouteImport } from './routes/auth.otp'
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
-import { Route as AuthResetRouteImport } from './routes/auth.reset'
 import { Route as BriefsIdRouteImport } from './routes/briefs.$id'
 import { Route as ThreadsIdRouteImport } from './routes/threads.$id'
+import { Route as AuthLoginSplatRouteImport } from './routes/auth.login.$'
+import { Route as AuthRegisterSplatRouteImport } from './routes/auth.register.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BriefsRoute = BriefsRouteImport.update({
@@ -45,14 +53,29 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexingRoute = IndexingRouteImport.update({
-  id: '/indexing',
-  path: '/indexing',
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -65,29 +88,14 @@ const ThreadsRoute = ThreadsRouteImport.update({
   path: '/threads',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthForgotRoute = AuthForgotRouteImport.update({
-  id: '/auth/forgot',
-  path: '/auth/forgot',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthOtpRoute = AuthOtpRouteImport.update({
-  id: '/auth/otp',
-  path: '/auth/otp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthResetRoute = AuthResetRouteImport.update({
-  id: '/auth/reset',
-  path: '/auth/reset',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BriefsIdRoute = BriefsIdRouteImport.update({
@@ -100,127 +108,156 @@ const ThreadsIdRoute = ThreadsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ThreadsRoute,
 } as any)
+const AuthLoginSplatRoute = AuthLoginSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => AuthLoginRoute,
+} as any)
+const AuthRegisterSplatRoute = AuthRegisterSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => AuthRegisterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
-  '/indexing': typeof IndexingRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/notes': typeof NotesRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/reset': typeof AuthResetRoute
+  '/auth/login': typeof AuthLoginRouteWithChildren
+  '/auth/register': typeof AuthRegisterRouteWithChildren
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/auth/login/$': typeof AuthLoginSplatRoute
+  '/auth/register/$': typeof AuthRegisterSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
-  '/indexing': typeof IndexingRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/notes': typeof NotesRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/reset': typeof AuthResetRoute
+  '/auth/login': typeof AuthLoginRouteWithChildren
+  '/auth/register': typeof AuthRegisterRouteWithChildren
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/auth/login/$': typeof AuthLoginSplatRoute
+  '/auth/register/$': typeof AuthRegisterSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/briefs': typeof BriefsRouteWithChildren
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
-  '/indexing': typeof IndexingRoute
+  '/docs': typeof DocsRoute
+  '/features': typeof FeaturesRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/notes': typeof NotesRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/threads': typeof ThreadsRouteWithChildren
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/otp': typeof AuthOtpRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/reset': typeof AuthResetRoute
+  '/auth/login': typeof AuthLoginRouteWithChildren
+  '/auth/register': typeof AuthRegisterRouteWithChildren
   '/briefs/$id': typeof BriefsIdRoute
   '/threads/$id': typeof ThreadsIdRoute
+  '/auth/login/$': typeof AuthLoginSplatRoute
+  '/auth/register/$': typeof AuthRegisterSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/briefs'
     | '/connections'
     | '/dashboard'
-    | '/indexing'
+    | '/docs'
+    | '/features'
+    | '/how-it-works'
     | '/notes'
+    | '/pricing'
     | '/settings'
     | '/threads'
-    | '/auth/forgot'
     | '/auth/login'
-    | '/auth/otp'
     | '/auth/register'
-    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
+    | '/auth/login/$'
+    | '/auth/register/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/briefs'
     | '/connections'
     | '/dashboard'
-    | '/indexing'
+    | '/docs'
+    | '/features'
+    | '/how-it-works'
     | '/notes'
+    | '/pricing'
     | '/settings'
     | '/threads'
-    | '/auth/forgot'
     | '/auth/login'
-    | '/auth/otp'
     | '/auth/register'
-    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
+    | '/auth/login/$'
+    | '/auth/register/$'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/briefs'
     | '/connections'
     | '/dashboard'
-    | '/indexing'
+    | '/docs'
+    | '/features'
+    | '/how-it-works'
     | '/notes'
+    | '/pricing'
     | '/settings'
     | '/threads'
-    | '/auth/forgot'
     | '/auth/login'
-    | '/auth/otp'
     | '/auth/register'
-    | '/auth/reset'
     | '/briefs/$id'
     | '/threads/$id'
+    | '/auth/login/$'
+    | '/auth/register/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   BriefsRoute: typeof BriefsRouteWithChildren
   ConnectionsRoute: typeof ConnectionsRoute
   DashboardRoute: typeof DashboardRoute
-  IndexingRoute: typeof IndexingRoute
+  DocsRoute: typeof DocsRoute
+  FeaturesRoute: typeof FeaturesRoute
+  HowItWorksRoute: typeof HowItWorksRoute
   NotesRoute: typeof NotesRoute
+  PricingRoute: typeof PricingRoute
   SettingsRoute: typeof SettingsRoute
   ThreadsRoute: typeof ThreadsRouteWithChildren
-  AuthForgotRoute: typeof AuthForgotRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthOtpRoute: typeof AuthOtpRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthResetRoute: typeof AuthResetRoute
+  AuthLoginRoute: typeof AuthLoginRouteWithChildren
+  AuthRegisterRoute: typeof AuthRegisterRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -230,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/briefs': {
@@ -253,11 +297,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/indexing': {
-      id: '/indexing'
-      path: '/indexing'
-      fullPath: '/indexing'
-      preLoaderRoute: typeof IndexingRouteImport
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notes': {
@@ -265,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -281,13 +346,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThreadsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/forgot': {
-      id: '/auth/forgot'
-      path: '/auth/forgot'
-      fullPath: '/auth/forgot'
-      preLoaderRoute: typeof AuthForgotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
@@ -295,25 +353,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/otp': {
-      id: '/auth/otp'
-      path: '/auth/otp'
-      fullPath: '/auth/otp'
-      preLoaderRoute: typeof AuthOtpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/reset': {
-      id: '/auth/reset'
-      path: '/auth/reset'
-      fullPath: '/auth/reset'
-      preLoaderRoute: typeof AuthResetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/briefs/$id': {
@@ -329,6 +373,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/threads/$id'
       preLoaderRoute: typeof ThreadsIdRouteImport
       parentRoute: typeof ThreadsRoute
+    }
+    '/auth/login/$': {
+      id: '/auth/login/$'
+      path: '/$'
+      fullPath: '/auth/login/$'
+      preLoaderRoute: typeof AuthLoginSplatRouteImport
+      parentRoute: typeof AuthLoginRoute
+    }
+    '/auth/register/$': {
+      id: '/auth/register/$'
+      path: '/$'
+      fullPath: '/auth/register/$'
+      preLoaderRoute: typeof AuthRegisterSplatRouteImport
+      parentRoute: typeof AuthRegisterRoute
     }
   }
 }
@@ -355,20 +413,45 @@ const ThreadsRouteChildren: ThreadsRouteChildren = {
 const ThreadsRouteWithChildren =
   ThreadsRoute._addFileChildren(ThreadsRouteChildren)
 
+interface AuthLoginRouteChildren {
+  AuthLoginSplatRoute: typeof AuthLoginSplatRoute
+}
+
+const AuthLoginRouteChildren: AuthLoginRouteChildren = {
+  AuthLoginSplatRoute: AuthLoginSplatRoute,
+}
+
+const AuthLoginRouteWithChildren = AuthLoginRoute._addFileChildren(
+  AuthLoginRouteChildren,
+)
+
+interface AuthRegisterRouteChildren {
+  AuthRegisterSplatRoute: typeof AuthRegisterSplatRoute
+}
+
+const AuthRegisterRouteChildren: AuthRegisterRouteChildren = {
+  AuthRegisterSplatRoute: AuthRegisterSplatRoute,
+}
+
+const AuthRegisterRouteWithChildren = AuthRegisterRoute._addFileChildren(
+  AuthRegisterRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   BriefsRoute: BriefsRouteWithChildren,
   ConnectionsRoute: ConnectionsRoute,
   DashboardRoute: DashboardRoute,
-  IndexingRoute: IndexingRoute,
+  DocsRoute: DocsRoute,
+  FeaturesRoute: FeaturesRoute,
+  HowItWorksRoute: HowItWorksRoute,
   NotesRoute: NotesRoute,
+  PricingRoute: PricingRoute,
   SettingsRoute: SettingsRoute,
   ThreadsRoute: ThreadsRouteWithChildren,
-  AuthForgotRoute: AuthForgotRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthOtpRoute: AuthOtpRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
-  AuthResetRoute: AuthResetRoute,
+  AuthLoginRoute: AuthLoginRouteWithChildren,
+  AuthRegisterRoute: AuthRegisterRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

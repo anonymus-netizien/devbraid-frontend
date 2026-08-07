@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
@@ -7,6 +7,7 @@ import { BranchPair, RiskChip, StatusDot } from '@/components/devbraid/chips'
 import { CreateThreadDialog } from '@/components/devbraid/create-thread-dialog'
 import { queryKeys } from '@/hooks/queries'
 import { threadService } from '@/services/thread.service'
+import { formatDate } from '@/lib/time'
 import type { ChangeThread } from '@/types/thread'
 
 export const Route = createFileRoute('/threads')({
@@ -15,13 +16,8 @@ export const Route = createFileRoute('/threads')({
 
 const statusFilters = ['all', 'draft', 'analyzing', 'ready', 'published'] as const
 
-/** Backend lifecycle statuses are uppercase; the UI chips are lowercase labels. */
-const STATUS_TO_BACKEND: Record<string, string> = {
-  draft: 'DRAFT',
-  analyzing: 'ANALYZING',
-  ready: 'READY',
-  published: 'PUBLISHED',
-}
+// ponytail: stable reference so `threads` doesn't get rebuilt every render
+const EMPTY_THREADS: ChangeThread[] = []
 
 function ThreadsPage() {
   const { location } = useRouterState()
@@ -30,51 +26,41 @@ function ThreadsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [repoFilter, setRepoFilter] = useState<string>('all')
   const [q, setQ] = useState('')
-  const [debouncedQ, setDebouncedQ] = useState('')
-
-  // Debounce the keyword search before hitting the server.
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedQ(q), 300)
-    return () => clearTimeout(timer)
-  }, [q])
-
-  const isSearching = debouncedQ.trim().length > 0
-  const backendStatus = STATUS_TO_BACKEND[statusFilter] ?? null
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: isSearching
-      ? queryKeys.threadsSearch(debouncedQ)
-      : statusFilter === 'all'
-        ? queryKeys.threads
-        : queryKeys.threadsByStatus(backendStatus as string),
-    queryFn: () =>
-      isSearching
-        ? threadService.searchThreads(debouncedQ.trim(), 0, 50)
-        : statusFilter === 'all'
-          ? threadService.listThreads(0, 50)
-          : threadService.searchByStatus(backendStatus as string, 0, 50),
+    queryKey: queryKeys.threads,
+    queryFn: () => threadService.listThreads(0, 50),
+    enabled: !isDetailPage,
   })
 
-  const threads = data?.content ?? []
+  const threads = data?.content ?? EMPTY_THREADS
+
+  // ponytail: backend lists all threads; search + status filters are client-side
+  const filtered = useMemo(() => {
+    let out = threads
+    if (statusFilter !== 'all') out = out.filter((t) => t.status.toLowerCase() === statusFilter)
+    if (repoFilter !== 'all') out = out.filter((t) => t.repositoryFullName === repoFilter)
+    const query = q.trim().toLowerCase()
+    if (query) {
+      out = out.filter(
+        (t) =>
+          t.title.toLowerCase().includes(query) ||
+          (t.repositoryFullName ?? '').toLowerCase().includes(query),
+      )
+    }
+    return out
+  }, [threads, statusFilter, repoFilter, q])
 
   const repos = useMemo(
     () =>
       [
         ...new Set(
-          threads
-            .map((t: ChangeThread) => t.repositoryFullName)
-            .filter((r): r is string => Boolean(r)),
+          threads.flatMap((t: ChangeThread) =>
+            t.repositoryFullName ? [t.repositoryFullName] : [],
+          ),
         ),
       ].sort(),
     [threads],
-  )
-
-  const filtered = useMemo(
-    () =>
-      repoFilter === 'all'
-        ? threads
-        : threads.filter((t: ChangeThread) => t.repositoryFullName === repoFilter),
-    [threads, repoFilter],
   )
 
   if (isDetailPage) return <Outlet />
@@ -140,7 +126,7 @@ function ThreadsPage() {
               type="text"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder={isSearching ? 'Searching\u2026' : 'Search threads\u2026'}
+              placeholder={q ? 'Searching\u2026' : 'Search threads\u2026'}
               className="input input-md w-full pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/40 border border-hairline bg-surface/60"
             />
           </div>
@@ -198,12 +184,7 @@ function ThreadsPage() {
                     {t.notesCount ?? 0} notes
                   </div>
                   <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">
-                    {t.updatedAt
-                      ? new Date(t.updatedAt).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      : ''}
+                    {t.updatedAt ? formatDate(t.updatedAt) : ''}
                   </div>
                 </div>
               </div>

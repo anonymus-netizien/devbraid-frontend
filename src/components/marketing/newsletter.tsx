@@ -59,11 +59,7 @@ export function NewsletterSection() {
           </form>
 
           <p className="mt-3 text-xs text-muted-foreground">
-            We care about your data. Read our{' '}
-            <a href="#" className="underline underline-offset-2 hover:text-foreground">
-              privacy policy
-            </a>
-            .
+            We care about your data. A privacy policy is coming soon.
           </p>
         </Reveal>
 
