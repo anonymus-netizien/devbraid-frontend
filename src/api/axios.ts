@@ -29,12 +29,21 @@ apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) =>
 
 // Response interceptor: stateless backend — no refresh flow; on 401 clear
 // tokens and let the registered handler bounce to sign-in without a reload.
+//
+// ponytail: only bounce when NO token was attached to the request. A 401 with
+// a sent token means the backend rejected it (issuer/key mismatch) — bouncing
+// loops forever because Clerk's session is still alive and back-instants to
+// the protected page. A 401 without a token means the session really expired,
+// so the bounce is the correct behavior.
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      clearTokens()
-      onUnauthorized?.()
+      const hadToken = Boolean(error.config?.headers?.Authorization)
+      if (!hadToken) {
+        clearTokens()
+        onUnauthorized?.()
+      }
     }
     return Promise.reject(error)
   },
